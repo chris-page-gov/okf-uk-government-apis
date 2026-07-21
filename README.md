@@ -1,7 +1,7 @@
 # UK Government APIs OKF Bundle Wiki
 
 Independent YAML-LD OKF publication of the multi-source UK Government APIs and
-data-access catalogue: 41,520 records, 39,250 evidence resources and 276,996
+data-access catalogue: 41,598 records, 39,305 evidence resources and 277,449
 provenance-bearing relationships.
 
 The bundle separates declared API products, provider-native APIs, data access

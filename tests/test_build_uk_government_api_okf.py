@@ -48,7 +48,7 @@ class UkGovernmentApiOkfGeneratorTest(unittest.TestCase):
         self.assertEqual(counts["declared_api_products"], 2)
         self.assertGreaterEqual(counts["provider_native_api_products"], 2)
         self.assertEqual(counts["data_access_endpoints"], 2)
-        self.assertEqual(counts["data_products"], 3)
+        self.assertEqual(counts["data_products"], 4)
         self.assertEqual(counts["contracts"], 6)
         self.assertGreaterEqual(counts["operations"], 2)
         self.assertGreaterEqual(counts["schemas"], 2)
@@ -63,6 +63,30 @@ class UkGovernmentApiOkfGeneratorTest(unittest.TestCase):
         self.assertTrue(all(record["source_adapter"] == "data_gov_uk_ckan" for record in endpoint_records))
         self.assertTrue(all(record["protocol"] == ["ArcGIS REST"] for record in endpoint_records))
         self.assertTrue(all(record["record_type"] != "API Product" for record in endpoint_records))
+
+    def test_gias_records_distinguish_beta_api_from_supported_download(self):
+        corpus = self.build_fixture_corpus()
+        records = {record["name"]: record for record in corpus["records"]}
+        api = records["department-for-education-gias-read-api-prototype"]
+        download = records["department-for-education-gias-establishments-download"]
+        service = records["department-for-education-get-information-about-schools"]
+
+        self.assertEqual(api["lifecycle_status"], "beta-prototype")
+        self.assertEqual(api["extras"]["support_status"], "not-yet-published-or-supported")
+        self.assertEqual(api["url"], "")
+        self.assertEqual(api["source_adapter"], "dfe_gias")
+        self.assertEqual(download["lifecycle_status"], "production-supported-alternative")
+        self.assertEqual(download["extras"]["warwickshire_local_authority_code"], "937")
+        self.assertEqual(download["license_id"], builder_module.OGL_V3_ID)
+        self.assertEqual(service["extras"]["authoritative_identifier"], "DfE URN")
+        self.assertTrue(
+            any(
+                row["source"] == api["route"]
+                and row["target"] == download["route"]
+                and row["kind"] == "has current supported alternative"
+                for row in corpus["relationships"]
+            )
+        )
 
     def test_every_record_has_route_provenance_confidence_and_source_adapter(self):
         corpus = self.build_fixture_corpus()

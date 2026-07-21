@@ -1,17 +1,17 @@
 ---
 type: "Capability Document"
-title: "Indicative atlas of radon in Great Britain contract"
-description: "Machine-readable or service-description contract inferred for Indicative atlas of radon in Great Britain from public metadata."
-resource: "https://www.data.gov.uk/dataset/bgs-radon-web-service"
-timestamp: "2026-07-02T16:28:21.183274"
+title: "BGS OGE bedrock and surface geology contract"
+description: "Machine-readable or service-description contract inferred for BGS OGE bedrock and surface geology from public metadata."
+resource: "https://www.data.gov.uk/dataset/bgs-onegeology-europe-bedrock-and-surface-onshore-1-625k-geology-ogc-wms"
+timestamp: "2026-07-09T17:35:45.696043"
 tags: "british-geological-survey, geospatial, government-services, wms"
 confidence: "observed"
 source_adapter: "contract_discovery"
 ---
 
-# Indicative atlas of radon in Great Britain contract
+# BGS OGE bedrock and surface geology contract
 
-Machine-readable or service-description contract inferred for Indicative atlas of radon in Great Britain from public metadata.
+Machine-readable or service-description contract inferred for BGS OGE bedrock and surface geology from public metadata.
 
 ## Metadata
 
@@ -32,8 +32,8 @@ Machine-readable or service-description contract inferred for Indicative atlas o
 - DCAT term: `dcterms:Standard`
 - OpenAPI term: `OpenAPI Description or external contract`
 
-- Endpoint: https://www.data.gov.uk/dataset/bgs-radon-web-service
-- Documentation: https://www.data.gov.uk/dataset/bgs-radon-web-service
+- Endpoint: https://www.data.gov.uk/dataset/bgs-onegeology-europe-bedrock-and-surface-onshore-1-625k-geology-ogc-wms
+- Documentation: https://www.data.gov.uk/dataset/bgs-onegeology-europe-bedrock-and-surface-onshore-1-625k-geology-ogc-wms
 
 ## Standards Alignment
 

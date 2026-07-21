@@ -10,10 +10,10 @@ This Markdown layer is generated from the same source records as the large-corpu
 
 ## Counts
 
-- API products: 257
-- Data access endpoints: 31634
-- Data products: 6719
-- Contracts and capability documents: 2778
+- API products: 245
+- Data access endpoints: 31717
+- Data products: 6728
+- Contracts and capability documents: 2775
 - Operations: 38
 - Schemas: 93
 

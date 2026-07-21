@@ -33,6 +33,10 @@ DEFAULT_SOURCE_URL = "https://raw.githubusercontent.com/co-cddo/api-catalogue/ma
 DEFAULT_CKAN_API_URL = "https://ckan.publishing.service.gov.uk/api/3/action/package_search"
 DEFAULT_OS_API_ROOT = "https://api.os.uk/"
 DEFAULT_ONS_API_ROOT = "https://api.beta.ons.gov.uk/v1"
+GIAS_ROOT_URL = "https://get-information-schools.service.gov.uk/"
+GIAS_DOWNLOADS_URL = "https://get-information-schools.service.gov.uk/Downloads"
+GIAS_GUIDANCE_URL = "https://www.gov.uk/guidance/get-information-about-schools"
+GIAS_READ_API_DESIGN_URL = "https://design-histories.education.gov.uk/get-information-about-schools/designing-the-read-api-for-get-information-about-schools-gias"
 OGL_V3_ID = "open-government-licence-v3"
 OGL_V3_TITLE = "Open Government Licence v3.0"
 OGL_V3_URL = "https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/"
@@ -1743,6 +1747,179 @@ def add_os_records(builder: CorpusBuilder, documents: dict[str, dict[str, Any]],
             )
 
 
+def add_gias_records(builder: CorpusBuilder) -> None:
+    """Add the provider-declared GIAS register, prototype API and supported download route."""
+    publisher = "department-for-education"
+    publisher_name = "Department for Education"
+    common_links = [
+        {"title": "GIAS guidance", "url": GIAS_GUIDANCE_URL},
+        {"title": "GIAS downloads", "url": GIAS_DOWNLOADS_URL},
+        {"title": "Read API design history", "url": GIAS_READ_API_DESIGN_URL},
+    ]
+    service_provenance = source_provenance(
+        source="Department for Education GIAS service and guidance",
+        source_url=GIAS_GUIDANCE_URL,
+        source_tier="provider_native_api",
+        adapter="dfe_gias",
+        confidence="declared",
+        observed_at=builder.observed_at,
+    )
+    api_provenance = source_provenance(
+        source="Department for Education GIAS Read API design history",
+        source_url=GIAS_READ_API_DESIGN_URL,
+        source_tier="provider_native_api",
+        adapter="dfe_gias",
+        confidence="declared",
+        observed_at=builder.observed_at,
+        extra={"source_last_updated": "2026-03-05"},
+    )
+    downloads_provenance = source_provenance(
+        source="Department for Education GIAS downloads",
+        source_url=GIAS_DOWNLOADS_URL,
+        source_tier="data_access_endpoint",
+        adapter="dfe_gias",
+        confidence="declared",
+        observed_at=builder.observed_at,
+    )
+
+    service_slug = "department-for-education-get-information-about-schools"
+    api_slug = "department-for-education-gias-read-api-prototype"
+    downloads_slug = "department-for-education-gias-establishments-download"
+    builder.add_record(
+        slug=service_slug,
+        title="Get Information about Schools (GIAS)",
+        record_type="Provider API Portal",
+        publisher=publisher,
+        publisher_title_value=publisher_name,
+        description=(
+            "National reference register for state-funded schools, independent schools, "
+            "other education providers and school governance in England. Public users can "
+            "search and download provider and governance information."
+        ),
+        url=GIAS_ROOT_URL,
+        documentation=GIAS_GUIDANCE_URL,
+        topics=["Education"],
+        protocols=["Web", "CSV/download"],
+        tags=["schools", "education-establishments", "gias", "urn", "school-governance"],
+        modified="2025-01-28",
+        license_id=OGL_V3_ID,
+        license_title=OGL_V3_TITLE,
+        license_source_id=GIAS_GUIDANCE_URL,
+        license_confidence=0.9,
+        license_basis="provider-declared",
+        access_model="anonymous",
+        visibility="public-register",
+        contract_status="service-description",
+        lifecycle="production",
+        source_tier="provider_native_api",
+        source_adapter="dfe_gias",
+        confidence="declared",
+        provenance=service_provenance,
+        context_note="Use the DfE URN as the durable establishment identifier; England coverage only.",
+        context_links=common_links,
+        extras={"authoritative_identifier": "DfE URN", "register_role": "national-reference-register"},
+        area_served="England",
+    )
+    builder.add_record(
+        slug=api_slug,
+        title="GIAS read-only API prototype",
+        record_type="API Product",
+        publisher=publisher,
+        publisher_title_value=publisher_name,
+        description=(
+            "DfE prototype for read-only access to GIAS Establishments and Establishment Groups, "
+            "designed to return selected fields as streamed JSON or CSV. DfE is validating the "
+            "prototype and exploring authentication, rate limiting and versioning; no published, "
+            "supported public endpoint is currently documented."
+        ),
+        url="",
+        documentation=GIAS_READ_API_DESIGN_URL,
+        topics=["Education"],
+        protocols=["REST/HTTP", "JSON", "CSV"],
+        tags=["schools", "education-establishments", "gias", "urn", "read-only", "prototype", "beta"],
+        created="2026-03-05",
+        modified="2026-03-05",
+        license_id=OGL_V3_ID,
+        license_title=OGL_V3_TITLE,
+        license_source_id=GIAS_READ_API_DESIGN_URL,
+        license_confidence=0.9,
+        license_basis="provider-declared",
+        access_model="unknown",
+        visibility="public-design-documentation",
+        contract_status="design-history-only",
+        lifecycle="beta-prototype",
+        source_tier="provider_native_api",
+        source_adapter="dfe_gias",
+        confidence="declared",
+        provenance=api_provenance,
+        context_note=(
+            "Prototype evidence only: do not treat this record as a supported public API. "
+            "Use the official GIAS downloads until DfE publishes a supported endpoint."
+        ),
+        context_links=common_links,
+        extras={
+            "support_status": "not-yet-published-or-supported",
+            "api_maturity": "prototype-being-validated",
+            "read_only": True,
+            "preferred_current_access": GIAS_DOWNLOADS_URL,
+        },
+        area_served="England",
+    )
+    builder.add_record(
+        slug=downloads_slug,
+        title="GIAS establishments download",
+        record_type="Data Product",
+        publisher=publisher,
+        publisher_title_value=publisher_name,
+        description=(
+            "Official downloadable GIAS establishments data. This is the supported machine-readable "
+            "alternative while the read-only API remains a prototype; retain and match establishments "
+            "by DfE URN."
+        ),
+        url=GIAS_DOWNLOADS_URL,
+        documentation=GIAS_GUIDANCE_URL,
+        topics=["Education"],
+        protocols=["CSV/download"],
+        tags=["schools", "education-establishments", "gias", "urn", "download", "csv"],
+        license_id=OGL_V3_ID,
+        license_title=OGL_V3_TITLE,
+        license_source_id=GIAS_DOWNLOADS_URL,
+        license_confidence=0.9,
+        license_basis="provider-declared",
+        access_model="anonymous",
+        visibility="public-download",
+        contract_status="download-page",
+        lifecycle="production-supported-alternative",
+        source_tier="data_access_endpoint",
+        source_adapter="dfe_gias",
+        confidence="declared",
+        provenance=downloads_provenance,
+        context_note="Filter local-authority records using DfE LA code 937 for Warwickshire; retain the DfE URN as the stable key.",
+        context_links=common_links,
+        extras={
+            "authoritative_identifier": "DfE URN",
+            "warwickshire_local_authority_code": "937",
+            "alternative_to": api_slug,
+        },
+        area_served="England",
+    )
+    builder.add_resource(
+        dataset_slug=downloads_slug,
+        kind="download-page",
+        title="GIAS downloads",
+        url=GIAS_DOWNLOADS_URL,
+        fmt="CSV/download",
+        provenance=downloads_provenance,
+        description="Official download route for GIAS establishments and related public data.",
+    )
+    builder.add_relationship(record_route(service_slug), record_route(api_slug), "has API prototype")
+    builder.add_relationship(record_route(api_slug), record_route(service_slug), "prototypes access to")
+    builder.add_relationship(record_route(service_slug), record_route(downloads_slug), "provides supported download")
+    builder.add_relationship(record_route(downloads_slug), record_route(service_slug), "downloaded from")
+    builder.add_relationship(record_route(api_slug), record_route(downloads_slug), "has current supported alternative")
+    builder.add_relationship(record_route(downloads_slug), record_route(api_slug), "current supported alternative to")
+
+
 def add_ons_records(
     builder: CorpusBuilder,
     root: dict[str, Any],
@@ -2261,6 +2438,7 @@ def markdown_output_files(corpus: dict[str, Any]) -> dict[Path, str]:
             "- Generated multi-source OKF Explorer descriptor, JSON shards, selected Markdown concepts, provenance-bearing relationships and data-hygiene warnings.",
             "- Canonicalised OGL licence variants, inferred OGL v3.0 for ONS records where source metadata omitted a licence, and inferred OS licence-required status for Ordnance Survey provider-native records; inferred records are counted in `licence_inferred_from_provider_terms`.",
             "- Added DCAT/OpenAPI alignment metadata, standards references and export-readiness gap summaries to records, descriptors and selected Markdown concept pages.",
+            "- Added the DfE Get Information about Schools register, the beta read-only API prototype (not yet a published supported endpoint), and the official GIAS downloads as the current supported alternative.",
             "",
         ]
     )
@@ -2518,6 +2696,7 @@ def build_corpus(
         add_os_records(builder, os_documents, os_root_url)
     if ons_root is not None:
         add_ons_records(builder, ons_root, ons_datasets or [], ons_topics or [], ons_code_lists or [], ons_root_url)
+    add_gias_records(builder)
     add_contract_records(builder)
     add_declared_product_crosslinks(builder)
     builder.attach_resource_ids()
@@ -2816,7 +2995,7 @@ def build_corpus(
         "schema": "okf-explorer-large-corpus.v1",
         "kind": "okf-large-corpus",
         "title": "UK Government APIs OKF",
-        "description": "Large-corpus OKF exemplar generated from GOV.UK API Catalogue, data.gov.uk, Ordnance Survey and ONS public API sources, with API-domain facets, typed relationships, search shards, and operational metadata.",
+        "description": "Large-corpus OKF exemplar generated from GOV.UK API Catalogue, data.gov.uk, Ordnance Survey, ONS and Department for Education GIAS public sources, with API-domain facets, typed relationships, search shards, and operational metadata.",
         "version": "0.4.0",
         "status": "preview",
         "profile": "https://chris-page-gov.github.io/okf-explorer/profile/bundle-wiki/v1/",
@@ -2844,7 +3023,7 @@ def build_corpus(
             "source_sha256": source_hash,
             "license": "Open Government Licence v3.0 unless otherwise stated",
             "source_tiers": ["declared_api_catalogue", "provider_native_api", "data_access_endpoint", "contract_discovery"],
-            "adapters": ["api_gov_uk_catalogue", "data_gov_uk_ckan", "ordnance_survey_api_os_uk", "ons_beta_api", "contract_discovery"],
+            "adapters": ["api_gov_uk_catalogue", "data_gov_uk_ckan", "ordnance_survey_api_os_uk", "ons_beta_api", "dfe_gias", "contract_discovery"],
             "standards": STANDARDS_REFERENCES,
         },
         "vocabulary": {
@@ -2870,7 +3049,7 @@ def build_corpus(
             },
             "okf-api-catalogue.v2": {
                 "mode": "multi-source-derived",
-                "source_adapters": ["api_gov_uk_catalogue", "data_gov_uk_ckan", "ordnance_survey_api_os_uk", "ons_beta_api", "contract_discovery"],
+                "source_adapters": ["api_gov_uk_catalogue", "data_gov_uk_ckan", "ordnance_survey_api_os_uk", "ons_beta_api", "dfe_gias", "contract_discovery"],
                 "secret_values_stored": False,
                 "live_calls_enabled": False,
                 "markdown_record_types": sorted(MARKDOWN_RECORD_TYPES),

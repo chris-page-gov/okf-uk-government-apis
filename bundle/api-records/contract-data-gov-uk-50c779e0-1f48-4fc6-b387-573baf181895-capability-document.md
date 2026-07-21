@@ -2,8 +2,8 @@
 type: "Capability Document"
 title: "BGS World Mineral Statistics service contract"
 description: "Machine-readable or service-description contract inferred for BGS World Mineral Statistics service from public metadata."
-resource: "https://www.data.gov.uk/dataset/bgs-world-mineral-statistics-country-centroids-ogc-wms"
-timestamp: "2026-07-02T17:08:42.674164"
+resource: "https://www.data.gov.uk/dataset/bgs-world-mineral-statistics-service-ogc-wfs"
+timestamp: "2026-07-09T18:22:36.123068"
 tags: "british-geological-survey, geospatial, government-services, population-and-statistics, wms"
 confidence: "observed"
 source_adapter: "contract_discovery"
@@ -32,8 +32,8 @@ Machine-readable or service-description contract inferred for BGS World Mineral 
 - DCAT term: `dcterms:Standard`
 - OpenAPI term: `OpenAPI Description or external contract`
 
-- Endpoint: https://www.data.gov.uk/dataset/bgs-world-mineral-statistics-country-centroids-ogc-wms
-- Documentation: https://www.data.gov.uk/dataset/bgs-world-mineral-statistics-country-centroids-ogc-wms
+- Endpoint: https://www.data.gov.uk/dataset/bgs-world-mineral-statistics-service-ogc-wfs
+- Documentation: https://www.data.gov.uk/dataset/bgs-world-mineral-statistics-service-ogc-wfs
 
 ## Standards Alignment
 

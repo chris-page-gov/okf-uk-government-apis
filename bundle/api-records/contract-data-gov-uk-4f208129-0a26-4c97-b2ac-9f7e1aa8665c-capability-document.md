@@ -1,17 +1,17 @@
 ---
 type: "Capability Document"
-title: "BGS Bedrock and Superficial geology contract"
-description: "Machine-readable or service-description contract inferred for BGS Bedrock and Superficial geology from public metadata."
-resource: "https://www.data.gov.uk/dataset/bgs-bedrock-and-superficial-onshore-1-625k-geology-and-offshore-1-1m-sediments-ogc-wfs-and-ogc-"
-timestamp: "2026-07-02T16:31:33.657178"
+title: "BGS OneGeology Europe geology contract"
+description: "Machine-readable or service-description contract inferred for BGS OneGeology Europe geology from public metadata."
+resource: "https://www.data.gov.uk/dataset/natural-ground-stability-geosure-subset-kilmarknock-and-loughborough-1-50k-ogc-wms"
+timestamp: "2026-07-09T18:33:08.594019"
 tags: "british-geological-survey, geospatial, government-services, wms"
 confidence: "observed"
 source_adapter: "contract_discovery"
 ---
 
-# BGS Bedrock and Superficial geology contract
+# BGS OneGeology Europe geology contract
 
-Machine-readable or service-description contract inferred for BGS Bedrock and Superficial geology from public metadata.
+Machine-readable or service-description contract inferred for BGS OneGeology Europe geology from public metadata.
 
 ## Metadata
 
@@ -32,8 +32,8 @@ Machine-readable or service-description contract inferred for BGS Bedrock and Su
 - DCAT term: `dcterms:Standard`
 - OpenAPI term: `OpenAPI Description or external contract`
 
-- Endpoint: https://www.data.gov.uk/dataset/bgs-bedrock-and-superficial-onshore-1-625k-geology-and-offshore-1-1m-sediments-ogc-wfs-and-ogc-
-- Documentation: https://www.data.gov.uk/dataset/bgs-bedrock-and-superficial-onshore-1-625k-geology-and-offshore-1-1m-sediments-ogc-wfs-and-ogc-
+- Endpoint: https://www.data.gov.uk/dataset/natural-ground-stability-geosure-subset-kilmarknock-and-loughborough-1-50k-ogc-wms
+- Documentation: https://www.data.gov.uk/dataset/natural-ground-stability-geosure-subset-kilmarknock-and-loughborough-1-50k-ogc-wms
 
 ## Standards Alignment
 

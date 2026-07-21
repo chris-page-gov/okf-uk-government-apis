@@ -1,17 +1,17 @@
 ---
 type: "Capability Document"
-title: "BGS OGE bedrock and surface geology contract"
-description: "Machine-readable or service-description contract inferred for BGS OGE bedrock and surface geology from public metadata."
-resource: "https://www.data.gov.uk/dataset/bgs-onegeology-europe-bedrock-and-surface-onshore-1-625k-geology-ogc-wms"
-timestamp: "2026-07-02T16:31:37.567961"
-tags: "british-geological-survey, geospatial, government-services, wms"
+title: "BGS World Mineral Statistics service contract"
+description: "Machine-readable or service-description contract inferred for BGS World Mineral Statistics service from public metadata."
+resource: "https://www.data.gov.uk/dataset/bgs-world-mineral-statistics-service-ogc-wfs"
+timestamp: "2026-07-09T18:22:36.123141"
+tags: "british-geological-survey, geospatial, government-services, population-and-statistics, wms"
 confidence: "observed"
 source_adapter: "contract_discovery"
 ---
 
-# BGS OGE bedrock and surface geology contract
+# BGS World Mineral Statistics service contract
 
-Machine-readable or service-description contract inferred for BGS OGE bedrock and surface geology from public metadata.
+Machine-readable or service-description contract inferred for BGS World Mineral Statistics service from public metadata.
 
 ## Metadata
 
@@ -32,8 +32,8 @@ Machine-readable or service-description contract inferred for BGS OGE bedrock an
 - DCAT term: `dcterms:Standard`
 - OpenAPI term: `OpenAPI Description or external contract`
 
-- Endpoint: https://www.data.gov.uk/dataset/bgs-onegeology-europe-bedrock-and-surface-onshore-1-625k-geology-ogc-wms
-- Documentation: https://www.data.gov.uk/dataset/bgs-onegeology-europe-bedrock-and-surface-onshore-1-625k-geology-ogc-wms
+- Endpoint: https://www.data.gov.uk/dataset/bgs-world-mineral-statistics-service-ogc-wfs
+- Documentation: https://www.data.gov.uk/dataset/bgs-world-mineral-statistics-service-ogc-wfs
 
 ## Standards Alignment
 
