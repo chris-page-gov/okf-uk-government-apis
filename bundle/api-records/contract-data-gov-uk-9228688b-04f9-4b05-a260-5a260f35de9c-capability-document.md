@@ -1,17 +1,17 @@
 ---
 type: "Capability Document"
-title: "BGS Bedrock Geology contract"
-description: "Machine-readable or service-description contract inferred for BGS Bedrock Geology from public metadata."
-resource: "https://www.data.gov.uk/dataset/onegeology-cookbook-exemplar-bedrock-age-onshore-1-625k-geology-ogc-wms"
-timestamp: "2026-07-02T16:31:40.382231"
+title: "BGS_EN_Bedrock_and_Superficial_Geology contract"
+description: "Machine-readable or service-description contract inferred for BGS_EN_Bedrock_and_Superficial_Geology from public metadata."
+resource: "https://www.data.gov.uk/dataset/bgs-bedrock-and-superficial-onshore-1-625k-geology-and-offshore-1-1m-sediments-ogc-wms"
+timestamp: "2026-07-09T17:44:04.108134"
 tags: "british-geological-survey, geospatial, government-services, wms"
 confidence: "observed"
 source_adapter: "contract_discovery"
 ---
 
-# BGS Bedrock Geology contract
+# BGS_EN_Bedrock_and_Superficial_Geology contract
 
-Machine-readable or service-description contract inferred for BGS Bedrock Geology from public metadata.
+Machine-readable or service-description contract inferred for BGS_EN_Bedrock_and_Superficial_Geology from public metadata.
 
 ## Metadata
 
@@ -32,8 +32,8 @@ Machine-readable or service-description contract inferred for BGS Bedrock Geolog
 - DCAT term: `dcterms:Standard`
 - OpenAPI term: `OpenAPI Description or external contract`
 
-- Endpoint: https://www.data.gov.uk/dataset/onegeology-cookbook-exemplar-bedrock-age-onshore-1-625k-geology-ogc-wms
-- Documentation: https://www.data.gov.uk/dataset/onegeology-cookbook-exemplar-bedrock-age-onshore-1-625k-geology-ogc-wms
+- Endpoint: https://www.data.gov.uk/dataset/bgs-bedrock-and-superficial-onshore-1-625k-geology-and-offshore-1-1m-sediments-ogc-wms
+- Documentation: https://www.data.gov.uk/dataset/bgs-bedrock-and-superficial-onshore-1-625k-geology-and-offshore-1-1m-sediments-ogc-wms
 
 ## Standards Alignment
 

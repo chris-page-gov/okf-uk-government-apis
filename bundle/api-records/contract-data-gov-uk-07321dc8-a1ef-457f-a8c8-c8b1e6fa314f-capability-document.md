@@ -1,17 +1,17 @@
 ---
 type: "Capability Document"
-title: "BGS OneGeology Europe geology contract"
-description: "Machine-readable or service-description contract inferred for BGS OneGeology Europe geology from public metadata."
-resource: "https://www.data.gov.uk/dataset/natural-ground-stability-geosure-subset-kilmarknock-and-loughborough-1-50k-ogc-wfs"
-timestamp: "2026-07-02T16:31:35.073250"
+title: "Indicative atlas of radon in Great Britain contract"
+description: "Machine-readable or service-description contract inferred for Indicative atlas of radon in Great Britain from public metadata."
+resource: "https://www.data.gov.uk/dataset/bgs-radon-web-service"
+timestamp: "2026-07-09T17:32:01.325913"
 tags: "british-geological-survey, geospatial, government-services, wms"
 confidence: "observed"
 source_adapter: "contract_discovery"
 ---
 
-# BGS OneGeology Europe geology contract
+# Indicative atlas of radon in Great Britain contract
 
-Machine-readable or service-description contract inferred for BGS OneGeology Europe geology from public metadata.
+Machine-readable or service-description contract inferred for Indicative atlas of radon in Great Britain from public metadata.
 
 ## Metadata
 
@@ -32,8 +32,8 @@ Machine-readable or service-description contract inferred for BGS OneGeology Eur
 - DCAT term: `dcterms:Standard`
 - OpenAPI term: `OpenAPI Description or external contract`
 
-- Endpoint: https://www.data.gov.uk/dataset/natural-ground-stability-geosure-subset-kilmarknock-and-loughborough-1-50k-ogc-wfs
-- Documentation: https://www.data.gov.uk/dataset/natural-ground-stability-geosure-subset-kilmarknock-and-loughborough-1-50k-ogc-wfs
+- Endpoint: https://www.data.gov.uk/dataset/bgs-radon-web-service
+- Documentation: https://www.data.gov.uk/dataset/bgs-radon-web-service
 
 ## Standards Alignment
 

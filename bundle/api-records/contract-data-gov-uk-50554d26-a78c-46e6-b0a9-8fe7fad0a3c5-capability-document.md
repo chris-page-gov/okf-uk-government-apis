@@ -1,17 +1,17 @@
 ---
 type: "Capability Document"
-title: "BGS World Mineral Statistics service contract"
-description: "Machine-readable or service-description contract inferred for BGS World Mineral Statistics service from public metadata."
-resource: "https://www.data.gov.uk/dataset/bgs-world-mineral-statistics-country-centroids-ogc-wms"
-timestamp: "2026-07-02T17:08:42.674080"
-tags: "british-geological-survey, geospatial, government-services, population-and-statistics, wms"
+title: "BGS Bedrock Geology contract"
+description: "Machine-readable or service-description contract inferred for BGS Bedrock Geology from public metadata."
+resource: "https://www.data.gov.uk/dataset/onegeology-cookbook-exemplar-bedrock-age-onshore-1-625k-geology-ogc-wms"
+timestamp: "2026-07-09T17:35:48.974375"
+tags: "british-geological-survey, geospatial, government-services, wms"
 confidence: "observed"
 source_adapter: "contract_discovery"
 ---
 
-# BGS World Mineral Statistics service contract
+# BGS Bedrock Geology contract
 
-Machine-readable or service-description contract inferred for BGS World Mineral Statistics service from public metadata.
+Machine-readable or service-description contract inferred for BGS Bedrock Geology from public metadata.
 
 ## Metadata
 
@@ -32,8 +32,8 @@ Machine-readable or service-description contract inferred for BGS World Mineral 
 - DCAT term: `dcterms:Standard`
 - OpenAPI term: `OpenAPI Description or external contract`
 
-- Endpoint: https://www.data.gov.uk/dataset/bgs-world-mineral-statistics-country-centroids-ogc-wms
-- Documentation: https://www.data.gov.uk/dataset/bgs-world-mineral-statistics-country-centroids-ogc-wms
+- Endpoint: https://www.data.gov.uk/dataset/onegeology-cookbook-exemplar-bedrock-age-onshore-1-625k-geology-ogc-wms
+- Documentation: https://www.data.gov.uk/dataset/onegeology-cookbook-exemplar-bedrock-age-onshore-1-625k-geology-ogc-wms
 
 ## Standards Alignment
 

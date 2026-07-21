@@ -1,17 +1,17 @@
 ---
 type: "Capability Document"
-title: "BGS Bedrock Geology (CGI vocabularies) contract"
-description: "Machine-readable or service-description contract inferred for BGS Bedrock Geology (CGI vocabularies) from public metadata."
-resource: "https://www.data.gov.uk/dataset/bgs-onshore-bedrock-1-625k-geology-ogc-wfs-using-geosciml-with-cgi-vocabularies"
-timestamp: "2026-07-02T17:18:31.878524"
+title: "BGS OGE bedrock and surface geology contract"
+description: "Machine-readable or service-description contract inferred for BGS OGE bedrock and surface geology from public metadata."
+resource: "https://www.data.gov.uk/dataset/bgs-onegeology-europe-bedrock-onshore-1-625k-geology-ogc-wfs"
+timestamp: "2026-07-09T18:27:37.190509"
 tags: "british-geological-survey, geospatial, government-services, wms"
 confidence: "observed"
 source_adapter: "contract_discovery"
 ---
 
-# BGS Bedrock Geology (CGI vocabularies) contract
+# BGS OGE bedrock and surface geology contract
 
-Machine-readable or service-description contract inferred for BGS Bedrock Geology (CGI vocabularies) from public metadata.
+Machine-readable or service-description contract inferred for BGS OGE bedrock and surface geology from public metadata.
 
 ## Metadata
 
@@ -32,8 +32,8 @@ Machine-readable or service-description contract inferred for BGS Bedrock Geolog
 - DCAT term: `dcterms:Standard`
 - OpenAPI term: `OpenAPI Description or external contract`
 
-- Endpoint: https://www.data.gov.uk/dataset/bgs-onshore-bedrock-1-625k-geology-ogc-wfs-using-geosciml-with-cgi-vocabularies
-- Documentation: https://www.data.gov.uk/dataset/bgs-onshore-bedrock-1-625k-geology-ogc-wfs-using-geosciml-with-cgi-vocabularies
+- Endpoint: https://www.data.gov.uk/dataset/bgs-onegeology-europe-bedrock-onshore-1-625k-geology-ogc-wfs
+- Documentation: https://www.data.gov.uk/dataset/bgs-onegeology-europe-bedrock-onshore-1-625k-geology-ogc-wfs
 
 ## Standards Alignment
 
