@@ -3,8 +3,10 @@ type: "API Product"
 title: "Directory of support services"
 description: "The Southampton directory API is an Open Referral UK standard API of support services relevant to the city of Southampton, including adult social care, early years and childcare and SEND local offer services."
 resource: "https://directory.southampton.gov.uk/api/services"
-timestamp: "2023-02-20"
-tags: "health-and-care, rest-http, scc"
+tags: ["health-and-care", "rest-http", "scc"]
+generated: { by: process:uk-government-api-okf-builder, at: "2026-07-16T00:00:00Z" }
+status: draft
+sources: [{ id: "api_gov_uk_catalogue", resource: "https://raw.githubusercontent.com/co-cddo/api-catalogue/main/data/catalogue.csv", title: "GOV.UK API Catalogue CSV", last_modified: "2023-02-20" }]
 confidence: "declared"
 source_adapter: "api_gov_uk_catalogue"
 ---
@@ -43,7 +45,7 @@ This generated record is standards-alignable, not standards-conformant by itself
 - OpenAPI: `OpenAPI Object`; export status `service-stub-with-gaps`.
 - OpenAPI security scheme: `unknown`.
 - OpenAPI missing requirements: `components.securitySchemes`, `externalDocs.url`, `info.license`
-- Crosswalk: [OKF Standards Crosswalk](../../docs/okf-standards-crosswalk.md)
+- Crosswalk: [OKF Standards Crosswalk](../docs/okf-standards-crosswalk.md)
 
 ## Credential Requirements
 

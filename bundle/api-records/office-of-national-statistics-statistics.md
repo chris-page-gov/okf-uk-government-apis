@@ -3,8 +3,10 @@ type: "API Product"
 title: "Statistics"
 description: "The Office for National Statistics API makes datasets and other data available programmatically using HTTP. It allows you to filter datasets and directly access specific data points. The API is open and unrestricted - no API keys are required, so you can start using it immediately. This API is currently in Beta and still being developed. Please be aware that as a result of this there may occasionally be breaking changes as we enhance functionality and respond to feedback."
 resource: "https://api.beta.ons.gov.uk/v1"
-timestamp: "2020-08-24"
-tags: "office-of-national-statistics, population-and-statistics, rest-http"
+tags: ["office-of-national-statistics", "population-and-statistics", "rest-http"]
+generated: { by: process:uk-government-api-okf-builder, at: "2026-07-16T00:00:00Z" }
+status: draft
+sources: [{ id: "api_gov_uk_catalogue", resource: "https://raw.githubusercontent.com/co-cddo/api-catalogue/main/data/catalogue.csv", title: "GOV.UK API Catalogue CSV", last_modified: "2020-08-24" }]
 confidence: "declared"
 source_adapter: "api_gov_uk_catalogue"
 ---
@@ -44,7 +46,7 @@ This generated record is standards-alignable, not standards-conformant by itself
 - OpenAPI: `OpenAPI Object`; export status `service-stub-ready`.
 - OpenAPI security scheme: `none`.
 - OpenAPI missing requirements: none recorded
-- Crosswalk: [OKF Standards Crosswalk](../../docs/okf-standards-crosswalk.md)
+- Crosswalk: [OKF Standards Crosswalk](../docs/okf-standards-crosswalk.md)
 
 ## Credential Requirements
 

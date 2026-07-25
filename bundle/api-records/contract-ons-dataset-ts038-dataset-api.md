@@ -3,8 +3,10 @@ type: "Contract"
 title: "Disability contract"
 description: "Machine-readable or service-description contract inferred for Disability from public metadata."
 resource: "https://api.beta.ons.gov.uk/v1/datasets/TS038"
-timestamp: "2023-03-28T08:30:10.001Z"
-tags: "health-and-care, office-for-national-statistics, population-and-statistics, rest-http"
+tags: ["health-and-care", "office-for-national-statistics", "population-and-statistics", "rest-http"]
+generated: { by: process:uk-government-api-okf-builder, at: "2026-07-16T00:00:00Z" }
+status: draft
+sources: [{ id: "contract_discovery", resource: "https://api.beta.ons.gov.uk/v1/datasets", title: "Contract discovery from harvested API metadata", last_modified: "2023-03-28" }]
 confidence: "observed"
 source_adapter: "contract_discovery"
 ---
@@ -44,7 +46,7 @@ This generated record is standards-alignable, not standards-conformant by itself
 - OpenAPI: `OpenAPI Description or external contract`; export status `contract-reference`.
 - OpenAPI security scheme: `none`.
 - OpenAPI missing requirements: none recorded
-- Crosswalk: [OKF Standards Crosswalk](../../docs/okf-standards-crosswalk.md)
+- Crosswalk: [OKF Standards Crosswalk](../docs/okf-standards-crosswalk.md)
 
 ## Credential Requirements
 

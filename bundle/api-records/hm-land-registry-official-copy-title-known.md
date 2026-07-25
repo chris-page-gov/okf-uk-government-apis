@@ -3,8 +3,10 @@ type: "API Product"
 title: "Official Copy Title Known"
 description: "To use this service you will need a title number for a property or area of land. When you have these details, you can order: - an official copy of the register - an official copy of the title plan - an official copy of a conveyance referred to on the register - an official copy of a deed referred to on the register - an official copy of the lease If you’re a software developer: Use this document to integrate data into your system. Poll Request Service URL for production environment: https://businessgateway.landregistry.gov.uk/b2b/BGSoapEngine/OC1TitleKnownV2_1PollRequestWebService?wsdl For test environment endpoints replace https://businessgateway.landregistry.gov.uk/b2b/BGSoapEngine with https://bgtest.landregistry.gov.uk/b2b/ECBG_StubService"
 resource: "https://businessgateway.landregistry.gov.uk/b2b/BGSoapEngine/OfficialCopyTitleKnownV2_1WebService?wsdl"
-timestamp: "2024-01-16"
-tags: "environment, government-services, hm-land-registry, planning-and-property, soap-wsdl"
+tags: ["environment", "government-services", "hm-land-registry", "planning-and-property", "soap-wsdl"]
+generated: { by: process:uk-government-api-okf-builder, at: "2026-07-16T00:00:00Z" }
+status: draft
+sources: [{ id: "api_gov_uk_catalogue", resource: "https://raw.githubusercontent.com/co-cddo/api-catalogue/main/data/catalogue.csv", title: "GOV.UK API Catalogue CSV", last_modified: "2024-01-16" }]
 confidence: "declared"
 source_adapter: "api_gov_uk_catalogue"
 ---
@@ -44,7 +46,7 @@ This generated record is standards-alignable, not standards-conformant by itself
 - OpenAPI: `OpenAPI Object`; export status `service-stub-with-gaps`.
 - OpenAPI security scheme: `metadata-only`.
 - OpenAPI missing requirements: `info.license`
-- Crosswalk: [OKF Standards Crosswalk](../../docs/okf-standards-crosswalk.md)
+- Crosswalk: [OKF Standards Crosswalk](../docs/okf-standards-crosswalk.md)
 
 ## Credential Requirements
 

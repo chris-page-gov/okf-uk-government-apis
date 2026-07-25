@@ -3,8 +3,10 @@ type: "API Product"
 title: "COVID-19 Test Results - FHIR API"
 description: "Use this API to access a patient’s coronavirus (COVID-19) test results history. You can: - get a patient's COVID-19 test history, based on their NHS number with an optional specific date rangeYou cannot currently use this API to: - get details of other types of testYou get the following data: - COVID-19 test event detailsData availability, timing and quality All test records are verified to ensure the NHS number is correct before making them available via the API. In most cases this is automatic, and the record is available within 48 hours of the test event, sometimes sooner. In a very small number of cases, we are unable to verify the NHS number, and we do not make the test record available at all."
 resource: "https://digital.nhs.uk/developer/api-catalogue/covid-19-test-results-fhir"
-timestamp: "2024-04-23"
-tags: "fhir, health-and-care, nhs-digital"
+tags: ["fhir", "health-and-care", "nhs-digital"]
+generated: { by: process:uk-government-api-okf-builder, at: "2026-07-16T00:00:00Z" }
+status: draft
+sources: [{ id: "api_gov_uk_catalogue", resource: "https://raw.githubusercontent.com/co-cddo/api-catalogue/main/data/catalogue.csv", title: "GOV.UK API Catalogue CSV", last_modified: "2024-04-23" }]
 confidence: "declared"
 source_adapter: "api_gov_uk_catalogue"
 ---
@@ -44,7 +46,7 @@ This generated record is standards-alignable, not standards-conformant by itself
 - OpenAPI: `OpenAPI Object`; export status `service-stub-with-gaps`.
 - OpenAPI security scheme: `unknown`.
 - OpenAPI missing requirements: `components.securitySchemes`, `info.license`
-- Crosswalk: [OKF Standards Crosswalk](../../docs/okf-standards-crosswalk.md)
+- Crosswalk: [OKF Standards Crosswalk](../docs/okf-standards-crosswalk.md)
 
 ## Credential Requirements
 

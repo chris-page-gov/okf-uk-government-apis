@@ -3,8 +3,10 @@ type: "API Product"
 title: "National Public Transport Access Nodes (NaPTAN) and National Public Transport Gazetteer (NPTG) API"
 description: "The NaPTAN & NPTG API can be used to automatically download transport, gazetteer and locality data. The API has three endpoints. The NaPTAN API allows you to download data either by ATCOAreaCode, a group of ATCOAreaCodes or the whole national dataset. The NPTG API allows you to download national gazetteer dataset. The NPTG localities API allows you to download national localities' dataset. The NaPTAN & NPTG data are available in either XML or CSV format."
 resource: "https://naptan.api.dft.gov.uk/swagger/index.html"
-timestamp: "2022-01-07"
-tags: "department-for-transport, geospatial, population-and-statistics, rest-http, transport"
+tags: ["department-for-transport", "geospatial", "population-and-statistics", "rest-http", "transport"]
+generated: { by: process:uk-government-api-okf-builder, at: "2026-07-16T00:00:00Z" }
+status: draft
+sources: [{ id: "api_gov_uk_catalogue", resource: "https://raw.githubusercontent.com/co-cddo/api-catalogue/main/data/catalogue.csv", title: "GOV.UK API Catalogue CSV", last_modified: "2022-01-07" }]
 confidence: "declared"
 source_adapter: "api_gov_uk_catalogue"
 ---
@@ -44,7 +46,7 @@ This generated record is standards-alignable, not standards-conformant by itself
 - OpenAPI: `OpenAPI Object`; export status `service-stub-with-gaps`.
 - OpenAPI security scheme: `unknown`.
 - OpenAPI missing requirements: `components.securitySchemes`, `info.license`
-- Crosswalk: [OKF Standards Crosswalk](../../docs/okf-standards-crosswalk.md)
+- Crosswalk: [OKF Standards Crosswalk](../docs/okf-standards-crosswalk.md)
 
 ## Credential Requirements
 

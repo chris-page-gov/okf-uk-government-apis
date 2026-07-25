@@ -3,8 +3,10 @@ type: "API Product"
 title: "GP Connect (Patient Facing) User Permissions API"
 description: "Use this API to list and manage the permissions a patient has to their medical record and a selection of services provided at their GP practice. You can: - get a patient's permissions- request to update a patient's permissions to a higher levelYou cannot: - request to update a patient's permissions to a lower levelTo use this API, the end user must be a patient who is: - registered with the GP practice- registered with NHS login to P9 identity verification levelThis API allows you to manage the permissions for: - appointments- prescriptions- medical recordThis API is designed to respect the policy changes made in order to- allow patients to access their future medical record entries.For more details, see- access to patient records through the NHS App."
 resource: "https://digital.nhs.uk/developer/api-catalogue/gp-connect-patient-facing-user-permissions"
-timestamp: "2024-04-23"
-tags: "health-and-care, nhs-digital, rest-http"
+tags: ["health-and-care", "nhs-digital", "rest-http"]
+generated: { by: process:uk-government-api-okf-builder, at: "2026-07-16T00:00:00Z" }
+status: draft
+sources: [{ id: "api_gov_uk_catalogue", resource: "https://raw.githubusercontent.com/co-cddo/api-catalogue/main/data/catalogue.csv", title: "GOV.UK API Catalogue CSV", last_modified: "2024-04-23" }]
 confidence: "declared"
 source_adapter: "api_gov_uk_catalogue"
 ---
@@ -44,7 +46,7 @@ This generated record is standards-alignable, not standards-conformant by itself
 - OpenAPI: `OpenAPI Object`; export status `service-stub-with-gaps`.
 - OpenAPI security scheme: `metadata-only`.
 - OpenAPI missing requirements: `info.license`
-- Crosswalk: [OKF Standards Crosswalk](../../docs/okf-standards-crosswalk.md)
+- Crosswalk: [OKF Standards Crosswalk](../docs/okf-standards-crosswalk.md)
 
 ## Credential Requirements
 

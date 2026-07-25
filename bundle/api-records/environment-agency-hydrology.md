@@ -3,8 +3,10 @@ type: "API Product"
 title: "Hydrology"
 description: "The Hydrology API provides access to historic water flow information. It complements the near real-time data provided under `/flood-monitoring` in that it provides access to a long term archive of quality checked and qualified data. The API and data model for the `/hydrology` API differs slightly from that under `/flood-monitoring` due to intrinsic differences (for example presence of quality flags on each reading for qualified data), modelling changes (for example adding links to [SOSA/SSN](https://www.w3.org/TR/vocab-ssn/) terms) and technology differences. In addition Environment Agency are moving to using new identifiers for monitoring stations based on GUIDs and the station URIs provided by this API use these new standards. For convenience, the stations shown here provide annotations showing the old `stationReference` notations (as well as the River Levels on the Internet and WISKI notations) and provide `sameAs` links to the equivalent `/flood-monitoring` stations. Please visit the [Defra Data Services Platform Support](https://environment.data.gov.uk/support) to let us know about any issues or to ask questions."
 resource: "https://environment.data.gov.uk/hydrology/landing"
-timestamp: "2020-08-26"
-tags: "environment, environment-agency, government-services, rest-http"
+tags: ["environment", "environment-agency", "government-services", "rest-http"]
+generated: { by: process:uk-government-api-okf-builder, at: "2026-07-16T00:00:00Z" }
+status: draft
+sources: [{ id: "api_gov_uk_catalogue", resource: "https://raw.githubusercontent.com/co-cddo/api-catalogue/main/data/catalogue.csv", title: "GOV.UK API Catalogue CSV", last_modified: "2020-08-26" }]
 confidence: "declared"
 source_adapter: "api_gov_uk_catalogue"
 ---
@@ -44,7 +46,7 @@ This generated record is standards-alignable, not standards-conformant by itself
 - OpenAPI: `OpenAPI Object`; export status `service-stub-with-gaps`.
 - OpenAPI security scheme: `unknown`.
 - OpenAPI missing requirements: `components.securitySchemes`, `info.license`
-- Crosswalk: [OKF Standards Crosswalk](../../docs/okf-standards-crosswalk.md)
+- Crosswalk: [OKF Standards Crosswalk](../docs/okf-standards-crosswalk.md)
 
 ## Credential Requirements
 

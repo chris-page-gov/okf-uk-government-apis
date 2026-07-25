@@ -3,8 +3,10 @@ type: "API Product"
 title: "Estimated Completion Date"
 description: "Overview The Estimated Completion Date (ECD) is a date by which the application is likely to be completed. It is not based on the individual application but is an estimate of when the majority (90%) of that application type will be completed. In order to retain parity with our Portal customer experience, we require that anyone integrating with this service refer to the estimated completion timeframes which can be found at https://www.gov.uk/guidance/hm-land-registry-estimated-completion-timeframes. We also see benefit in end users being familiar with the above URL, the insights provided are likely to reduce the need for customer contact. Therefore we also ask that you make your customers aware of the above URL. The ECD: Is calculated on and from the day an application is received by HMLR. May take up to an hour to be displayed after application submission. Is updated every 30 calendar days until the application is completed or cancelled. Is updated if HMLR correspondence is issued (first item of correspondence only). For test endpoint, replace https://businessgateway.landregistry.gov.uk/bg2 with https://bgtest.landregistry.gov.uk/bg2test"
 resource: "https://businessgateway.landregistry.gov.uk/bg2/api/v1/applications/{application_reference}/estimate-completion-date"
-timestamp: "2023-10-12"
-tags: "government-services, hm-land-registry, planning-and-property, rest-http"
+tags: ["government-services", "hm-land-registry", "planning-and-property", "rest-http"]
+generated: { by: process:uk-government-api-okf-builder, at: "2026-07-16T00:00:00Z" }
+status: draft
+sources: [{ id: "api_gov_uk_catalogue", resource: "https://raw.githubusercontent.com/co-cddo/api-catalogue/main/data/catalogue.csv", title: "GOV.UK API Catalogue CSV", last_modified: "2023-10-12" }]
 confidence: "declared"
 source_adapter: "api_gov_uk_catalogue"
 ---
@@ -44,7 +46,7 @@ This generated record is standards-alignable, not standards-conformant by itself
 - OpenAPI: `OpenAPI Object`; export status `service-stub-with-gaps`.
 - OpenAPI security scheme: `unknown`.
 - OpenAPI missing requirements: `components.securitySchemes`, `info.license`
-- Crosswalk: [OKF Standards Crosswalk](../../docs/okf-standards-crosswalk.md)
+- Crosswalk: [OKF Standards Crosswalk](../docs/okf-standards-crosswalk.md)
 
 ## Credential Requirements
 

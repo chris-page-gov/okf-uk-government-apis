@@ -3,8 +3,10 @@ type: "API Product"
 title: "Summary Care Record - HL7 V3 API"
 description: "Use this API to access a patient's Summary Care Record (SCR) - a national electronic record of important patient information, created from GP summaries of medical records. SCRs can be seen and used by authorised staff in other areas of the health and care system involved in the patient's direct care.Summary Care Record was previously known as Personal Spine Information Service (PSIS).Also use this API to access the Access Control Service (ACS) - which manages consent to share information for SCR. GP systems must check consent to share before sharing a patient's Summary Care Record.You can:- create or add to a patient's Summary Care Record - as a GP system capable of uploading GP summaries- retrieve a patient's Summary Care Record- set and check consent to share information - via the Access Control Service (ACS)You cannot use this API to update GP medical records.### Spine Mini Service Provider (SMSP) optionsThere are also commercially available products which give easier access to SCR, known as Spine Mini Service Providers (SMSPs). These and other conforming software products are listed in our Conformance Catalogue.If you are interested in becoming a provider of one of these produ…"
 resource: "https://digital.nhs.uk/developer/api-catalogue/summary-care-record-hl7-v3"
-timestamp: "2024-04-23"
-tags: "government-services, health-and-care, hl7-v3, nhs-digital"
+tags: ["government-services", "health-and-care", "hl7-v3", "nhs-digital"]
+generated: { by: process:uk-government-api-okf-builder, at: "2026-07-16T00:00:00Z" }
+status: draft
+sources: [{ id: "api_gov_uk_catalogue", resource: "https://raw.githubusercontent.com/co-cddo/api-catalogue/main/data/catalogue.csv", title: "GOV.UK API Catalogue CSV", last_modified: "2024-04-23" }]
 confidence: "declared"
 source_adapter: "api_gov_uk_catalogue"
 ---
@@ -44,7 +46,7 @@ This generated record is standards-alignable, not standards-conformant by itself
 - OpenAPI: `OpenAPI Object`; export status `service-stub-with-gaps`.
 - OpenAPI security scheme: `unknown`.
 - OpenAPI missing requirements: `components.securitySchemes`, `info.license`
-- Crosswalk: [OKF Standards Crosswalk](../../docs/okf-standards-crosswalk.md)
+- Crosswalk: [OKF Standards Crosswalk](../docs/okf-standards-crosswalk.md)
 
 ## Credential Requirements
 

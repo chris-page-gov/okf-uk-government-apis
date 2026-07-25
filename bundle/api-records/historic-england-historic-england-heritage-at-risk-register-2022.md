@@ -3,8 +3,10 @@ type: "API Product"
 title: "Historic England Heritage at Risk Register 2022"
 description: "Data from the annual Heritage at Risk Register for 2022 Heritage at Risk provides an understanding of the overall state of England’s heritage assets. Every year Historic England updates the Heritage at Risk Register. The end result is a dynamic picture of the sites most at risk and most in need of safeguarding for the future. Assets may be assessed by using multiple methodologies so may appear multiple times. For example, a scheduled monument could be made up of archaeological remains and a standing structure. In this instance, the remains would be assessed using the archaeological risk assessment, and the structure using the buildings or structures assessment. Conservation Area information is not complete due to availability of Conservation Area spatial data. This data and its spatial depictions are purely indicative and are not a definitive representation. Users are advised to seek clarification and confirmation on risk assessments from Historic England."
 resource: "https://services-eu1.arcgis.com/ZOdPfBS3aqqDYPUQ/arcgis/rest/services/Historic_England_Heritage_at_Risk_Register_2022/FeatureServer"
-timestamp: "2023-10-11"
-tags: "arcgis-rest, historic-england, planning-and-property"
+tags: ["arcgis-rest", "historic-england", "planning-and-property"]
+generated: { by: process:uk-government-api-okf-builder, at: "2026-07-16T00:00:00Z" }
+status: draft
+sources: [{ id: "api_gov_uk_catalogue", resource: "https://raw.githubusercontent.com/co-cddo/api-catalogue/main/data/catalogue.csv", title: "GOV.UK API Catalogue CSV", last_modified: "2023-10-11" }]
 confidence: "declared"
 source_adapter: "api_gov_uk_catalogue"
 ---
@@ -43,7 +45,7 @@ This generated record is standards-alignable, not standards-conformant by itself
 - OpenAPI: `OpenAPI Object`; export status `service-stub-with-gaps`.
 - OpenAPI security scheme: `metadata-only`.
 - OpenAPI missing requirements: `externalDocs.url`
-- Crosswalk: [OKF Standards Crosswalk](../../docs/okf-standards-crosswalk.md)
+- Crosswalk: [OKF Standards Crosswalk](../docs/okf-standards-crosswalk.md)
 
 ## Credential Requirements
 

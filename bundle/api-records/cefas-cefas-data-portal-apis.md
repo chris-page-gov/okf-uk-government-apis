@@ -3,8 +3,10 @@ type: "API Product"
 title: "Cefas Data Portal APIs"
 description: "A suite of APIs which allow external interaction with all metadata and data published via our data portal (https://data.cefas.co.uk/), the portal covers many marine science themes including fisheries, biodiversity, environmental monitoring and aquaculture. Our metadata follow the MEDIN standard (https://medin.org.uk/medin-discovery-metadata-standard) which is compatible with UK GEMINI and INSPIRE. Our datasets do not currently follow one particular data standard. We are currently undertaking a pilot project which will implement the OGC EDR standard (https://ogcapi.ogc.org/edr/) to a subset of our data."
 resource: "https://data-api.cefas.co.uk/"
-timestamp: "2022-01-31"
-tags: "cefas, geospatial, rest-http"
+tags: ["cefas", "geospatial", "rest-http"]
+generated: { by: process:uk-government-api-okf-builder, at: "2026-07-16T00:00:00Z" }
+status: draft
+sources: [{ id: "api_gov_uk_catalogue", resource: "https://raw.githubusercontent.com/co-cddo/api-catalogue/main/data/catalogue.csv", title: "GOV.UK API Catalogue CSV", last_modified: "2022-01-31" }]
 confidence: "declared"
 source_adapter: "api_gov_uk_catalogue"
 ---
@@ -44,7 +46,7 @@ This generated record is standards-alignable, not standards-conformant by itself
 - OpenAPI: `OpenAPI Object`; export status `service-stub-with-gaps`.
 - OpenAPI security scheme: `unknown`.
 - OpenAPI missing requirements: `components.securitySchemes`, `info.license`
-- Crosswalk: [OKF Standards Crosswalk](../../docs/okf-standards-crosswalk.md)
+- Crosswalk: [OKF Standards Crosswalk](../docs/okf-standards-crosswalk.md)
 
 ## Credential Requirements
 

@@ -3,8 +3,10 @@ type: "Contract"
 title: "Local authority ageing statistics, household projections for older people contract"
 description: "Machine-readable or service-description contract inferred for Local authority ageing statistics, household projections for older people from public metadata."
 resource: "https://api.beta.ons.gov.uk/v1/datasets/projections-older-people-in-single-households"
-timestamp: "2020-11-11T16:34:11.057Z"
-tags: "geospatial, office-for-national-statistics, population-and-statistics, rest-http"
+tags: ["geospatial", "office-for-national-statistics", "population-and-statistics", "rest-http"]
+generated: { by: process:uk-government-api-okf-builder, at: "2026-07-16T00:00:00Z" }
+status: draft
+sources: [{ id: "contract_discovery", resource: "https://api.beta.ons.gov.uk/v1/datasets", title: "Contract discovery from harvested API metadata", last_modified: "2020-11-11" }]
 confidence: "observed"
 source_adapter: "contract_discovery"
 ---
@@ -44,7 +46,7 @@ This generated record is standards-alignable, not standards-conformant by itself
 - OpenAPI: `OpenAPI Description or external contract`; export status `contract-reference`.
 - OpenAPI security scheme: `none`.
 - OpenAPI missing requirements: none recorded
-- Crosswalk: [OKF Standards Crosswalk](../../docs/okf-standards-crosswalk.md)
+- Crosswalk: [OKF Standards Crosswalk](../docs/okf-standards-crosswalk.md)
 
 ## Credential Requirements
 

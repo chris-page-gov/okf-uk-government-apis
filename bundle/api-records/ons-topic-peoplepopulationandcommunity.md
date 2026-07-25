@@ -3,8 +3,10 @@ type: "Schema"
 title: "People, population and community"
 description: "People living in the UK, changes in the population, how we spend our money, and data on crime, relationships, health and religion. These statistics help us build a detailed picture of how we live."
 resource: "https://api.beta.ons.gov.uk/v1/topics/9581"
-timestamp: ""
-tags: "office-for-national-statistics, population-and-statistics, rest-http"
+tags: ["office-for-national-statistics", "population-and-statistics", "rest-http"]
+generated: { by: process:uk-government-api-okf-builder, at: "2026-07-16T00:00:00Z" }
+status: draft
+sources: [{ id: "ons_beta_api", resource: "https://api.beta.ons.gov.uk/v1", title: "ONS Beta API" }]
 confidence: "declared"
 source_adapter: "ons_beta_api"
 ---
@@ -44,7 +46,7 @@ This generated record is standards-alignable, not standards-conformant by itself
 - OpenAPI: `Schema Object`; export status `schema-reference`.
 - OpenAPI security scheme: `none`.
 - OpenAPI missing requirements: none recorded
-- Crosswalk: [OKF Standards Crosswalk](../../docs/okf-standards-crosswalk.md)
+- Crosswalk: [OKF Standards Crosswalk](../docs/okf-standards-crosswalk.md)
 
 ## Credential Requirements
 

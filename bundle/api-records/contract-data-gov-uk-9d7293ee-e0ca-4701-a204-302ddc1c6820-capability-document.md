@@ -3,8 +3,10 @@ type: "Capability Document"
 title: "Areas of current aquaculture potential defining boundary of policy AQ1 in the East Inshore and East Offshore marine plans Web Mapping Service (WMS) WMS contract"
 description: "Machine-readable or service-description contract inferred for Areas of current aquaculture potential defining boundary of policy AQ1 in the East Inshore and East Offshore marine plans Web Mapping Service (WMS) WMS from public metadata."
 resource: "https://www.data.gov.uk/dataset/areas-of-current-aquaculture-potential-defining-boundary-of-policy-aq1-in-the-east-inshore-and-1"
-timestamp: "2016-04-20T17:23:18.867212"
-tags: "environment, geospatial, government-services, marine-management-organisation, wms"
+tags: ["environment", "geospatial", "government-services", "marine-management-organisation", "wms"]
+generated: { by: process:uk-government-api-okf-builder, at: "2026-07-16T00:00:00Z" }
+status: draft
+sources: [{ id: "contract_discovery", resource: "https://ckan.publishing.service.gov.uk/api/3/action/package_search?fq=res_format:(\"WMS\" OR \"WFS\" OR \"WMTS\" OR \"WCS\" OR \"OGC API - Features\" OR \"OGC WFS\" OR \"OGC WMS\" OR \"ogc wfs\" OR \"ogc wms\" OR \"ArcGIS GeoServices REST API\" OR \"arcgis geoservices rest api\" OR \"Esri REST\" OR \"ESRI REST API\" OR \"ESRI Rest API\" OR \"esri rest api\" OR \"SPARQL\" OR \"API\" OR \"api\")", title: "Contract discovery from harvested API metadata", last_modified: "2016-04-20" }]
 confidence: "observed"
 source_adapter: "contract_discovery"
 ---
@@ -44,7 +46,7 @@ This generated record is standards-alignable, not standards-conformant by itself
 - OpenAPI: `OpenAPI Description or external contract`; export status `contract-reference`.
 - OpenAPI security scheme: `none`.
 - OpenAPI missing requirements: none recorded
-- Crosswalk: [OKF Standards Crosswalk](../../docs/okf-standards-crosswalk.md)
+- Crosswalk: [OKF Standards Crosswalk](../docs/okf-standards-crosswalk.md)
 
 ## Credential Requirements
 

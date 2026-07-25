@@ -3,8 +3,10 @@ type: "API Product"
 title: "UK Global Tariff (measures as defined)"
 description: "The UK Global Tariff (UKGT) is the UK's first independent tariff policy which replaced the EU Common External Tariff (CET) which applied until 31 December 2020. This tariff entered into force on 1 January 2021. The UKGT applies to all goods imported into the UK. It lists preferential measures where the UK has entered into a new trade agreement or arrangement with a third country or territory. For other countries and territories, it shows the UK's Most Favoured Nation (MFN) tariffs. The dataset does not include other import duties (such as VAT) and details of quota volumes. This table (one of 3 available) is a smaller table showing where in the commodity code hierarchy each measure is defined. This includes commodity codes which are not declarable. Codes are organised in a hierarchy with the 'indent' column identifying the depth of the code. Measures apply to all of the codes in the hierarchy below where they are defined. The tariffs in this dataset are a representation of future events and as such are subject to change. You can use this data when you need to make a calculation against the new duties that apply in the UK. You cannot use this data to calculate the total cost of an i…"
 resource: "https://data.api.trade.gov.uk/v1/datasets/uk-tariff-2021-01-01/versions/latest/tables/measures-as-defined/data?format=csv&download"
-timestamp: "2022-02-15"
-tags: "business-and-economy, department-for-business-and-trade, population-and-statistics, rest-http, tax-and-customs"
+tags: ["business-and-economy", "department-for-business-and-trade", "population-and-statistics", "rest-http", "tax-and-customs"]
+generated: { by: process:uk-government-api-okf-builder, at: "2026-07-16T00:00:00Z" }
+status: draft
+sources: [{ id: "api_gov_uk_catalogue", resource: "https://raw.githubusercontent.com/co-cddo/api-catalogue/main/data/catalogue.csv", title: "GOV.UK API Catalogue CSV", last_modified: "2022-02-15" }]
 confidence: "declared"
 source_adapter: "api_gov_uk_catalogue"
 ---
@@ -44,7 +46,7 @@ This generated record is standards-alignable, not standards-conformant by itself
 - OpenAPI: `OpenAPI Object`; export status `service-stub-with-gaps`.
 - OpenAPI security scheme: `unknown`.
 - OpenAPI missing requirements: `components.securitySchemes`
-- Crosswalk: [OKF Standards Crosswalk](../../docs/okf-standards-crosswalk.md)
+- Crosswalk: [OKF Standards Crosswalk](../docs/okf-standards-crosswalk.md)
 
 ## Credential Requirements
 

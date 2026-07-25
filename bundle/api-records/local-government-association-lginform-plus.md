@@ -3,8 +3,10 @@ type: "API Product"
 title: "LGInform Plus"
 description: "A subscription service with access to 2 billion+ metric values for English areas drawn from approximately 50 organisations publishing metrics that describe local authorities and their component areas. Details of subscriptions can be found at [https://lginformplus.org](https://lginformplus.org). Developer tool can be found at [https://home.esd.org.uk/developers](https://home.esd.org.uk/developers). The API also supports queries on the taxonomies and mappings published on the [LG Inform Plus website](https://standards.esd.org.uk/)."
 resource: "https://webservices.esd.org.uk/"
-timestamp: "2025-03-20"
-tags: "government-services, local-government-association, rest-http"
+tags: ["government-services", "local-government-association", "rest-http"]
+generated: { by: process:uk-government-api-okf-builder, at: "2026-07-16T00:00:00Z" }
+status: draft
+sources: [{ id: "api_gov_uk_catalogue", resource: "https://raw.githubusercontent.com/co-cddo/api-catalogue/main/data/catalogue.csv", title: "GOV.UK API Catalogue CSV", last_modified: "2025-03-20" }]
 confidence: "declared"
 source_adapter: "api_gov_uk_catalogue"
 ---
@@ -44,7 +46,7 @@ This generated record is standards-alignable, not standards-conformant by itself
 - OpenAPI: `OpenAPI Object`; export status `service-stub-with-gaps`.
 - OpenAPI security scheme: `unknown`.
 - OpenAPI missing requirements: `components.securitySchemes`
-- Crosswalk: [OKF Standards Crosswalk](../../docs/okf-standards-crosswalk.md)
+- Crosswalk: [OKF Standards Crosswalk](../docs/okf-standards-crosswalk.md)
 
 ## Credential Requirements
 

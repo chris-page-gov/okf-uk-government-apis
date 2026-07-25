@@ -3,8 +3,10 @@ type: "API Product"
 title: "e-Referral Service - FHIR API"
 description: "Use this API to create paperless referrals from primary to secondary care with the e-Referral Service (e-RS). As a primary care referrer, you can: - create a new e-referral- search for relevant patient services to create a shortlist- access existing e-referrals- create a triage request for the Referral Assessment Service (RAS)- upload and manage a patient letter or attachments, linking them to a referral- retrieve appointment slots and book appointments- defer a booking to a provider if an appointment slot is unavailableAs a secondary care provider, you can: - access referrals as a worklist- retrieve non-clinical information (meta-data) about the referral- retrieve attachments which are linked to a referral or triage (RAS) request- retrieve clinical information which has been provided by a referrer- accept or reject a referral request- retrieve Advice & Guidance (A&G) conversations and send responses- convert Advice & Guidance (A&G) conversations into a referralYou cannot use this API to: - get patient details – instead, use the Personal Demographic Service (PDS)You can access the following data: - referral attachments- referral letters- appointment slots- worklists for referral r…"
 resource: "https://digital.nhs.uk/developer/api-catalogue/e-referral-service-fhir"
-timestamp: "2024-04-23"
-tags: "fhir, government-services, health-and-care, nhs-digital"
+tags: ["fhir", "government-services", "health-and-care", "nhs-digital"]
+generated: { by: process:uk-government-api-okf-builder, at: "2026-07-16T00:00:00Z" }
+status: draft
+sources: [{ id: "api_gov_uk_catalogue", resource: "https://raw.githubusercontent.com/co-cddo/api-catalogue/main/data/catalogue.csv", title: "GOV.UK API Catalogue CSV", last_modified: "2024-04-23" }]
 confidence: "declared"
 source_adapter: "api_gov_uk_catalogue"
 ---
@@ -44,7 +46,7 @@ This generated record is standards-alignable, not standards-conformant by itself
 - OpenAPI: `OpenAPI Object`; export status `service-stub-with-gaps`.
 - OpenAPI security scheme: `metadata-only`.
 - OpenAPI missing requirements: `info.license`
-- Crosswalk: [OKF Standards Crosswalk](../../docs/okf-standards-crosswalk.md)
+- Crosswalk: [OKF Standards Crosswalk](../docs/okf-standards-crosswalk.md)
 
 ## Credential Requirements
 

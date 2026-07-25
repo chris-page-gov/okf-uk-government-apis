@@ -3,8 +3,10 @@ type: "API Product"
 title: "Tidal API - Foundation"
 description: "The Tidal API provides an authoritative source of tidal height predictions for Standard and Secondary tidal level stations. Also, now available are Tidal Stream Events for a range of geographic locations. Foundation provides a 1-year subscription to access the current plus 13 days’ worth of tidal height and stream events for a wide range of tidal height stations and stream locations around the British Isles and Ireland. This includes The Isle of Man and The Channel Islands consisting of the Bailiwicks of Jersey and Guernsey. - 20 calls per second - 20,000 calls per month - 1 year subscription - £120 ex VAT"
 resource: "https://admiraltyapi.developer.azure-api.net/product#product=tidal-api-foundation"
-timestamp: "2022-02-03"
-tags: "streaming, tax-and-customs, uk-hydrographic-office"
+tags: ["streaming", "tax-and-customs", "uk-hydrographic-office"]
+generated: { by: process:uk-government-api-okf-builder, at: "2026-07-16T00:00:00Z" }
+status: draft
+sources: [{ id: "api_gov_uk_catalogue", resource: "https://raw.githubusercontent.com/co-cddo/api-catalogue/main/data/catalogue.csv", title: "GOV.UK API Catalogue CSV", last_modified: "2022-02-03" }]
 confidence: "declared"
 source_adapter: "api_gov_uk_catalogue"
 ---
@@ -44,7 +46,7 @@ This generated record is standards-alignable, not standards-conformant by itself
 - OpenAPI: `OpenAPI Object`; export status `service-stub-with-gaps`.
 - OpenAPI security scheme: `unknown`.
 - OpenAPI missing requirements: `components.securitySchemes`, `info.license`
-- Crosswalk: [OKF Standards Crosswalk](../../docs/okf-standards-crosswalk.md)
+- Crosswalk: [OKF Standards Crosswalk](../docs/okf-standards-crosswalk.md)
 
 ## Credential Requirements
 

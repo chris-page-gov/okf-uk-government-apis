@@ -3,8 +3,10 @@ type: "API Operation"
 title: "OS Maps API - WMTS"
 description: "The endpoint for the Web Map Tile Service implementation of OS Maps API."
 resource: "https://api.os.uk/maps/raster/v1/wmts"
-timestamp: ""
-tags: "geospatial, ordnance-survey, wmts"
+tags: ["geospatial", "ordnance-survey", "wmts"]
+generated: { by: process:uk-government-api-okf-builder, at: "2026-07-16T00:00:00Z" }
+status: draft
+sources: [{ id: "ordnance_survey_api_os_uk", resource: "https://api.os.uk/maps/raster", title: "Ordnance Survey API link document" }]
 confidence: "declared"
 source_adapter: "ordnance_survey_api_os_uk"
 ---
@@ -44,7 +46,7 @@ This generated record is standards-alignable, not standards-conformant by itself
 - OpenAPI: `Operation Object`; export status `operation-fragment`.
 - OpenAPI security scheme: `apiKey`.
 - OpenAPI missing requirements: `HTTP method`, `parameters`, `responses`
-- Crosswalk: [OKF Standards Crosswalk](../../docs/okf-standards-crosswalk.md)
+- Crosswalk: [OKF Standards Crosswalk](../docs/okf-standards-crosswalk.md)
 
 ## Credential Requirements
 

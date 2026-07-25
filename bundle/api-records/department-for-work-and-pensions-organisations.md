@@ -3,8 +3,10 @@ type: "API Product"
 title: "Organisations"
 description: "Retrieves an organisation's contact details to be used for the administration of claims."
 resource: ""
-timestamp: "2023-02-08"
-tags: "department-for-work-and-pensions, government-services, rest-http"
+tags: ["department-for-work-and-pensions", "government-services", "rest-http"]
+generated: { by: process:uk-government-api-okf-builder, at: "2026-07-16T00:00:00Z" }
+status: draft
+sources: [{ id: "api_gov_uk_catalogue", resource: "https://raw.githubusercontent.com/co-cddo/api-catalogue/main/data/catalogue.csv", title: "GOV.UK API Catalogue CSV", last_modified: "2023-02-08" }]
 confidence: "declared"
 source_adapter: "api_gov_uk_catalogue"
 ---
@@ -42,7 +44,7 @@ This generated record is standards-alignable, not standards-conformant by itself
 - OpenAPI: `OpenAPI Object`; export status `service-stub-with-gaps`.
 - OpenAPI security scheme: `unknown`.
 - OpenAPI missing requirements: `components.securitySchemes`, `externalDocs.url`, `servers[].url`
-- Crosswalk: [OKF Standards Crosswalk](../../docs/okf-standards-crosswalk.md)
+- Crosswalk: [OKF Standards Crosswalk](../docs/okf-standards-crosswalk.md)
 
 ## Credential Requirements
 

@@ -3,8 +3,10 @@ type: "Provider API Portal"
 title: "Get Information about Schools (GIAS)"
 description: "National reference register for state-funded schools, independent schools, other education providers and school governance in England. Public users can search and download provider and governance information."
 resource: "https://get-information-schools.service.gov.uk/"
-timestamp: "2025-01-28"
-tags: "csv-download, department-for-education, education, education-establishments, gias, school-governance, schools, urn, web"
+tags: ["csv-download", "department-for-education", "education", "education-establishments", "gias", "school-governance", "schools", "urn", "web"]
+generated: { by: process:uk-government-api-okf-builder, at: "2026-07-16T00:00:00Z" }
+status: draft
+sources: [{ id: "dfe_gias", resource: "https://www.gov.uk/guidance/get-information-about-schools", title: "Department for Education GIAS service and guidance", last_modified: "2025-01-28" }]
 confidence: "declared"
 source_adapter: "dfe_gias"
 ---
@@ -44,7 +46,7 @@ This generated record is standards-alignable, not standards-conformant by itself
 - OpenAPI: `externalDocs`; export status `documentation-reference`.
 - OpenAPI security scheme: `none`.
 - OpenAPI missing requirements: none recorded
-- Crosswalk: [OKF Standards Crosswalk](../../docs/okf-standards-crosswalk.md)
+- Crosswalk: [OKF Standards Crosswalk](../docs/okf-standards-crosswalk.md)
 
 ## Credential Requirements
 

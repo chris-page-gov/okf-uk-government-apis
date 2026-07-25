@@ -28,7 +28,7 @@ from urllib.request import Request, urlopen
 UTC = timezone.utc
 
 ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_OUTPUT = ROOT / "uk-government-apis"
+DEFAULT_OUTPUT = ROOT / "bundle"
 DEFAULT_SOURCE_URL = "https://raw.githubusercontent.com/co-cddo/api-catalogue/main/data/catalogue.csv"
 DEFAULT_CKAN_API_URL = "https://ckan.publishing.service.gov.uk/api/3/action/package_search"
 DEFAULT_OS_API_ROOT = "https://api.os.uk/"
@@ -2285,16 +2285,45 @@ def markdown_link(label: str, target: str) -> str:
     return f"[{label}]({target})" if target else label
 
 
-def render_record_markdown(record: dict[str, Any]) -> str:
-    tags = ", ".join(record.get("tags", [])[:12])
+def source_last_modified(record: dict[str, Any]) -> str:
+    """Return the source's date without confusing it with publication time."""
+    value = str(record.get("metadata_modified") or record.get("timestamp") or record.get("metadata_created") or "")
+    match = re.match(r"\d{4}-\d{2}-\d{2}", value)
+    return match.group(0) if match else ""
+
+
+def concept_status(record: dict[str, Any]) -> str:
+    lifecycle = str(record.get("lifecycle_status") or "").casefold()
+    if any(token in lifecycle for token in ("deprecated", "retired", "withdrawn", "closed")):
+        return "deprecated"
+    # The independently published corpus is still explicitly a preview.
+    return "draft"
+
+
+def render_record_markdown(record: dict[str, Any], generated_at: str) -> str:
+    tags = ", ".join(yaml_scalar(tag) for tag in record.get("tags", [])[:12])
+    provenance = record.get("provenance", {})
+    source_url = provenance.get("source_url") or record.get("documentation") or record.get("url")
+    source_fields = [
+        f"id: {yaml_scalar(record.get('source_adapter') or 'catalogue-source')}",
+        f"resource: {yaml_scalar(source_url)}",
+    ]
+    source_title = provenance.get("source")
+    if source_title:
+        source_fields.append(f"title: {yaml_scalar(source_title)}")
+    last_modified = source_last_modified(record)
+    if last_modified:
+        source_fields.append(f"last_modified: {yaml_scalar(last_modified)}")
     frontmatter = [
         "---",
         f"type: {yaml_scalar(record.get('record_type'))}",
         f"title: {yaml_scalar(record.get('title'))}",
         f"description: {yaml_scalar(record.get('notes'))}",
         f"resource: {yaml_scalar(record.get('url'))}",
-        f"timestamp: {yaml_scalar(record.get('timestamp'))}",
-        f"tags: {yaml_scalar(tags)}",
+        f"tags: [{tags}]",
+        f"generated: {{ by: process:uk-government-api-okf-builder, at: {yaml_scalar(generated_at)} }}",
+        f"status: {concept_status(record)}",
+        *([f"sources: [{{ {', '.join(source_fields)} }}]"] if source_url else []),
         f"confidence: {yaml_scalar(record.get('confidence'))}",
         f"source_adapter: {yaml_scalar(record.get('source_adapter'))}",
         "---",
@@ -2344,7 +2373,7 @@ def render_record_markdown(record: dict[str, Any]) -> str:
                 f"- OpenAPI: `{openapi.get('term', record.get('openapi_type'))}`; export status `{openapi.get('export_status', 'not-specified')}`.",
                 f"- OpenAPI security scheme: `{openapi.get('security_scheme_type', record.get('openapi_security_scheme', 'unknown'))}`.",
                 f"- OpenAPI missing requirements: {', '.join(f'`{item}`' for item in openapi.get('required_missing', [])) or 'none recorded'}",
-                f"- Crosswalk: [OKF Standards Crosswalk](../../docs/okf-standards-crosswalk.md)",
+                f"- Crosswalk: [OKF Standards Crosswalk](../docs/okf-standards-crosswalk.md)",
             ]
         )
     lines.extend(["", "## Credential Requirements", ""])
@@ -2356,14 +2385,24 @@ def render_record_markdown(record: dict[str, Any]) -> str:
     return "\n".join(lines)
 
 
-def render_publisher_markdown(publisher: dict[str, Any]) -> str:
+def render_publisher_markdown(publisher: dict[str, Any], generated_at: str) -> str:
+    source_scope = (
+        "all generated UK Government API corpus records with publisher "
+        f"{publisher.get('name')}"
+    )
     return "\n".join(
         [
             "---",
             'type: "Organisation"',
             f"title: {yaml_scalar(publisher.get('title'))}",
             f"description: {yaml_scalar(publisher.get('description'))}",
-            f"timestamp: {yaml_scalar(publisher.get('provenance', {}).get('observed_at', ''))}",
+            f"generated: {{ by: process:uk-government-api-okf-builder, at: {yaml_scalar(generated_at)} }}",
+            "status: draft",
+            "sources: [{ "
+            f"id: {yaml_scalar('provider-aggregation')}, "
+            f"resource: {yaml_scalar(source_scope)}, "
+            f"title: {yaml_scalar('Generated provider aggregation')}"
+            " }]",
             "---",
             "",
             f"# {publisher.get('title')}",
@@ -2383,18 +2422,17 @@ def render_publisher_markdown(publisher: dict[str, Any]) -> str:
 def markdown_output_files(corpus: dict[str, Any]) -> dict[Path, str]:
     files: dict[Path, str] = {}
     records = corpus["records"]
+    generated_at = corpus["descriptor"]["generated_at"]
     selected_records = [record for record in records if record.get("record_type") in MARKDOWN_RECORD_TYPES]
     for record in selected_records:
-        files[Path(record["concept_id"])] = render_record_markdown(record)
+        files[Path(record["concept_id"])] = render_record_markdown(record, generated_at)
     for publisher in corpus["publishers"]:
-        files[Path(publisher["concept_id"])] = render_publisher_markdown(publisher)
+        files[Path(publisher["concept_id"])] = render_publisher_markdown(publisher, generated_at)
     counts = corpus["descriptor"]["counts"]
     files[Path("index.md")] = "\n".join(
         [
             "---",
-            'type: "Index"',
-            'title: "UK Government APIs OKF"',
-            'description: "Generated Markdown entry point for the UK Government APIs OKF exemplar."',
+            'okf_version: "0.2"',
             "---",
             "",
             "# UK Government APIs OKF",
@@ -2421,17 +2459,14 @@ def markdown_output_files(corpus: dict[str, Any]) -> dict[Path, str]:
             "## Entry Points",
             "",
             "- [Explorer descriptor](okf-explorer.json)",
-            "- [Specification notes](../sources/UK-Government-API-OKF.md)",
-            "- [Standards crosswalk](../docs/okf-standards-crosswalk.md)",
+            "- [Specification notes](docs/UK-Government-API-OKF.md)",
+            "- [Standards crosswalk](docs/okf-standards-crosswalk.md)",
             "",
         ]
     )
     files[Path("log.md")] = "\n".join(
         [
-            "---",
-            'type: "Log"',
-            'title: "UK Government APIs OKF generation log"',
-            "---",
+            "# UK Government APIs OKF generation log",
             "",
             f"## {corpus['descriptor']['generated_at'][:10]}",
             "",
@@ -2686,6 +2721,7 @@ def build_corpus(
     ons_topics: list[dict[str, Any]] | None = None,
     ons_code_lists: list[dict[str, Any]] | None = None,
     ons_root_url: str = DEFAULT_ONS_API_ROOT,
+    generated_at: str | None = None,
 ) -> dict[str, Any]:
     observed_at = infer_observed_at(rows, ckan_packages, ons_datasets)
     builder = CorpusBuilder(source_url, source_hash, observed_at)
@@ -2827,8 +2863,9 @@ def build_corpus(
         "missing_licence": sum(1 for record in records if record.get("license_id") == "not-specified"),
         "licence_inferred_from_provider_terms": sum(1 for record in records if record.get("license_basis") == "provider-terms-inferred"),
     }
-    latest_date = max((str(record.get("timestamp") or record.get("metadata_modified") or "")[:10] for record in records if record.get("timestamp") or record.get("metadata_modified")), default="1970-01-01")
-    generated_at = f"{latest_date}T00:00:00Z"
+    # Publication time describes this generated concept layer. Individual
+    # source modification dates remain on each source/record.
+    generated_at = generated_at or now_utc()
     dcat_gap_counts: Counter[str] = Counter()
     openapi_gap_counts: Counter[str] = Counter()
     for record in records:
@@ -2837,7 +2874,7 @@ def build_corpus(
         openapi_gap_counts.update(alignment.get("openapi", {}).get("required_missing", []))
     standards_alignment_overview = {
         "claim": "standards-alignable-not-conformant",
-        "crosswalk": "../docs/okf-standards-crosswalk.md",
+        "crosswalk": "docs/okf-standards-crosswalk.md",
         "standards": STANDARDS_REFERENCES,
         "dcat_type_counts": [{"term": term, "count": count} for term, count in Counter(record.get("dcat_type", "not-specified") for record in records).most_common()],
         "openapi_type_counts": [{"term": term, "count": count} for term, count in Counter(record.get("openapi_type", "not-specified") for record in records).most_common()],
@@ -2958,6 +2995,7 @@ def build_corpus(
     relationship_chunks = chunk_paths("relationships", relationships, chunk_size=2000)
     relationship_adjacency, relationship_adjacency_buckets = build_relationship_adjacency(relationships)
     manifest = {
+        "okf_version": "0.2",
         "title": "UK Government APIs static corpus",
         "generated_at": generated_at,
         "counts": overview["counts"],
@@ -2994,6 +3032,8 @@ def build_corpus(
         "@id": "https://chris-page-gov.github.io/okf-uk-government-apis/okf-explorer.json",
         "schema": "okf-explorer-large-corpus.v1",
         "kind": "okf-large-corpus",
+        "okf_version": "0.2",
+        "core_conformance": "Markdown concept layer",
         "title": "UK Government APIs OKF",
         "description": "Large-corpus OKF exemplar generated from GOV.UK API Catalogue, data.gov.uk, Ordnance Survey, ONS and Department for Education GIAS public sources, with API-domain facets, typed relationships, search shards, and operational metadata.",
         "version": "0.4.0",
@@ -3001,18 +3041,18 @@ def build_corpus(
         "profile": "https://chris-page-gov.github.io/okf-explorer/profile/bundle-wiki/v1/",
         "publisher": "https://github.com/chris-page-gov",
         "license": OGL_V3_URL,
-        "semantic_descriptor": "https://chris-page-gov.github.io/okf-uk-government-apis/bundle.yamlld",
+        "semantic_descriptor": "https://chris-page-gov.github.io/okf-uk-government-apis/okf-bundle.yamlld",
         "generated_at": generated_at,
         "entrypoints": {
-            "viewer": "../next/",
+            "viewer": "https://chris-page-gov.github.io/okf-explorer/",
             "data_manifest": "data/manifest.json",
             "overview_index": "data/overview.json",
             "analysis_overview": "data/analysis/overview.json",
             "search_manifest": "data/search/manifest.json",
             "relationship_adjacency": "data/adjacency/manifest.json",
             "markdown_index": "index.md",
-            "notes": "../sources/UK-Government-API-OKF.md",
-            "standards_crosswalk": "../docs/okf-standards-crosswalk.md",
+            "notes": "docs/UK-Government-API-OKF.md",
+            "standards_crosswalk": "docs/okf-standards-crosswalk.md",
         },
         "counts": overview["counts"],
         "performance": manifest["performance"],
@@ -3042,7 +3082,7 @@ def build_corpus(
             "okf-explorer-analysis.v1": {"mode": "external", "entrypoint": "analysis_overview"},
             "okf-standards-crosswalk.v1": {
                 "mode": "standards-alignable",
-                "crosswalk": "../docs/okf-standards-crosswalk.md",
+                "crosswalk": "docs/okf-standards-crosswalk.md",
                 "claim": "Records carry DCAT/OpenAPI mappings and export-readiness gaps; the pack is not DCAT-AP RDF or complete OpenAPI without an exporter.",
                 "standards": STANDARDS_REFERENCES,
                 "dcat_names_rendering": "monospace",
@@ -3209,11 +3249,22 @@ def display_path(path: Path) -> str:
         return str(path)
 
 
+def existing_generated_at(output: Path) -> str | None:
+    descriptor = output / "okf-explorer.json"
+    if not descriptor.is_file():
+        return None
+    try:
+        return json.loads(descriptor.read_text(encoding="utf-8")).get("generated_at")
+    except (OSError, json.JSONDecodeError):
+        return None
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--source", default=DEFAULT_SOURCE_URL, help="GOV.UK API Catalogue CSV source path or URL")
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT, help="generated corpus directory")
     parser.add_argument("--check", action="store_true", help="fail if generated files are not synchronized")
+    parser.add_argument("--generated-at", help="frozen ISO 8601 publication build time")
     parser.add_argument("--skip-ckan", action="store_true", help="skip data.gov.uk CKAN enrichment")
     parser.add_argument("--skip-os", action="store_true", help="skip Ordnance Survey API enrichment")
     parser.add_argument("--skip-ons", action="store_true", help="skip ONS API enrichment")
@@ -3257,6 +3308,7 @@ def main(argv: list[str] | None = None) -> int:
         else:
             ons_root, ons_datasets, ons_topics, ons_code_lists = load_ons_payloads()
 
+    generated_at = args.generated_at or (existing_generated_at(output) if args.check else None) or now_utc()
     corpus = build_corpus(
         rows,
         source_url,
@@ -3268,6 +3320,7 @@ def main(argv: list[str] | None = None) -> int:
         ons_datasets=ons_datasets,
         ons_topics=ons_topics,
         ons_code_lists=ons_code_lists,
+        generated_at=generated_at,
     )
     files = output_files(corpus)
     if args.check:

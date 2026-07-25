@@ -3,8 +3,10 @@ type: "Contract"
 title: "Traffic Camera Activity contract"
 description: "Machine-readable or service-description contract inferred for Traffic Camera Activity from public metadata."
 resource: "https://api.beta.ons.gov.uk/v1/datasets/traffic-camera-activity"
-timestamp: "2024-06-20T09:00:45.082Z"
-tags: "business-and-economy, office-for-national-statistics, population-and-statistics, rest-http, transport"
+tags: ["business-and-economy", "office-for-national-statistics", "population-and-statistics", "rest-http", "transport"]
+generated: { by: process:uk-government-api-okf-builder, at: "2026-07-16T00:00:00Z" }
+status: draft
+sources: [{ id: "contract_discovery", resource: "https://api.beta.ons.gov.uk/v1/datasets", title: "Contract discovery from harvested API metadata", last_modified: "2024-06-20" }]
 confidence: "observed"
 source_adapter: "contract_discovery"
 ---
@@ -44,7 +46,7 @@ This generated record is standards-alignable, not standards-conformant by itself
 - OpenAPI: `OpenAPI Description or external contract`; export status `contract-reference`.
 - OpenAPI security scheme: `none`.
 - OpenAPI missing requirements: none recorded
-- Crosswalk: [OKF Standards Crosswalk](../../docs/okf-standards-crosswalk.md)
+- Crosswalk: [OKF Standards Crosswalk](../docs/okf-standards-crosswalk.md)
 
 ## Credential Requirements
 

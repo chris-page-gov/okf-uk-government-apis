@@ -3,8 +3,10 @@ type: "Contract"
 title: "Accommodation type by car or van availability by number of usual residents aged 17 years or over in household contract"
 description: "Machine-readable or service-description contract inferred for Accommodation type by car or van availability by number of usual residents aged 17 years or over in household from public metadata."
 resource: "https://api.beta.ons.gov.uk/v1/datasets/RM001"
-timestamp: "2023-04-25T08:30:00.991Z"
-tags: "office-for-national-statistics, population-and-statistics, rest-http"
+tags: ["office-for-national-statistics", "population-and-statistics", "rest-http"]
+generated: { by: process:uk-government-api-okf-builder, at: "2026-07-16T00:00:00Z" }
+status: draft
+sources: [{ id: "contract_discovery", resource: "https://api.beta.ons.gov.uk/v1/datasets", title: "Contract discovery from harvested API metadata", last_modified: "2023-04-25" }]
 confidence: "observed"
 source_adapter: "contract_discovery"
 ---
@@ -44,7 +46,7 @@ This generated record is standards-alignable, not standards-conformant by itself
 - OpenAPI: `OpenAPI Description or external contract`; export status `contract-reference`.
 - OpenAPI security scheme: `none`.
 - OpenAPI missing requirements: none recorded
-- Crosswalk: [OKF Standards Crosswalk](../../docs/okf-standards-crosswalk.md)
+- Crosswalk: [OKF Standards Crosswalk](../docs/okf-standards-crosswalk.md)
 
 ## Credential Requirements
 

@@ -3,8 +3,10 @@ type: "API Product"
 title: "Ofqual Register of Regulated Qualifications API"
 description: "The Ofqual Register of Regulated Qualifications API allows users to programmatically access details of qualifications and awarding organisations regulated by Ofqual and CCEA Regulation."
 resource: "https://register-api.ofqual.gov.uk"
-timestamp: "2024-06-11"
-tags: "education-and-skills, government-services, ofqual, planning-and-property, rest-http"
+tags: ["education-and-skills", "government-services", "ofqual", "planning-and-property", "rest-http"]
+generated: { by: process:uk-government-api-okf-builder, at: "2026-07-16T00:00:00Z" }
+status: draft
+sources: [{ id: "api_gov_uk_catalogue", resource: "https://raw.githubusercontent.com/co-cddo/api-catalogue/main/data/catalogue.csv", title: "GOV.UK API Catalogue CSV", last_modified: "2024-06-11" }]
 confidence: "declared"
 source_adapter: "api_gov_uk_catalogue"
 ---
@@ -44,7 +46,7 @@ This generated record is standards-alignable, not standards-conformant by itself
 - OpenAPI: `OpenAPI Object`; export status `service-stub-with-gaps`.
 - OpenAPI security scheme: `metadata-only`.
 - OpenAPI missing requirements: `info.license`
-- Crosswalk: [OKF Standards Crosswalk](../../docs/okf-standards-crosswalk.md)
+- Crosswalk: [OKF Standards Crosswalk](../docs/okf-standards-crosswalk.md)
 
 ## Credential Requirements
 

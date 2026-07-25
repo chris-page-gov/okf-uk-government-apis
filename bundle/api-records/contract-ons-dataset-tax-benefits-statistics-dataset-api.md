@@ -3,8 +3,10 @@ type: "Contract"
 title: "Effects of Taxes and Benefits on Household Income contract"
 description: "Machine-readable or service-description contract inferred for Effects of Taxes and Benefits on Household Income from public metadata."
 resource: "https://api.beta.ons.gov.uk/v1/datasets/tax-benefits-statistics"
-timestamp: "2022-09-16T06:15:01.401Z"
-tags: "office-for-national-statistics, population-and-statistics, rest-http, tax-and-customs"
+tags: ["office-for-national-statistics", "population-and-statistics", "rest-http", "tax-and-customs"]
+generated: { by: process:uk-government-api-okf-builder, at: "2026-07-16T00:00:00Z" }
+status: draft
+sources: [{ id: "contract_discovery", resource: "https://api.beta.ons.gov.uk/v1/datasets", title: "Contract discovery from harvested API metadata", last_modified: "2022-09-16" }]
 confidence: "observed"
 source_adapter: "contract_discovery"
 ---
@@ -44,7 +46,7 @@ This generated record is standards-alignable, not standards-conformant by itself
 - OpenAPI: `OpenAPI Description or external contract`; export status `contract-reference`.
 - OpenAPI security scheme: `none`.
 - OpenAPI missing requirements: none recorded
-- Crosswalk: [OKF Standards Crosswalk](../../docs/okf-standards-crosswalk.md)
+- Crosswalk: [OKF Standards Crosswalk](../docs/okf-standards-crosswalk.md)
 
 ## Credential Requirements
 

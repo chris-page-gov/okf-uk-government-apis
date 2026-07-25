@@ -3,8 +3,10 @@ type: "API Product"
 title: "UK Tidal API - Discovery"
 description: "The ADMIRALTY UK Tidal API provides authoritative source of tidal height predictions for Standard and Secondary tidal level stations around the United Kingdom. Discovery provides a free 1-year subscription to access the current plus 6 days’ worth of tidal events for 607 tidal stations around the United Kingdom."
 resource: "https://developer.admiralty.co.uk/product#product=uk-tidal-api"
-timestamp: "2021-02-09"
-tags: "public-administration, rest-http, uk-hydrographic-office"
+tags: ["public-administration", "rest-http", "uk-hydrographic-office"]
+generated: { by: process:uk-government-api-okf-builder, at: "2026-07-16T00:00:00Z" }
+status: draft
+sources: [{ id: "api_gov_uk_catalogue", resource: "https://raw.githubusercontent.com/co-cddo/api-catalogue/main/data/catalogue.csv", title: "GOV.UK API Catalogue CSV", last_modified: "2021-02-09" }]
 confidence: "declared"
 source_adapter: "api_gov_uk_catalogue"
 ---
@@ -44,7 +46,7 @@ This generated record is standards-alignable, not standards-conformant by itself
 - OpenAPI: `OpenAPI Object`; export status `service-stub-with-gaps`.
 - OpenAPI security scheme: `unknown`.
 - OpenAPI missing requirements: `components.securitySchemes`
-- Crosswalk: [OKF Standards Crosswalk](../../docs/okf-standards-crosswalk.md)
+- Crosswalk: [OKF Standards Crosswalk](../docs/okf-standards-crosswalk.md)
 
 ## Credential Requirements
 

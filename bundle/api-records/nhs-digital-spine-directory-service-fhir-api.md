@@ -3,8 +3,10 @@ type: "API Product"
 title: "Spine Directory Service - FHIR API"
 description: "Use this API to access details of systems registered in the Spine Directory Service (SDS). You can: - get accredited system detailsYou cannot currently use this API to: - search for organisations- search for peopleAccredited system records Every system that connects to the Spine has one or more “Accredited System” (AS) records in SDS, identified by an Accredited System Identifier (ASID).This ASID is unique to a system deployed in a specific organisation, so the same application deployed into three NHS organisations would typically be represented as three unique ASIDs. MHS records and endpoints Every GP Connect system also has one or more “MHS” records (or message handling server record), identified by Party Key and Interaction ID.MHS records of GP Connect provider systems contain the endpoint of the target practice, as defined by the FHIR service root URL.Please see System topologies for more details on the allocation of ASIDs and Party Keys. For all intermediary messaging endpoint lookups, this API returns the NHS Digital Spine MHS endpoint address."
 resource: "https://digital.nhs.uk/developer/api-catalogue/spine-directory-service-fhir"
-timestamp: "2024-04-23"
-tags: "fhir, geospatial, government-services, health-and-care, nhs-digital, planning-and-property"
+tags: ["fhir", "geospatial", "government-services", "health-and-care", "nhs-digital", "planning-and-property"]
+generated: { by: process:uk-government-api-okf-builder, at: "2026-07-16T00:00:00Z" }
+status: draft
+sources: [{ id: "api_gov_uk_catalogue", resource: "https://raw.githubusercontent.com/co-cddo/api-catalogue/main/data/catalogue.csv", title: "GOV.UK API Catalogue CSV", last_modified: "2024-04-23" }]
 confidence: "declared"
 source_adapter: "api_gov_uk_catalogue"
 ---
@@ -44,7 +46,7 @@ This generated record is standards-alignable, not standards-conformant by itself
 - OpenAPI: `OpenAPI Object`; export status `service-stub-with-gaps`.
 - OpenAPI security scheme: `metadata-only`.
 - OpenAPI missing requirements: `info.license`
-- Crosswalk: [OKF Standards Crosswalk](../../docs/okf-standards-crosswalk.md)
+- Crosswalk: [OKF Standards Crosswalk](../docs/okf-standards-crosswalk.md)
 
 ## Credential Requirements
 

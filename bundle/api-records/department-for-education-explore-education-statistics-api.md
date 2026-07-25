@@ -3,8 +3,10 @@ type: "API Product"
 title: "Explore education statistics API"
 description: "The explore education statistics API is built following REST principles and provides access to data sets published by on the explore education statistics service, allowing you to: - get summary information about data sets and their related resources - query data sets based on specific criteria - download the underlying CSV files of data sets Note that not all data sets available in EES are accessible via the API. For a full list of data sets published by EES, visit the [Data catalogue](https://explore-education-statistics.service.gov.uk/data-catalogue) on the main website."
 resource: "https://explore-education-statistics.service.gov.uk/"
-timestamp: "2025-03-25"
-tags: "department-for-education, education-and-skills, government-services, population-and-statistics, rest-http"
+tags: ["department-for-education", "education-and-skills", "government-services", "population-and-statistics", "rest-http"]
+generated: { by: process:uk-government-api-okf-builder, at: "2026-07-16T00:00:00Z" }
+status: draft
+sources: [{ id: "api_gov_uk_catalogue", resource: "https://raw.githubusercontent.com/co-cddo/api-catalogue/main/data/catalogue.csv", title: "GOV.UK API Catalogue CSV", last_modified: "2025-03-25" }]
 confidence: "declared"
 source_adapter: "api_gov_uk_catalogue"
 ---
@@ -44,7 +46,7 @@ This generated record is standards-alignable, not standards-conformant by itself
 - OpenAPI: `OpenAPI Object`; export status `service-stub-with-gaps`.
 - OpenAPI security scheme: `unknown`.
 - OpenAPI missing requirements: `components.securitySchemes`, `info.license`
-- Crosswalk: [OKF Standards Crosswalk](../../docs/okf-standards-crosswalk.md)
+- Crosswalk: [OKF Standards Crosswalk](../docs/okf-standards-crosswalk.md)
 
 ## Credential Requirements
 

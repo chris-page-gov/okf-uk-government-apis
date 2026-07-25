@@ -3,8 +3,10 @@ type: "API Product"
 title: "Electronic Prescription Service Tracker - REST API"
 description: "Use this API to track a patient’s prescriptions within the Electronic Prescription Service (EPS) using our Electronic Prescription Service Tracker.You can search for a list of prescriptions that meet your query parameters by providing: - patient's NHS number (mandatory)- format (mandatory)- prescription date range (optional)- prescription status (optional)- prescription version (optional)Once you find the prescription, or if you already know its details, you can retrieve it by providing:- prescription ID (mandatory)- format (mandatory)- issue number (optional)For more details, see Introduction to Spine EPS Tracker.This API is only for use when the end user is a healthcare worker, not a patient. You can vote to make it available to patients on our interactive backlog."
 resource: "https://digital.nhs.uk/developer/api-catalogue/spine-electronic-prescription-service-tracker-rest"
-timestamp: "2024-04-23"
-tags: "government-services, health-and-care, nhs-digital, rest-http"
+tags: ["government-services", "health-and-care", "nhs-digital", "rest-http"]
+generated: { by: process:uk-government-api-okf-builder, at: "2026-07-16T00:00:00Z" }
+status: draft
+sources: [{ id: "api_gov_uk_catalogue", resource: "https://raw.githubusercontent.com/co-cddo/api-catalogue/main/data/catalogue.csv", title: "GOV.UK API Catalogue CSV", last_modified: "2024-04-23" }]
 confidence: "declared"
 source_adapter: "api_gov_uk_catalogue"
 ---
@@ -44,7 +46,7 @@ This generated record is standards-alignable, not standards-conformant by itself
 - OpenAPI: `OpenAPI Object`; export status `service-stub-with-gaps`.
 - OpenAPI security scheme: `unknown`.
 - OpenAPI missing requirements: `components.securitySchemes`, `info.license`
-- Crosswalk: [OKF Standards Crosswalk](../../docs/okf-standards-crosswalk.md)
+- Crosswalk: [OKF Standards Crosswalk](../docs/okf-standards-crosswalk.md)
 
 ## Credential Requirements
 

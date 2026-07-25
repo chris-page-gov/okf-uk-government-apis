@@ -3,8 +3,10 @@ type: "API Product"
 title: "Official Search of Part"
 description: "An Official Search of Part (with priority) protects agreements between buyers, sellers and lenders. Use this service when your application relates to part of a registered title, to protect transfers, leases and mortgages. It also prevents any registrations of adverse interest for 30 business days. It will also tell you about: - alterations made on the register since the search from date - applications against the title not yet complete - existing official searches - outline applications that are not protected by official search - land to be transferred, leased or mortgaged, that falls outside of the extent of the registered title If you’re a software developer: Use this document to integrate data into your system. Poll request Service URL for production environment: https://businessgateway.landregistry.gov.uk/b2b/BGSoapEngine/OfficialSearchOfPartV2_1PollRequestWebService?wsdl For test environment endpoints, replace `https://businessgateway.landregistry.gov.uk/b2b/BGSoapEngine` with `https://bgtest.landregistry.gov.uk/b2b/BGStubService`"
 resource: "https://businessgateway.landregistry.gov.uk/b2b/BGSoapEngine/OfficialSearchOfPartV2_1WebService?wsdl"
-timestamp: "2024-06-24"
-tags: "business-and-economy, environment, government-services, hm-land-registry, planning-and-property, soap-wsdl"
+tags: ["business-and-economy", "environment", "government-services", "hm-land-registry", "planning-and-property", "soap-wsdl"]
+generated: { by: process:uk-government-api-okf-builder, at: "2026-07-16T00:00:00Z" }
+status: draft
+sources: [{ id: "api_gov_uk_catalogue", resource: "https://raw.githubusercontent.com/co-cddo/api-catalogue/main/data/catalogue.csv", title: "GOV.UK API Catalogue CSV", last_modified: "2024-06-24" }]
 confidence: "declared"
 source_adapter: "api_gov_uk_catalogue"
 ---
@@ -44,7 +46,7 @@ This generated record is standards-alignable, not standards-conformant by itself
 - OpenAPI: `OpenAPI Object`; export status `service-stub-with-gaps`.
 - OpenAPI security scheme: `metadata-only`.
 - OpenAPI missing requirements: `info.license`
-- Crosswalk: [OKF Standards Crosswalk](../../docs/okf-standards-crosswalk.md)
+- Crosswalk: [OKF Standards Crosswalk](../docs/okf-standards-crosswalk.md)
 
 ## Credential Requirements
 

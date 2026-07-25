@@ -3,8 +3,10 @@ type: "API Product"
 title: "Display vacancy advert API"
 description: "The display vacancy advert API allows you to retrieve recruitment adverts from Find an apprenticeship. You can filter results based upon a variety of criteria in order to display the returned adverts on your own website."
 resource: "https://api.apprenticeships.education.gov.uk/vacancies"
-timestamp: "2022-01-24"
-tags: "government-services, rest-http, the-apprenticeship-service"
+tags: ["government-services", "rest-http", "the-apprenticeship-service"]
+generated: { by: process:uk-government-api-okf-builder, at: "2026-07-16T00:00:00Z" }
+status: draft
+sources: [{ id: "api_gov_uk_catalogue", resource: "https://raw.githubusercontent.com/co-cddo/api-catalogue/main/data/catalogue.csv", title: "GOV.UK API Catalogue CSV", last_modified: "2022-01-24" }]
 confidence: "declared"
 source_adapter: "api_gov_uk_catalogue"
 ---
@@ -44,7 +46,7 @@ This generated record is standards-alignable, not standards-conformant by itself
 - OpenAPI: `OpenAPI Object`; export status `service-stub-with-gaps`.
 - OpenAPI security scheme: `unknown`.
 - OpenAPI missing requirements: `components.securitySchemes`, `info.license`
-- Crosswalk: [OKF Standards Crosswalk](../../docs/okf-standards-crosswalk.md)
+- Crosswalk: [OKF Standards Crosswalk](../docs/okf-standards-crosswalk.md)
 
 ## Credential Requirements
 

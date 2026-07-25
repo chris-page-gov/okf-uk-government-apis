@@ -3,8 +3,10 @@ type: "API Product"
 title: "Self Assessment (MTD)"
 description: "This API is monolithic and is in the process of being broken down to more granular APIs. Only taxpayers subscribed to Making Tax Digital for Business for tax years 2017/18 onwards can use the API. As part of the subscription process, the user supplies HMRC with the following information: - the name of their business - their accounting period - whether they use cash or accruals accounting The sandbox endpoint is `https://test-api.service.hmrc.gov.uk`."
 resource: "https://api.service.hmrc.gov.uk"
-timestamp: "2020-09-02"
-tags: "business-and-economy, government-services, hm-revenue-customs, rest-http, tax-and-customs"
+tags: ["business-and-economy", "government-services", "hm-revenue-customs", "rest-http", "tax-and-customs"]
+generated: { by: process:uk-government-api-okf-builder, at: "2026-07-16T00:00:00Z" }
+status: draft
+sources: [{ id: "api_gov_uk_catalogue", resource: "https://raw.githubusercontent.com/co-cddo/api-catalogue/main/data/catalogue.csv", title: "GOV.UK API Catalogue CSV", last_modified: "2020-09-02" }]
 confidence: "declared"
 source_adapter: "api_gov_uk_catalogue"
 ---
@@ -44,7 +46,7 @@ This generated record is standards-alignable, not standards-conformant by itself
 - OpenAPI: `OpenAPI Object`; export status `service-stub-with-gaps`.
 - OpenAPI security scheme: `unknown`.
 - OpenAPI missing requirements: `components.securitySchemes`, `info.license`
-- Crosswalk: [OKF Standards Crosswalk](../../docs/okf-standards-crosswalk.md)
+- Crosswalk: [OKF Standards Crosswalk](../docs/okf-standards-crosswalk.md)
 
 ## Credential Requirements
 

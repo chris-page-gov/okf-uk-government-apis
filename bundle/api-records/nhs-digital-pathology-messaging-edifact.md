@@ -3,8 +3,10 @@ type: "API Product"
 title: "Pathology Messaging - EDIFACT"
 description: "Use this integration to receive structured pathology test results in GP practices from pathology laboratories.This integration uses MESH to send and receive UN/EDIFACT based messages. For more details, see the Pathology EDIFACT v1.003 Standard.If you are building a system to receive pathology test results, you can use our Lab Results adaptor to receive these EDIFACT results via an easy-to-use FHIR-compliant format. Before you begin any development work using this integration, contact us to discuss your best options."
 resource: "https://digital.nhs.uk/developer/api-catalogue/pathology-messaging-edifact"
-timestamp: "2024-04-23"
-tags: "edifact, fhir, health-and-care, mesh, nhs-digital, planning-and-property"
+tags: ["edifact", "fhir", "health-and-care", "mesh", "nhs-digital", "planning-and-property"]
+generated: { by: process:uk-government-api-okf-builder, at: "2026-07-16T00:00:00Z" }
+status: draft
+sources: [{ id: "api_gov_uk_catalogue", resource: "https://raw.githubusercontent.com/co-cddo/api-catalogue/main/data/catalogue.csv", title: "GOV.UK API Catalogue CSV", last_modified: "2024-04-23" }]
 confidence: "declared"
 source_adapter: "api_gov_uk_catalogue"
 ---
@@ -44,7 +46,7 @@ This generated record is standards-alignable, not standards-conformant by itself
 - OpenAPI: `OpenAPI Object`; export status `service-stub-with-gaps`.
 - OpenAPI security scheme: `unknown`.
 - OpenAPI missing requirements: `components.securitySchemes`, `info.license`
-- Crosswalk: [OKF Standards Crosswalk](../../docs/okf-standards-crosswalk.md)
+- Crosswalk: [OKF Standards Crosswalk](../docs/okf-standards-crosswalk.md)
 
 ## Credential Requirements
 

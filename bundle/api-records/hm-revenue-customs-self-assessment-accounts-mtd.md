@@ -3,8 +3,10 @@ type: "API Product"
 title: "Self Assessment Accounts (MTD)"
 description: "The Self Assessment Accounts API allows a developer to: - retrieve the overall liability broken down into overdue, payable and pending amounts - retrieve a list of charges and payments for a given date range - retrieve more detail about a specific transaction - retrieve a list of charges made to an account for a given date range - retrieve the history of changes to an individual charge - retrieve a list of payments for a given date range - retrieve the allocation details of a specific payment against one or more liabilities The sandbox endpoint is `https://test-api.service.hmrc.gov.uk`."
 resource: "https://api.service.hmrc.gov.uk"
-timestamp: "2020-09-02"
-tags: "government-services, hm-revenue-customs, rest-http, tax-and-customs"
+tags: ["government-services", "hm-revenue-customs", "rest-http", "tax-and-customs"]
+generated: { by: process:uk-government-api-okf-builder, at: "2026-07-16T00:00:00Z" }
+status: draft
+sources: [{ id: "api_gov_uk_catalogue", resource: "https://raw.githubusercontent.com/co-cddo/api-catalogue/main/data/catalogue.csv", title: "GOV.UK API Catalogue CSV", last_modified: "2020-09-02" }]
 confidence: "declared"
 source_adapter: "api_gov_uk_catalogue"
 ---
@@ -44,7 +46,7 @@ This generated record is standards-alignable, not standards-conformant by itself
 - OpenAPI: `OpenAPI Object`; export status `service-stub-with-gaps`.
 - OpenAPI security scheme: `unknown`.
 - OpenAPI missing requirements: `components.securitySchemes`, `info.license`
-- Crosswalk: [OKF Standards Crosswalk](../../docs/okf-standards-crosswalk.md)
+- Crosswalk: [OKF Standards Crosswalk](../docs/okf-standards-crosswalk.md)
 
 ## Credential Requirements
 

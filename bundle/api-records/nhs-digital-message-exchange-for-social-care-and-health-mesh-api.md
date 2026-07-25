@@ -3,8 +3,10 @@ type: "API Product"
 title: "Message Exchange for Social Care and Health (MESH) API"
 description: "You interact with MESH by making calls to this API from your application. With the API, you can: - check the number of messages in your inbox- send a message, or a larger message as series of chunks- download a message, or a larger message which was sent to you as a series of chunks- acknowledge the successful download of a message, which removes it from your inbox- get the identifiers of messages in your inbox that are ready for download- track the status of messages that you sent from your outbox- look up the mailbox of an organisation you want to send data to- validate your mailbox every 24 hours to let Spine know it's still active"
 resource: "https://digital.nhs.uk/developer/api-catalogue/message-exchange-for-social-care-and-health-api"
-timestamp: "2024-04-23"
-tags: "health-and-care, mesh, nhs-digital"
+tags: ["health-and-care", "mesh", "nhs-digital"]
+generated: { by: process:uk-government-api-okf-builder, at: "2026-07-16T00:00:00Z" }
+status: draft
+sources: [{ id: "api_gov_uk_catalogue", resource: "https://raw.githubusercontent.com/co-cddo/api-catalogue/main/data/catalogue.csv", title: "GOV.UK API Catalogue CSV", last_modified: "2024-04-23" }]
 confidence: "declared"
 source_adapter: "api_gov_uk_catalogue"
 ---
@@ -44,7 +46,7 @@ This generated record is standards-alignable, not standards-conformant by itself
 - OpenAPI: `OpenAPI Object`; export status `service-stub-with-gaps`.
 - OpenAPI security scheme: `unknown`.
 - OpenAPI missing requirements: `components.securitySchemes`, `info.license`
-- Crosswalk: [OKF Standards Crosswalk](../../docs/okf-standards-crosswalk.md)
+- Crosswalk: [OKF Standards Crosswalk](../docs/okf-standards-crosswalk.md)
 
 ## Credential Requirements
 

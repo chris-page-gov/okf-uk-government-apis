@@ -3,8 +3,10 @@ type: "API Product"
 title: "CIS Deductions (MTD)"
 description: "Under the Construction Industry Scheme (CIS), contractors deduct money from a subcontractor’s payments and pass it to HM Revenue and Customs (HMRC). The deductions count as advance payments towards the subcontractor’s tax and National Insurance. Contractors must register for the scheme. Subcontractors don’t have to register, but deductions are taken from their payments at a higher rate if they’re not registered. Here a developer can: - create CIS deductions where they have not previously registered with HMRC - amend CIS deductions which have been previously populated when creating their record - retrieve a list of CIS deductions for a subcontractor that has been previously populated - remove CIS deductions that have been previously populated The sandbox endpoint is `https://test-api.service.hmrc.gov.uk`."
 resource: "https://api.service.hmrc.gov.uk"
-timestamp: "2020-09-02"
-tags: "government-services, hm-revenue-customs, planning-and-property, rest-http, tax-and-customs"
+tags: ["government-services", "hm-revenue-customs", "planning-and-property", "rest-http", "tax-and-customs"]
+generated: { by: process:uk-government-api-okf-builder, at: "2026-07-16T00:00:00Z" }
+status: draft
+sources: [{ id: "api_gov_uk_catalogue", resource: "https://raw.githubusercontent.com/co-cddo/api-catalogue/main/data/catalogue.csv", title: "GOV.UK API Catalogue CSV", last_modified: "2020-09-02" }]
 confidence: "declared"
 source_adapter: "api_gov_uk_catalogue"
 ---
@@ -44,7 +46,7 @@ This generated record is standards-alignable, not standards-conformant by itself
 - OpenAPI: `OpenAPI Object`; export status `service-stub-with-gaps`.
 - OpenAPI security scheme: `metadata-only`.
 - OpenAPI missing requirements: `info.license`
-- Crosswalk: [OKF Standards Crosswalk](../../docs/okf-standards-crosswalk.md)
+- Crosswalk: [OKF Standards Crosswalk](../docs/okf-standards-crosswalk.md)
 
 ## Credential Requirements
 

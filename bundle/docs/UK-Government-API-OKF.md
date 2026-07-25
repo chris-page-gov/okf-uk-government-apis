@@ -1,3 +1,10 @@
+---
+type: "Reference"
+title: "UK Government API OKF"
+generated: { by: process:uk-government-api-okf-builder, at: "2026-07-16T00:00:00Z" }
+status: draft
+sources: [{ id: "repository-source", resource: "https://github.com/chris-page-gov/okf-uk-government-apis/blob/main/docs/UK-Government-API-OKF.md", title: "UK-Government-API-OKF.md" }]
+---
 ## Core conclusion
 
 The same OKF Explorer pattern should work for UK Government APIs, but the API domain needs to be treated less like a document catalogue and more like an **operational API control-plane view**: discoverable products, versions, operations, schemas, events, workflows, ownership, access conditions, security posture, lifecycle state, dependencies, samples, and evidence.
@@ -27,7 +34,7 @@ The CKAN fixture also shows the scale pattern: a descriptor, search shards, defe
 | **Knowledge Bundle** | `uk-government-apis-okf`: the national API knowledge bundle, published as a static bundle plus large-corpus descriptor.                                                                                                                              |
 | **Concept**          | Any meaningful API-domain thing: API product, API version, operation, endpoint, event, workflow, schema, organisation, service, data product, access policy, credential requirement, sample, sandbox, scorecard, standard, legal/governance control. |
 | **Concept ID**       | Stable path-like identifier, not merely a title. Example: `apis/hmrc/vat/mtd-vat`, `api-versions/hmrc/mtd-vat/v1`, `operations/hmrc/mtd-vat/get-obligations`.                                                                                        |
-| **Frontmatter**      | The machine-readable discovery card: title, description, publisher, lifecycle, visibility, auth model, data sensitivity, spec links, standards conformance, tags, timestamps and relationship hints.                                                 |
+| **Frontmatter**      | The machine-readable discovery card: title, description, publisher, lifecycle, visibility, auth model, data sensitivity, spec links, standards conformance, tags, structured generation/source provenance and relationship hints.                         |
 | **Markdown body**    | Human-readable narrative: what it is, who owns it, how to use it, access conditions, examples, quality, security, known limitations, provenance and relationship explanations.                                                                       |
 | **Links**            | Human-readable links remain OKF-native, but the explorer should also generate a typed relationship index from frontmatter, sections and harvested contracts.                                                                                         |
 | **`index.md`**       | Progressive disclosure entry point: government API estate → departments → domains → API products → versions → operations/events/workflows.                                                                                                           |
@@ -109,7 +116,8 @@ title: Example Payments API
 description: Payments capability exposed by Example Department for approved service integrations.
 publisher: organisations/example-department
 owner: organisations/example-department/payments-platform-team
-status: production
+status: draft
+lifecycle_status: production
 visibility: restricted-public-catalogue
 interaction_styles:
   - rest
@@ -153,7 +161,11 @@ tags:
   - finance
   - openapi
   - oauth2
-timestamp: 2026-07-07T00:00:00Z
+generated: { by: process:uk-government-api-okf-builder, at: 2026-07-25T12:00:00Z }
+sources:
+  - id: api_gov_uk_catalogue
+    resource: https://raw.githubusercontent.com/co-cddo/api-catalogue/main/data/catalogue.csv
+    last_modified: 2026-07-07
 ---
 ```
 
@@ -180,7 +192,7 @@ And the body could follow a predictable card-driven structure:
 
 # Relationships
 
-# Citations
+# Source notes
 ```
 
 This keeps the bundle human-readable, but gives the explorer enough structured material to build facets, graph edges, scorecards and right-hand cards.

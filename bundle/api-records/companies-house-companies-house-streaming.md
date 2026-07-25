@@ -3,8 +3,10 @@ type: "API Product"
 title: "Companies House Streaming"
 description: "The Companies House streaming API gives you access to realtime data changes of the information held at Companies House. This delivers the same information that is available through the on-demand REST API GET requests, but instead pushes data to your client as it changes, through a long-running connection that you first establish. Streams include: - company information - filing history - insolvency cases - charges"
 resource: "https://stream.companieshouse.gov.uk/"
-timestamp: "2020-08-24"
-tags: "business-and-economy, companies-house, streaming"
+tags: ["business-and-economy", "companies-house", "streaming"]
+generated: { by: process:uk-government-api-okf-builder, at: "2026-07-16T00:00:00Z" }
+status: draft
+sources: [{ id: "api_gov_uk_catalogue", resource: "https://raw.githubusercontent.com/co-cddo/api-catalogue/main/data/catalogue.csv", title: "GOV.UK API Catalogue CSV", last_modified: "2020-08-24" }]
 confidence: "declared"
 source_adapter: "api_gov_uk_catalogue"
 ---
@@ -44,7 +46,7 @@ This generated record is standards-alignable, not standards-conformant by itself
 - OpenAPI: `OpenAPI Object`; export status `service-stub-with-gaps`.
 - OpenAPI security scheme: `unknown`.
 - OpenAPI missing requirements: `components.securitySchemes`, `info.license`
-- Crosswalk: [OKF Standards Crosswalk](../../docs/okf-standards-crosswalk.md)
+- Crosswalk: [OKF Standards Crosswalk](../docs/okf-standards-crosswalk.md)
 
 ## Credential Requirements
 

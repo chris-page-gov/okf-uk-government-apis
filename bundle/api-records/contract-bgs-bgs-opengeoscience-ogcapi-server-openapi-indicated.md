@@ -3,8 +3,10 @@ type: "Contract"
 title: "BGS OpenGeoscience OGCAPI Server contract"
 description: "Machine-readable or service-description contract inferred for BGS OpenGeoscience OGCAPI Server from public metadata."
 resource: "https://ogcapi.bgs.ac.uk/openapi?f=html"
-timestamp: "2022-02-01"
-tags: "bgs, geospatial, rest-http"
+tags: ["bgs", "geospatial", "rest-http"]
+generated: { by: process:uk-government-api-okf-builder, at: "2026-07-16T00:00:00Z" }
+status: draft
+sources: [{ id: "contract_discovery", resource: "https://raw.githubusercontent.com/co-cddo/api-catalogue/main/data/catalogue.csv", title: "Contract discovery from harvested API metadata", last_modified: "2022-02-01" }]
 confidence: "observed"
 source_adapter: "contract_discovery"
 ---
@@ -44,7 +46,7 @@ This generated record is standards-alignable, not standards-conformant by itself
 - OpenAPI: `OpenAPI Description or external contract`; export status `contract-reference`.
 - OpenAPI security scheme: `unknown`.
 - OpenAPI missing requirements: none recorded
-- Crosswalk: [OKF Standards Crosswalk](../../docs/okf-standards-crosswalk.md)
+- Crosswalk: [OKF Standards Crosswalk](../docs/okf-standards-crosswalk.md)
 
 ## Credential Requirements
 

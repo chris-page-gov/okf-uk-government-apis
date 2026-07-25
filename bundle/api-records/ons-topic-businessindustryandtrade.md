@@ -3,8 +3,10 @@ type: "Schema"
 title: "Business, industry and trade"
 description: "Activities of businesses and industry in the UK, including data on the production and trade of goods and services, sales by retailers, characteristics of businesses, the construction and manufacturing sectors, and international trade."
 resource: "https://api.beta.ons.gov.uk/v1/topics/9658"
-timestamp: ""
-tags: "office-for-national-statistics, population-and-statistics, rest-http"
+tags: ["office-for-national-statistics", "population-and-statistics", "rest-http"]
+generated: { by: process:uk-government-api-okf-builder, at: "2026-07-16T00:00:00Z" }
+status: draft
+sources: [{ id: "ons_beta_api", resource: "https://api.beta.ons.gov.uk/v1", title: "ONS Beta API" }]
 confidence: "declared"
 source_adapter: "ons_beta_api"
 ---
@@ -44,7 +46,7 @@ This generated record is standards-alignable, not standards-conformant by itself
 - OpenAPI: `Schema Object`; export status `schema-reference`.
 - OpenAPI security scheme: `none`.
 - OpenAPI missing requirements: none recorded
-- Crosswalk: [OKF Standards Crosswalk](../../docs/okf-standards-crosswalk.md)
+- Crosswalk: [OKF Standards Crosswalk](../docs/okf-standards-crosswalk.md)
 
 ## Credential Requirements
 

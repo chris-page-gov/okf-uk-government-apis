@@ -3,8 +3,10 @@ type: "Contract"
 title: "Gender identity by hours worked contract"
 description: "Machine-readable or service-description contract inferred for Gender identity by hours worked from public metadata."
 resource: "https://api.beta.ons.gov.uk/v1/datasets/RM168"
-timestamp: "2024-09-25T14:48:58.997Z"
-tags: "office-for-national-statistics, population-and-statistics, rest-http"
+tags: ["office-for-national-statistics", "population-and-statistics", "rest-http"]
+generated: { by: process:uk-government-api-okf-builder, at: "2026-07-16T00:00:00Z" }
+status: draft
+sources: [{ id: "contract_discovery", resource: "https://api.beta.ons.gov.uk/v1/datasets", title: "Contract discovery from harvested API metadata", last_modified: "2024-09-25" }]
 confidence: "observed"
 source_adapter: "contract_discovery"
 ---
@@ -44,7 +46,7 @@ This generated record is standards-alignable, not standards-conformant by itself
 - OpenAPI: `OpenAPI Description or external contract`; export status `contract-reference`.
 - OpenAPI security scheme: `none`.
 - OpenAPI missing requirements: none recorded
-- Crosswalk: [OKF Standards Crosswalk](../../docs/okf-standards-crosswalk.md)
+- Crosswalk: [OKF Standards Crosswalk](../docs/okf-standards-crosswalk.md)
 
 ## Credential Requirements
 

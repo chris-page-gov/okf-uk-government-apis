@@ -3,8 +3,10 @@ type: "API Product"
 title: "Land Charges Full Search"
 description: "A land charge is an interest in land that imposes an obligation on the landowner in favour of some other person. Use this service to request an official search of the Land Charges Register. If you're a software developer: - Use this document to integrate data into your system. Poll Request Service URL for production environment: https://businessgateway.landregistry.gov.uk/b2b/BGSoapEngine/FullSearchV2_1PollRequestWebService?wsdl For test environment endpoints replace https://businessgateway.landregistry.gov.uk/b2b/BGSoapEngine with https://bgtest.landregistry.gov.uk/b2b/BGStubService"
 resource: "https://businessgateway.landregistry.gov.uk/b2b/BGSoapEngine/FullSearchV2_1WebService?wsdl"
-timestamp: "2023-01-10"
-tags: "environment, government-services, hm-land-registry, planning-and-property, soap-wsdl"
+tags: ["environment", "government-services", "hm-land-registry", "planning-and-property", "soap-wsdl"]
+generated: { by: process:uk-government-api-okf-builder, at: "2026-07-16T00:00:00Z" }
+status: draft
+sources: [{ id: "api_gov_uk_catalogue", resource: "https://raw.githubusercontent.com/co-cddo/api-catalogue/main/data/catalogue.csv", title: "GOV.UK API Catalogue CSV", last_modified: "2023-01-10" }]
 confidence: "declared"
 source_adapter: "api_gov_uk_catalogue"
 ---
@@ -44,7 +46,7 @@ This generated record is standards-alignable, not standards-conformant by itself
 - OpenAPI: `OpenAPI Object`; export status `service-stub-with-gaps`.
 - OpenAPI security scheme: `metadata-only`.
 - OpenAPI missing requirements: `info.license`
-- Crosswalk: [OKF Standards Crosswalk](../../docs/okf-standards-crosswalk.md)
+- Crosswalk: [OKF Standards Crosswalk](../docs/okf-standards-crosswalk.md)
 
 ## Credential Requirements
 

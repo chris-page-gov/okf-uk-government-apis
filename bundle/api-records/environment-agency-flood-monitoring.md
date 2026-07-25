@@ -3,8 +3,10 @@ type: "API Product"
 title: "Flood-monitoring"
 description: "The Environment Agency flood-monitoring API provides developers with access to near real-time information covering: - flood warnings and flood alerts - flood areas which to which warnings or alerts apply - measurements of water levels and flows - information on the monitoring stations providing those measurements Water levels and flows are regularly monitored, usually every 15 minutes. However, data is transferred back to the Environment Agency at various frequencies, usually depending on the site and level of flood risk. Transfer of data is typically once or twice per day but usually increases during times of heightened flood risk. These APIs are provided as open data under the Open Government Licence with no requirement for registration. If you make use of this data please acknowledge this with the following attribution statement: 'This uses Environment Agency flood and river level data from the real-time data API (Beta)'. Please visit the [Defra Data Services Platform Support](https://environment.data.gov.uk/support) to let us know about any issues or to ask questions."
 resource: "http://environment.data.gov.uk/flood-monitoring/id/floods"
-timestamp: "2020-08-26"
-tags: "environment, environment-agency, government-services, rest-http"
+tags: ["environment", "environment-agency", "government-services", "rest-http"]
+generated: { by: process:uk-government-api-okf-builder, at: "2026-07-16T00:00:00Z" }
+status: draft
+sources: [{ id: "api_gov_uk_catalogue", resource: "https://raw.githubusercontent.com/co-cddo/api-catalogue/main/data/catalogue.csv", title: "GOV.UK API Catalogue CSV", last_modified: "2020-08-26" }]
 confidence: "declared"
 source_adapter: "api_gov_uk_catalogue"
 ---
@@ -44,7 +46,7 @@ This generated record is standards-alignable, not standards-conformant by itself
 - OpenAPI: `OpenAPI Object`; export status `service-stub-with-gaps`.
 - OpenAPI security scheme: `none`.
 - OpenAPI missing requirements: `info.license`
-- Crosswalk: [OKF Standards Crosswalk](../../docs/okf-standards-crosswalk.md)
+- Crosswalk: [OKF Standards Crosswalk](../docs/okf-standards-crosswalk.md)
 
 ## Credential Requirements
 

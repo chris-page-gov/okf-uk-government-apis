@@ -3,8 +3,10 @@ type: "Contract"
 title: "Earnings and hours worked, care workers: ASHE Table 26 contract"
 description: "Machine-readable or service-description contract inferred for Earnings and hours worked, care workers: ASHE Table 26 from public metadata."
 resource: "https://api.beta.ons.gov.uk/v1/datasets/ashe-tables-26"
-timestamp: "2024-01-23T09:47:37.163Z"
-tags: "government-services, health-and-care, office-for-national-statistics, population-and-statistics, rest-http, tax-and-customs"
+tags: ["government-services", "health-and-care", "office-for-national-statistics", "population-and-statistics", "rest-http", "tax-and-customs"]
+generated: { by: process:uk-government-api-okf-builder, at: "2026-07-16T00:00:00Z" }
+status: draft
+sources: [{ id: "contract_discovery", resource: "https://api.beta.ons.gov.uk/v1/datasets", title: "Contract discovery from harvested API metadata", last_modified: "2024-01-23" }]
 confidence: "observed"
 source_adapter: "contract_discovery"
 ---
@@ -44,7 +46,7 @@ This generated record is standards-alignable, not standards-conformant by itself
 - OpenAPI: `OpenAPI Description or external contract`; export status `contract-reference`.
 - OpenAPI security scheme: `none`.
 - OpenAPI missing requirements: none recorded
-- Crosswalk: [OKF Standards Crosswalk](../../docs/okf-standards-crosswalk.md)
+- Crosswalk: [OKF Standards Crosswalk](../docs/okf-standards-crosswalk.md)
 
 ## Credential Requirements
 

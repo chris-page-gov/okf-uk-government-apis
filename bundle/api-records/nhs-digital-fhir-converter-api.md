@@ -3,8 +3,10 @@ type: "API Product"
 title: "FHIR Converter API"
 description: "Use this API to convert resource types MedicationRequest and MedicationStatements from STU3 to FHIR R4 and vice versa. You can: - post either a MedicationRequest or MedicationStatementYou cannot: - convert between any other resource typesTo use this API: - Send your source payload to this API.This API converts your source payload to the target version.You receive the converted payload in the response."
 resource: "https://digital.nhs.uk/developer/api-catalogue/fhir-converter"
-timestamp: "2024-04-23"
-tags: "fhir, health-and-care, nhs-digital"
+tags: ["fhir", "health-and-care", "nhs-digital"]
+generated: { by: process:uk-government-api-okf-builder, at: "2026-07-16T00:00:00Z" }
+status: draft
+sources: [{ id: "api_gov_uk_catalogue", resource: "https://raw.githubusercontent.com/co-cddo/api-catalogue/main/data/catalogue.csv", title: "GOV.UK API Catalogue CSV", last_modified: "2024-04-23" }]
 confidence: "declared"
 source_adapter: "api_gov_uk_catalogue"
 ---
@@ -44,7 +46,7 @@ This generated record is standards-alignable, not standards-conformant by itself
 - OpenAPI: `OpenAPI Object`; export status `service-stub-with-gaps`.
 - OpenAPI security scheme: `unknown`.
 - OpenAPI missing requirements: `components.securitySchemes`, `info.license`
-- Crosswalk: [OKF Standards Crosswalk](../../docs/okf-standards-crosswalk.md)
+- Crosswalk: [OKF Standards Crosswalk](../docs/okf-standards-crosswalk.md)
 
 ## Credential Requirements
 

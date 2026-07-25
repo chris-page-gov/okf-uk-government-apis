@@ -1,3 +1,10 @@
+---
+type: "Reference"
+title: "okf bundle wiki architecture 2026 07 11"
+generated: { by: process:uk-government-api-okf-builder, at: "2026-07-16T00:00:00Z" }
+status: draft
+sources: [{ id: "repository-source", resource: "https://github.com/chris-page-gov/okf-uk-government-apis/blob/main/docs/okf-bundle-wiki-architecture-2026-07-11.md", title: "okf-bundle-wiki-architecture-2026-07-11.md" }]
+---
 # Federated OKF Bundle Wiki Architecture
 
 Decision date: 11 July 2026. Status: implementation in progress.

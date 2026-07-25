@@ -1,7 +1,5 @@
 ---
-type: "Index"
-title: "UK Government APIs OKF"
-description: "Generated Markdown entry point for the UK Government APIs OKF exemplar."
+okf_version: "0.2"
 ---
 
 # UK Government APIs OKF
@@ -28,5 +26,5 @@ Each generated API/data record carries compact DCAT/OpenAPI alignment fields: `d
 ## Entry Points
 
 - [Explorer descriptor](okf-explorer.json)
-- [Specification notes](../sources/UK-Government-API-OKF.md)
-- [Standards crosswalk](../docs/okf-standards-crosswalk.md)
+- [Specification notes](docs/UK-Government-API-OKF.md)
+- [Standards crosswalk](docs/okf-standards-crosswalk.md)

@@ -1,10 +1,10 @@
 # OKF Standards Crosswalk (DCAT-AP / OpenAPI)
 
-This repository's OKF record contract ([okf-bundle-authoring.md](okf-bundle-authoring.md))
-is deliberately plain-English Markdown and JSON, not RDF or an executable API
-description. That is the right choice for authoring and for the Explorer, but
-it means every bundle re-derives field names from scratch. This page is the
-standing crosswalk between the OKF fields already in use (see the
+This repository's OKF record contract is deliberately plain-English Markdown
+and JSON, not RDF or an executable API description. That is the right choice
+for authoring and for the Explorer, but it means every bundle re-derives field
+names from scratch. This page is the standing crosswalk between the OKF fields
+already in use (see the
 `api-records/*.md` Metadata blocks in `uk-government-apis/`) and the two
 external standards that already cover this domain:
 
@@ -44,18 +44,20 @@ unless an RDF or `openapi.yaml` artefact actually ships alongside it.
 
 ## Repository implementation status
 
-The standards are now localised in the OKF source tree as browser-compatible
-Markdown concept pages:
+The descriptor records both the authoritative external standards and stable
+`local_concept` routes used by the wider OKF corpus. This compact API
+publication does not duplicate those shared concept pages, so consumers should
+follow the official URLs when a local route is unavailable:
 
-- [DCAT](../standards/dcat.md) for `dcat:DataService`, `dcat:Dataset`,
+- DCAT for `dcat:DataService`, `dcat:Dataset`,
   `dcat:endpointURL`, `dcat:endpointDescription`, publisher and licence terms.
-- [DCAT-AP](../standards/dcat-ap.md) as the federated public-data catalogue
+- DCAT-AP as the federated public-data catalogue
   profile that future RDF exports should validate against.
-- [OpenAPI](../standards/openapi.md) for executable HTTP API descriptions,
+- OpenAPI for executable HTTP API descriptions,
   including `servers`, `paths`, operation objects, schemas and security schemes.
-- [DQV](../standards/dqv.md) as the standards-family home for future quality
+- DQV as the standards-family home for future quality
   annotations where OKF metadata-quality signals need export semantics.
-- [W3C PROV](../standards/w3c-prov.md) for source adapter, observed timestamp
+- W3C PROV for source adapter, observed timestamp
   and harvest activity provenance.
 
 `scripts/build_uk_government_api_okf.py` applies this crosswalk to the
@@ -72,7 +74,7 @@ Markdown concept pages:
 The generated descriptor also exposes `okf-standards-crosswalk.v1`, local and
 official standard references, and aggregate missing-field counts in
 `data/analysis/overview.json`. These fields are intentionally compact per
-record; the full field semantics live here and in the local standards pages.
+record; the full field semantics live here and in the authoritative standards.
 
 ## API-bundle gap analysis
 
@@ -173,7 +175,7 @@ and retain OKF names where the standards do not have an exact concept:
 | Licence basis / Licence confidence | No DCAT property — this is OKF's own provenance-of-metadata concept | N/A | Keep as an OKF-native field; note it in `dcterms:provenance` free text if exporting. |
 | Access model | Not modelled in DCAT directly; DCAT-AP uses `dcatap:availability` for a different concept (distribution lifecycle, not auth) | `components.securitySchemes.<name>.type` | See the access-model table below — this is the one field where OpenAPI, not DCAT, is the authoritative vocabulary. |
 | Tags / topics | `dcat:keyword` / `dcat:theme` | `tags` | Direct mapping. |
-| Timestamps (`timestamp`, generated/observed dates) | `dcterms:issued` / `dcterms:modified` | `info.version` (for the API's own version history, not wall-clock time) | — |
+| OKF v0.2 generation and source dates (`generated.at`, `sources[].last_modified`, observed dates) | `dcterms:issued` / `dcterms:modified` | `info.version` (for the API's own version history, not wall-clock time) | — |
 
 ## Access model → OpenAPI `securityScheme.type`
 

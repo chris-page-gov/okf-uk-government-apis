@@ -3,8 +3,10 @@ type: "Capability Document"
 title: "North York Moors National Park Authority INSPIRE WFS Service contract"
 description: "Machine-readable or service-description contract inferred for North York Moors National Park Authority INSPIRE WFS Service from public metadata."
 resource: "https://www.data.gov.uk/dataset/nymnpa-brownfield-land-register"
-timestamp: "2026-06-16T09:33:06.979594"
-tags: "geospatial, government-services, north-york-moors-national-park-authority, planning-and-property, wfs"
+tags: ["geospatial", "government-services", "north-york-moors-national-park-authority", "planning-and-property", "wfs"]
+generated: { by: process:uk-government-api-okf-builder, at: "2026-07-16T00:00:00Z" }
+status: draft
+sources: [{ id: "contract_discovery", resource: "https://ckan.publishing.service.gov.uk/api/3/action/package_search?fq=res_format:(\"WMS\" OR \"WFS\" OR \"WMTS\" OR \"WCS\" OR \"OGC API - Features\" OR \"OGC WFS\" OR \"OGC WMS\" OR \"ogc wfs\" OR \"ogc wms\" OR \"ArcGIS GeoServices REST API\" OR \"arcgis geoservices rest api\" OR \"Esri REST\" OR \"ESRI REST API\" OR \"ESRI Rest API\" OR \"esri rest api\" OR \"SPARQL\" OR \"API\" OR \"api\")", title: "Contract discovery from harvested API metadata", last_modified: "2026-06-16" }]
 confidence: "observed"
 source_adapter: "contract_discovery"
 ---
@@ -44,7 +46,7 @@ This generated record is standards-alignable, not standards-conformant by itself
 - OpenAPI: `OpenAPI Description or external contract`; export status `contract-reference`.
 - OpenAPI security scheme: `none`.
 - OpenAPI missing requirements: none recorded
-- Crosswalk: [OKF Standards Crosswalk](../../docs/okf-standards-crosswalk.md)
+- Crosswalk: [OKF Standards Crosswalk](../docs/okf-standards-crosswalk.md)
 
 ## Credential Requirements
 

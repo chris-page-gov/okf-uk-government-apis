@@ -3,8 +3,10 @@ type: "API Product"
 title: "Search by Property Description"
 description: "Use this service to find out the title number and tenure of a property based on the address supplied. Poll Request Service URL for production environment: https://businessgateway.landregistry.gov.uk/b2b/BGSoapEngine/EnquiryByPropertyDescriptionV2_0PollWebService?wsdl For test environment endpoints replace https://businessgateway.landregistry.gov.uk/b2b/BGSoapEngine with https://bgtest.landregistry.gov.uk/b2b/ECBG_StubService"
 resource: "https://businessgateway.landregistry.gov.uk/b2b/BGSoapEngine/EnquiryByPropertyDescriptionV2_0WebService?wsdl"
-timestamp: "2026-03-31"
-tags: "environment, geospatial, government-services, hm-land-registry, planning-and-property, soap-wsdl"
+tags: ["environment", "geospatial", "government-services", "hm-land-registry", "planning-and-property", "soap-wsdl"]
+generated: { by: process:uk-government-api-okf-builder, at: "2026-07-16T00:00:00Z" }
+status: draft
+sources: [{ id: "api_gov_uk_catalogue", resource: "https://raw.githubusercontent.com/co-cddo/api-catalogue/main/data/catalogue.csv", title: "GOV.UK API Catalogue CSV", last_modified: "2026-03-31" }]
 confidence: "declared"
 source_adapter: "api_gov_uk_catalogue"
 ---
@@ -44,7 +46,7 @@ This generated record is standards-alignable, not standards-conformant by itself
 - OpenAPI: `OpenAPI Object`; export status `service-stub-with-gaps`.
 - OpenAPI security scheme: `unknown`.
 - OpenAPI missing requirements: `components.securitySchemes`, `info.license`
-- Crosswalk: [OKF Standards Crosswalk](../../docs/okf-standards-crosswalk.md)
+- Crosswalk: [OKF Standards Crosswalk](../docs/okf-standards-crosswalk.md)
 
 ## Credential Requirements
 

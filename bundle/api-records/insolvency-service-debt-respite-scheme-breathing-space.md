@@ -3,8 +3,10 @@ type: "API Product"
 title: "Debt Respite Scheme (Breathing Space)"
 description: "The Debt Respite Scheme (Breathing Space) will give someone in problem debt the right to legal protections from their creditors. This API allows money advisers to manage their clients through a breathing space, whilst also allowing creditors to digitally interact with the service. You can read more in: - [Debt Respite Scheme (Breathing Space) - guidance for money advisers](https://www.gov.uk/government/publications/debt-respite-scheme-breathing-space-guidance/debt-respite-scheme-breathing-space-guidance-for-money-advisers) - [Debt Respite Scheme (Breathing Space) - guidance for creditors](https://www.gov.uk/government/publications/debt-respite-scheme-breathing-space-guidance/debt-respite-scheme-breathing-space-guidance-for-creditors)"
 resource: "https://www.gov.uk/api/debt-respite-scheme"
-timestamp: "2021-03-09"
-tags: "business-and-economy, government-services, insolvency-service, rest-http"
+tags: ["business-and-economy", "government-services", "insolvency-service", "rest-http"]
+generated: { by: process:uk-government-api-okf-builder, at: "2026-07-16T00:00:00Z" }
+status: draft
+sources: [{ id: "api_gov_uk_catalogue", resource: "https://raw.githubusercontent.com/co-cddo/api-catalogue/main/data/catalogue.csv", title: "GOV.UK API Catalogue CSV", last_modified: "2021-03-09" }]
 confidence: "declared"
 source_adapter: "api_gov_uk_catalogue"
 ---
@@ -44,7 +46,7 @@ This generated record is standards-alignable, not standards-conformant by itself
 - OpenAPI: `OpenAPI Object`; export status `service-stub-with-gaps`.
 - OpenAPI security scheme: `unknown`.
 - OpenAPI missing requirements: `components.securitySchemes`, `info.license`
-- Crosswalk: [OKF Standards Crosswalk](../../docs/okf-standards-crosswalk.md)
+- Crosswalk: [OKF Standards Crosswalk](../docs/okf-standards-crosswalk.md)
 
 ## Credential Requirements
 

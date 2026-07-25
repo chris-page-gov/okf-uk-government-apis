@@ -3,8 +3,10 @@ type: "API Product"
 title: "UK Trade Quotas"
 description: "This dataset shows the quotas available in the UK Tariff along with their current or final balances, updated daily. You can use this data to analyse quota applicability and utilisation in bulk, and to understand trends in quota application and usage over time. Please see the full UK Trade Quotas summary for detailed information on what this dataset contains and what it can be used for. Parameters can be specified to the API to filter the returned results. See the metadata at the documentation link for more information on how to access the API and how to use the filters."
 resource: "https://data.api.trade.gov.uk/v1/datasets/uk-trade-quotas/versions/v1.0.22/reports/quotas-including-current-volumes/data?format=csv&download"
-timestamp: "2022-02-15"
-tags: "business-and-economy, department-for-business-and-trade, population-and-statistics, rest-http, tax-and-customs"
+tags: ["business-and-economy", "department-for-business-and-trade", "population-and-statistics", "rest-http", "tax-and-customs"]
+generated: { by: process:uk-government-api-okf-builder, at: "2026-07-16T00:00:00Z" }
+status: draft
+sources: [{ id: "api_gov_uk_catalogue", resource: "https://raw.githubusercontent.com/co-cddo/api-catalogue/main/data/catalogue.csv", title: "GOV.UK API Catalogue CSV", last_modified: "2022-02-15" }]
 confidence: "declared"
 source_adapter: "api_gov_uk_catalogue"
 ---
@@ -44,7 +46,7 @@ This generated record is standards-alignable, not standards-conformant by itself
 - OpenAPI: `OpenAPI Object`; export status `service-stub-with-gaps`.
 - OpenAPI security scheme: `unknown`.
 - OpenAPI missing requirements: `components.securitySchemes`
-- Crosswalk: [OKF Standards Crosswalk](../../docs/okf-standards-crosswalk.md)
+- Crosswalk: [OKF Standards Crosswalk](../docs/okf-standards-crosswalk.md)
 
 ## Credential Requirements
 

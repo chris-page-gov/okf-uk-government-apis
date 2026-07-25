@@ -3,8 +3,10 @@ type: "API Product"
 title: "Technology Reference Update Distribution API"
 description: "Use this API to automate the download of Technology Reference Update Distribution (TRUD) release files.These include:- classification products, including NHS Information Standards ICD and OPCS-4 in the UK, as well as other products to support the implementation of these clinical classifications and derivative products- the NHS Data Model and Dictionary, which provides a reference point for approved Information Standards and Collections (including Extractions) (ISCEs) to support health care activities within the NHS in England- terminology products such as SNOMED CT, the Read Codes and other products to support the implementation of terminology, including tools and derivative productsYou can:- request release information for an item- request a release file once you have its release informationYou must have a TRUD account before you can use this API."
 resource: "https://digital.nhs.uk/developer/api-catalogue/technology-reference-update-distribution-api"
-timestamp: "2024-04-23"
-tags: "health-and-care, nhs-digital, rest-http"
+tags: ["health-and-care", "nhs-digital", "rest-http"]
+generated: { by: process:uk-government-api-okf-builder, at: "2026-07-16T00:00:00Z" }
+status: draft
+sources: [{ id: "api_gov_uk_catalogue", resource: "https://raw.githubusercontent.com/co-cddo/api-catalogue/main/data/catalogue.csv", title: "GOV.UK API Catalogue CSV", last_modified: "2024-04-23" }]
 confidence: "declared"
 source_adapter: "api_gov_uk_catalogue"
 ---
@@ -44,7 +46,7 @@ This generated record is standards-alignable, not standards-conformant by itself
 - OpenAPI: `OpenAPI Object`; export status `service-stub-with-gaps`.
 - OpenAPI security scheme: `metadata-only`.
 - OpenAPI missing requirements: `info.license`
-- Crosswalk: [OKF Standards Crosswalk](../../docs/okf-standards-crosswalk.md)
+- Crosswalk: [OKF Standards Crosswalk](../docs/okf-standards-crosswalk.md)
 
 ## Credential Requirements
 

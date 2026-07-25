@@ -3,8 +3,10 @@ type: "API Product"
 title: "Cervical Screening - EDIFACT"
 description: "Use this messaging integration to send cervical screening test results from screening laboratories and receive them at the patient's registered GP practice and NHAIS systems. You can:- send and receive cytology test results- send and receive human papillomavirus (HPV) immunisation dataWe also use this integration to send and receive a patient's test results history between NHAIS systems, including between England and Wales: This integration uses MESH to send and receive UN/EDIFACT based messages."
 resource: "https://digital.nhs.uk/developer/api-catalogue/cervical-screening-edifact"
-timestamp: "2024-04-23"
-tags: "edifact, health-and-care, mesh, nhs-digital"
+tags: ["edifact", "health-and-care", "mesh", "nhs-digital"]
+generated: { by: process:uk-government-api-okf-builder, at: "2026-07-16T00:00:00Z" }
+status: draft
+sources: [{ id: "api_gov_uk_catalogue", resource: "https://raw.githubusercontent.com/co-cddo/api-catalogue/main/data/catalogue.csv", title: "GOV.UK API Catalogue CSV", last_modified: "2024-04-23" }]
 confidence: "declared"
 source_adapter: "api_gov_uk_catalogue"
 ---
@@ -44,7 +46,7 @@ This generated record is standards-alignable, not standards-conformant by itself
 - OpenAPI: `OpenAPI Object`; export status `service-stub-with-gaps`.
 - OpenAPI security scheme: `metadata-only`.
 - OpenAPI missing requirements: `info.license`
-- Crosswalk: [OKF Standards Crosswalk](../../docs/okf-standards-crosswalk.md)
+- Crosswalk: [OKF Standards Crosswalk](../docs/okf-standards-crosswalk.md)
 
 ## Credential Requirements
 

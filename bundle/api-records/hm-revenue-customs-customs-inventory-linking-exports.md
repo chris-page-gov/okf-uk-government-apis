@@ -3,8 +3,10 @@ type: "API Product"
 title: "Customs Inventory Linking Exports"
 description: "This API enables the functionality to support the Inventory Linking Export process. Inventory Linking controls and monitors cargo moving through temporary storage facilities, and allows the movement/transition through frontiers. There are three functional areas: - consolidation - this enables the combining of consignments into one master consignment, or splitting into multiple consignments - movement - records the movement of consignments within Customs controlled storage facilities - query - the querying of data held within the Inventory Linking Export database Within each of these functional areas, there are multiple message types, each performing a specific activity. The sandbox endpoint is `https://test-api.service.hmrc.gov.uk`."
 resource: "https://api.service.hmrc.gov.uk"
-timestamp: "2020-09-02"
-tags: "government-services, hm-revenue-customs, rest-http, tax-and-customs"
+tags: ["government-services", "hm-revenue-customs", "rest-http", "tax-and-customs"]
+generated: { by: process:uk-government-api-okf-builder, at: "2026-07-16T00:00:00Z" }
+status: draft
+sources: [{ id: "api_gov_uk_catalogue", resource: "https://raw.githubusercontent.com/co-cddo/api-catalogue/main/data/catalogue.csv", title: "GOV.UK API Catalogue CSV", last_modified: "2020-09-02" }]
 confidence: "declared"
 source_adapter: "api_gov_uk_catalogue"
 ---
@@ -44,7 +46,7 @@ This generated record is standards-alignable, not standards-conformant by itself
 - OpenAPI: `OpenAPI Object`; export status `service-stub-with-gaps`.
 - OpenAPI security scheme: `unknown`.
 - OpenAPI missing requirements: `components.securitySchemes`, `info.license`
-- Crosswalk: [OKF Standards Crosswalk](../../docs/okf-standards-crosswalk.md)
+- Crosswalk: [OKF Standards Crosswalk](../docs/okf-standards-crosswalk.md)
 
 ## Credential Requirements
 

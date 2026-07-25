@@ -3,8 +3,10 @@ type: "API Product"
 title: "BGS OpenGeoscience OGCAPI Server"
 description: "This server provides endpoints for a selection of BGS geospatial data using the OGCAPI suite of standards (https://ogcapi.ogc.org/). Data includes; geology, sensor, earthquake, landslide and borehole data. The BGS has a wide range of datasets and wants to increase access to these, publishing as many as possible under Open Government Licence. The API is powered by https://pygeoapi.io/"
 resource: "https://ogcapi.bgs.ac.uk/openapi?f=json"
-timestamp: "2022-02-01"
-tags: "bgs, geospatial, rest-http"
+tags: ["bgs", "geospatial", "rest-http"]
+generated: { by: process:uk-government-api-okf-builder, at: "2026-07-16T00:00:00Z" }
+status: draft
+sources: [{ id: "api_gov_uk_catalogue", resource: "https://raw.githubusercontent.com/co-cddo/api-catalogue/main/data/catalogue.csv", title: "GOV.UK API Catalogue CSV", last_modified: "2022-02-01" }]
 confidence: "declared"
 source_adapter: "api_gov_uk_catalogue"
 ---
@@ -44,7 +46,7 @@ This generated record is standards-alignable, not standards-conformant by itself
 - OpenAPI: `OpenAPI Object`; export status `service-stub-with-gaps`.
 - OpenAPI security scheme: `unknown`.
 - OpenAPI missing requirements: `components.securitySchemes`
-- Crosswalk: [OKF Standards Crosswalk](../../docs/okf-standards-crosswalk.md)
+- Crosswalk: [OKF Standards Crosswalk](../docs/okf-standards-crosswalk.md)
 
 ## Credential Requirements
 

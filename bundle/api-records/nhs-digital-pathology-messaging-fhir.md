@@ -3,8 +3,10 @@ type: "API Product"
 title: "Pathology Messaging - FHIR"
 description: "Use this integration to share pathology results from a Laboratory Information Management System (LIMS) to the requestor, typically a healthcare worker in NHS primary or secondary care.Initially it focuses on haematology and clinical biochemistry test reporting - also known as chemical pathology.This integration uses MESH to send and receive pathology results.It is intended to replace the current Pathology Messaging - EDIFACT API and supersedes Laboratory HL7 V3 (see the Message Implementation Manual under Domains -> Health and Clinical Management -> Laboratory)."
 resource: "https://digital.nhs.uk/developer/api-catalogue/pathology-messaging-fhir"
-timestamp: "2024-04-23"
-tags: "edifact, fhir, health-and-care, hl7-v3, mesh, nhs-digital"
+tags: ["edifact", "fhir", "health-and-care", "hl7-v3", "mesh", "nhs-digital"]
+generated: { by: process:uk-government-api-okf-builder, at: "2026-07-16T00:00:00Z" }
+status: draft
+sources: [{ id: "api_gov_uk_catalogue", resource: "https://raw.githubusercontent.com/co-cddo/api-catalogue/main/data/catalogue.csv", title: "GOV.UK API Catalogue CSV", last_modified: "2024-04-23" }]
 confidence: "declared"
 source_adapter: "api_gov_uk_catalogue"
 ---
@@ -44,7 +46,7 @@ This generated record is standards-alignable, not standards-conformant by itself
 - OpenAPI: `OpenAPI Object`; export status `service-stub-with-gaps`.
 - OpenAPI security scheme: `unknown`.
 - OpenAPI missing requirements: `components.securitySchemes`, `info.license`
-- Crosswalk: [OKF Standards Crosswalk](../../docs/okf-standards-crosswalk.md)
+- Crosswalk: [OKF Standards Crosswalk](../docs/okf-standards-crosswalk.md)
 
 ## Credential Requirements
 
