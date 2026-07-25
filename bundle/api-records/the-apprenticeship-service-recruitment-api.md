@@ -3,8 +3,10 @@ type: "API Product"
 title: "Recruitment API"
 description: "The Recruitment API allows you to create an advert on Find an apprenticeship using your existing systems. Submitting a new vacancy advert via this API will create the vacancy advert in the live system. We provide a sandbox version of the API which you can use for testing purposes. The sandbox is available at: https://api-sandbox.apprenticeships.education.gov.uk/managevacancies. Note: In order to use the Recruitment API you need to obtain an API key from either an Employer or Training Provider registered on the Apprenticeship Service. More information is available on the developer portal."
 resource: "https://api.apprenticeships.education.gov.uk/managevacancies"
-timestamp: "2022-01-24"
-tags: "education-and-skills, government-services, rest-http, the-apprenticeship-service"
+tags: ["education-and-skills", "government-services", "rest-http", "the-apprenticeship-service"]
+generated: { by: process:uk-government-api-okf-builder, at: "2026-07-16T00:00:00Z" }
+status: draft
+sources: [{ id: "api_gov_uk_catalogue", resource: "https://raw.githubusercontent.com/co-cddo/api-catalogue/main/data/catalogue.csv", title: "GOV.UK API Catalogue CSV", last_modified: "2022-01-24" }]
 confidence: "declared"
 source_adapter: "api_gov_uk_catalogue"
 ---
@@ -44,7 +46,7 @@ This generated record is standards-alignable, not standards-conformant by itself
 - OpenAPI: `OpenAPI Object`; export status `service-stub-with-gaps`.
 - OpenAPI security scheme: `apiKey`.
 - OpenAPI missing requirements: `info.license`
-- Crosswalk: [OKF Standards Crosswalk](../../docs/okf-standards-crosswalk.md)
+- Crosswalk: [OKF Standards Crosswalk](../docs/okf-standards-crosswalk.md)
 
 ## Credential Requirements
 

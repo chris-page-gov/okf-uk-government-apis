@@ -3,8 +3,10 @@ type: "Contract"
 title: "Local Land Charges Search contract"
 description: "Machine-readable or service-description contract inferred for Local Land Charges Search from public metadata."
 resource: "https://landregistry.github.io/bgtechdoc/services/local_land_charges_search/"
-timestamp: "2023-02-20"
-tags: "environment, government-services, hm-land-registry, planning-and-property, soap-wsdl"
+tags: ["environment", "government-services", "hm-land-registry", "planning-and-property", "soap-wsdl"]
+generated: { by: process:uk-government-api-okf-builder, at: "2026-07-16T00:00:00Z" }
+status: draft
+sources: [{ id: "contract_discovery", resource: "https://raw.githubusercontent.com/co-cddo/api-catalogue/main/data/catalogue.csv", title: "Contract discovery from harvested API metadata", last_modified: "2023-02-20" }]
 confidence: "observed"
 source_adapter: "contract_discovery"
 ---
@@ -44,7 +46,7 @@ This generated record is standards-alignable, not standards-conformant by itself
 - OpenAPI: `OpenAPI Description or external contract`; export status `contract-reference`.
 - OpenAPI security scheme: `metadata-only`.
 - OpenAPI missing requirements: `info.license`
-- Crosswalk: [OKF Standards Crosswalk](../../docs/okf-standards-crosswalk.md)
+- Crosswalk: [OKF Standards Crosswalk](../docs/okf-standards-crosswalk.md)
 
 ## Credential Requirements
 

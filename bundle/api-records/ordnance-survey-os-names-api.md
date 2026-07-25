@@ -3,8 +3,10 @@ type: "API Product"
 title: "OS Names API"
 description: "A free, searchable, reliable database to help you find and verify populated places, road names, road numbers and postcodes. OS Names API is a reliable way of supporting the discovery or identification and visualisation of a named place; geocoding; routing and navigation, and linking diverse information such as statistics or descriptions. OS Names can locate a feature using just its name, or it can find the closest location to a given point."
 resource: "https://api.os.uk/search/names/v1"
-timestamp: "2020-08-24"
-tags: "geospatial, ordnance-survey, population-and-statistics, rest-http, transport"
+tags: ["geospatial", "ordnance-survey", "population-and-statistics", "rest-http", "transport"]
+generated: { by: process:uk-government-api-okf-builder, at: "2026-07-16T00:00:00Z" }
+status: draft
+sources: [{ id: "api_gov_uk_catalogue", resource: "https://raw.githubusercontent.com/co-cddo/api-catalogue/main/data/catalogue.csv", title: "GOV.UK API Catalogue CSV", last_modified: "2020-08-24" }]
 confidence: "declared"
 source_adapter: "api_gov_uk_catalogue"
 ---
@@ -44,7 +46,7 @@ This generated record is standards-alignable, not standards-conformant by itself
 - OpenAPI: `OpenAPI Object`; export status `service-stub-with-gaps`.
 - OpenAPI security scheme: `unknown`.
 - OpenAPI missing requirements: `components.securitySchemes`
-- Crosswalk: [OKF Standards Crosswalk](../../docs/okf-standards-crosswalk.md)
+- Crosswalk: [OKF Standards Crosswalk](../docs/okf-standards-crosswalk.md)
 
 ## Credential Requirements
 

@@ -3,8 +3,10 @@ type: "API Operation"
 title: "OS Names API Find Operation"
 description: "A free string text search of OS Names, intended to be an ambiguous/fuzzy search. Find can locate a feature using just its name."
 resource: "https://api.os.uk/search/names/v1/find"
-timestamp: ""
-tags: "geospatial, ordnance-survey, rest-http"
+tags: ["geospatial", "ordnance-survey", "rest-http"]
+generated: { by: process:uk-government-api-okf-builder, at: "2026-07-16T00:00:00Z" }
+status: draft
+sources: [{ id: "ordnance_survey_api_os_uk", resource: "https://api.os.uk/search/names", title: "Ordnance Survey API link document" }]
 confidence: "declared"
 source_adapter: "ordnance_survey_api_os_uk"
 ---
@@ -44,7 +46,7 @@ This generated record is standards-alignable, not standards-conformant by itself
 - OpenAPI: `Operation Object`; export status `operation-fragment`.
 - OpenAPI security scheme: `apiKey`.
 - OpenAPI missing requirements: `HTTP method`, `parameters`, `responses`
-- Crosswalk: [OKF Standards Crosswalk](../../docs/okf-standards-crosswalk.md)
+- Crosswalk: [OKF Standards Crosswalk](../docs/okf-standards-crosswalk.md)
 
 ## Credential Requirements
 

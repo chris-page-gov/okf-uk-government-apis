@@ -3,8 +3,10 @@ type: "API Product"
 title: "Business Income Source Summary (MTD)"
 description: "The Self Assessment BISS (Business Income Source Summary) API allows a developer to retrieve a summary of income and expenditure for a specified self-employment or UK property business for a given tax year. The sandbox endpoint is `https://test-api.service.hmrc.gov.uk`."
 resource: "https://api.service.hmrc.gov.uk"
-timestamp: "2020-09-02"
-tags: "business-and-economy, government-services, hm-revenue-customs, planning-and-property, rest-http, tax-and-customs"
+tags: ["business-and-economy", "government-services", "hm-revenue-customs", "planning-and-property", "rest-http", "tax-and-customs"]
+generated: { by: process:uk-government-api-okf-builder, at: "2026-07-16T00:00:00Z" }
+status: draft
+sources: [{ id: "api_gov_uk_catalogue", resource: "https://raw.githubusercontent.com/co-cddo/api-catalogue/main/data/catalogue.csv", title: "GOV.UK API Catalogue CSV", last_modified: "2020-09-02" }]
 confidence: "declared"
 source_adapter: "api_gov_uk_catalogue"
 ---
@@ -44,7 +46,7 @@ This generated record is standards-alignable, not standards-conformant by itself
 - OpenAPI: `OpenAPI Object`; export status `service-stub-with-gaps`.
 - OpenAPI security scheme: `unknown`.
 - OpenAPI missing requirements: `components.securitySchemes`, `info.license`
-- Crosswalk: [OKF Standards Crosswalk](../../docs/okf-standards-crosswalk.md)
+- Crosswalk: [OKF Standards Crosswalk](../docs/okf-standards-crosswalk.md)
 
 ## Credential Requirements
 

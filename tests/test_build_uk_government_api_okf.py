@@ -10,6 +10,7 @@ import unittest
 ROOT = Path(__file__).resolve().parents[1]
 FIXTURES = ROOT / "tests" / "fixtures" / "uk_government_api_okf"
 SCRIPT = ROOT / "scripts" / "build_uk_government_api_okf.py"
+CHECK_SCRIPT = ROOT / "scripts" / "check_bundle.py"
 
 
 spec = importlib.util.spec_from_file_location("build_uk_government_api_okf", SCRIPT)
@@ -17,6 +18,12 @@ assert spec and spec.loader
 builder_module = importlib.util.module_from_spec(spec)
 sys.modules[spec.name] = builder_module
 spec.loader.exec_module(builder_module)
+
+check_spec = importlib.util.spec_from_file_location("check_bundle", CHECK_SCRIPT)
+assert check_spec and check_spec.loader
+check_module = importlib.util.module_from_spec(check_spec)
+sys.modules[check_spec.name] = check_module
+check_spec.loader.exec_module(check_module)
 
 
 class UkGovernmentApiOkfGeneratorTest(unittest.TestCase):
@@ -37,6 +44,7 @@ class UkGovernmentApiOkfGeneratorTest(unittest.TestCase):
             ons_datasets=ons["datasets"],
             ons_topics=ons["topics"],
             ons_code_lists=ons["code_lists"],
+            generated_at="2026-07-25T12:00:00Z",
         )
 
     def test_canonical_counts_keep_api_products_endpoints_and_data_products_separate(self):
@@ -355,10 +363,62 @@ class UkGovernmentApiOkfGeneratorTest(unittest.TestCase):
 
         self.assertIn("standards_crosswalk", descriptor["entrypoints"])
         self.assertIn("okf-standards-crosswalk.v1", descriptor["extensions"])
+        self.assertEqual(
+            "docs/okf-standards-crosswalk.md",
+            descriptor["extensions"]["okf-standards-crosswalk.v1"]["crosswalk"],
+        )
+        self.assertEqual(
+            "docs/okf-standards-crosswalk.md",
+            corpus["analysis"]["standards_alignment"]["crosswalk"],
+        )
         self.assertTrue(corpus["analysis"]["standards_alignment"]["standards"])
         record_markdown = files[Path("api-records/example-department-example-payments-api.md")]
         self.assertIn("## Standards Alignment", record_markdown)
         self.assertIn("`dcat:DataService`", record_markdown)
+        self.assertIn(
+            "[OKF Standards Crosswalk](../docs/okf-standards-crosswalk.md)",
+            record_markdown,
+        )
+        self.assertNotIn(
+            "[OKF Standards Crosswalk](../../docs/okf-standards-crosswalk.md)",
+            record_markdown,
+        )
+
+    def test_v02_markdown_separates_publication_time_from_source_time(self):
+        corpus = self.build_fixture_corpus()
+        files = builder_module.output_files(corpus)
+        record = files[Path("api-records/example-department-example-payments-api.md")]
+
+        self.assertEqual("0.2", corpus["descriptor"]["okf_version"])
+        self.assertEqual("0.2", corpus["manifest"]["okf_version"])
+        self.assertTrue(files[Path("index.md")].startswith('---\nokf_version: "0.2"\n---'))
+        self.assertIn(
+            "[Specification notes](docs/UK-Government-API-OKF.md)",
+            files[Path("index.md")],
+        )
+        self.assertIn(
+            "[Standards crosswalk](docs/okf-standards-crosswalk.md)",
+            files[Path("index.md")],
+        )
+        self.assertTrue(files[Path("log.md")].startswith("# UK Government APIs OKF generation log\n\n## "))
+        self.assertIn(
+            'generated: { by: process:uk-government-api-okf-builder, at: "2026-07-25T12:00:00Z" }',
+            record,
+        )
+        self.assertIn('last_modified: "2024-06-01"', record)
+        self.assertIn("sources: [{", record)
+        self.assertIn("status: draft", record)
+        self.assertNotIn("\ntimestamp:", record)
+        self.assertNotIn("\nverified:", record)
+
+    def test_v02_validator_enforces_actor_and_calendar_date_conventions(self):
+        self.assertTrue(check_module.valid_actor("process:uk-government-api-okf-builder"))
+        self.assertTrue(check_module.valid_actor("catalogue-harvester/1.0"))
+        self.assertFalse(check_module.valid_actor("team:catalogue"))
+        self.assertTrue(check_module.valid_datetime('"2026-07-25T12:00:00Z"'))
+        self.assertFalse(check_module.valid_datetime('"2026-07-25"'))
+        self.assertTrue(check_module.valid_date('"2026-07-25"'))
+        self.assertFalse(check_module.valid_date('"2026-02-30"'))
 
 
 if __name__ == "__main__":

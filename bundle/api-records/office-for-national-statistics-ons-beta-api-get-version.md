@@ -3,8 +3,10 @@ type: "API Operation"
 title: "ONS Beta API: Get dataset version"
 description: "Template operation for the ONS Beta API: Get dataset version."
 resource: "https://api.beta.ons.gov.uk/v1/datasets/{dataset_id}/editions/{edition}/versions/{version}"
-timestamp: ""
-tags: "office-for-national-statistics, population-and-statistics, rest-http"
+tags: ["office-for-national-statistics", "population-and-statistics", "rest-http"]
+generated: { by: process:uk-government-api-okf-builder, at: "2026-07-16T00:00:00Z" }
+status: draft
+sources: [{ id: "ons_beta_api", resource: "https://api.beta.ons.gov.uk/v1", title: "ONS Beta API" }]
 confidence: "declared"
 source_adapter: "ons_beta_api"
 ---
@@ -44,7 +46,7 @@ This generated record is standards-alignable, not standards-conformant by itself
 - OpenAPI: `Operation Object`; export status `operation-fragment`.
 - OpenAPI security scheme: `none`.
 - OpenAPI missing requirements: `HTTP method`, `parameters`, `responses`
-- Crosswalk: [OKF Standards Crosswalk](../../docs/okf-standards-crosswalk.md)
+- Crosswalk: [OKF Standards Crosswalk](../docs/okf-standards-crosswalk.md)
 
 ## Credential Requirements
 

@@ -3,8 +3,10 @@ type: "API Product"
 title: "Bowel Cancer Screening - EDIFACT"
 description: "Use this messaging integration to receive bowel cancer screening test results in primary care GP systems from the screening system, specifically faecal occult blood test (FOBT) results.This integration uses UN/EDIFACT based messages sent over MESH.Also known as NHS004 messages, these are a simpler version of the NHS003 messages specified in the Pathology EDIFACT v1.003 Standard but with the changes specified in 'Electronic GP Communication Requirements for GPSoC Software Suppliers Draft', under 'Additional guidance' below.Bowel cancer screening NHS004 messages are almost the same as pathology NHS003 messages except they are much simpler in structure, with a single SNOMED code and 5 result values.If you are building a system to receive bowel cancer screening test results, you can use our Lab Results adaptor to receive these EDIFACT results via an easy-to-use FHIR-compliant format. Before you begin any development work using this integration, contact us to discuss your best options."
 resource: "https://digital.nhs.uk/developer/api-catalogue/bowel-cancer-screening-edifact"
-timestamp: "2024-04-23"
-tags: "edifact, fhir, health-and-care, mesh, nhs-digital, planning-and-property"
+tags: ["edifact", "fhir", "health-and-care", "mesh", "nhs-digital", "planning-and-property"]
+generated: { by: process:uk-government-api-okf-builder, at: "2026-07-16T00:00:00Z" }
+status: draft
+sources: [{ id: "api_gov_uk_catalogue", resource: "https://raw.githubusercontent.com/co-cddo/api-catalogue/main/data/catalogue.csv", title: "GOV.UK API Catalogue CSV", last_modified: "2024-04-23" }]
 confidence: "declared"
 source_adapter: "api_gov_uk_catalogue"
 ---
@@ -44,7 +46,7 @@ This generated record is standards-alignable, not standards-conformant by itself
 - OpenAPI: `OpenAPI Object`; export status `service-stub-with-gaps`.
 - OpenAPI security scheme: `unknown`.
 - OpenAPI missing requirements: `components.securitySchemes`, `info.license`
-- Crosswalk: [OKF Standards Crosswalk](../../docs/okf-standards-crosswalk.md)
+- Crosswalk: [OKF Standards Crosswalk](../docs/okf-standards-crosswalk.md)
 
 ## Credential Requirements
 

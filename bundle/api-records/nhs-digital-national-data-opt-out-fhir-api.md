@@ -3,8 +3,10 @@ type: "API Product"
 title: "National Data Opt-out - FHIR API"
 description: "Use this API to capture patients' preferences and control sharing of their data by healthcare organisations for planning and research purposes using National Data Opt-out (NDOP). You can:- create National Data Opt-out preferences for a patient- update the National Data Opt-out preferences for a patient- display transaction history of National Data Opt-out preferences for a patientYou cannot currently:- get existing National Data Opt-out preferences for a patientUse the Check for National Data Opt-outs Service (POS) to get existing National Data Opt-out preferences for one or more patients. If your use case is not met by the POS service, please contact us."
 resource: "https://digital.nhs.uk/developer/api-catalogue/national-data-opt-out-fhir"
-timestamp: "2024-04-23"
-tags: "fhir, government-services, health-and-care, nhs-digital, planning-and-property"
+tags: ["fhir", "government-services", "health-and-care", "nhs-digital", "planning-and-property"]
+generated: { by: process:uk-government-api-okf-builder, at: "2026-07-16T00:00:00Z" }
+status: draft
+sources: [{ id: "api_gov_uk_catalogue", resource: "https://raw.githubusercontent.com/co-cddo/api-catalogue/main/data/catalogue.csv", title: "GOV.UK API Catalogue CSV", last_modified: "2024-04-23" }]
 confidence: "declared"
 source_adapter: "api_gov_uk_catalogue"
 ---
@@ -44,7 +46,7 @@ This generated record is standards-alignable, not standards-conformant by itself
 - OpenAPI: `OpenAPI Object`; export status `service-stub-with-gaps`.
 - OpenAPI security scheme: `unknown`.
 - OpenAPI missing requirements: `components.securitySchemes`, `info.license`
-- Crosswalk: [OKF Standards Crosswalk](../../docs/okf-standards-crosswalk.md)
+- Crosswalk: [OKF Standards Crosswalk](../docs/okf-standards-crosswalk.md)
 
 ## Credential Requirements
 

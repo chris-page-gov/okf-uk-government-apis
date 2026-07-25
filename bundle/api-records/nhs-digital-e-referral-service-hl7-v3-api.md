@@ -3,8 +3,10 @@ type: "API Product"
 title: "e-Referral Service - HL7 V3 API"
 description: "Use this API to manage appointment slots for new or existing Patient Administration Systems, using our HL7 V3 API until there is a FHIR version available.A healthcare worker must be present and authenticated with an NHS smartcard or a modern alternative to use this API."
 resource: "https://digital.nhs.uk/developer/api-catalogue/e-referral-service-hl7-v3"
-timestamp: "2024-04-23"
-tags: "fhir, government-services, health-and-care, hl7-v3, nhs-digital"
+tags: ["fhir", "government-services", "health-and-care", "hl7-v3", "nhs-digital"]
+generated: { by: process:uk-government-api-okf-builder, at: "2026-07-16T00:00:00Z" }
+status: draft
+sources: [{ id: "api_gov_uk_catalogue", resource: "https://raw.githubusercontent.com/co-cddo/api-catalogue/main/data/catalogue.csv", title: "GOV.UK API Catalogue CSV", last_modified: "2024-04-23" }]
 confidence: "declared"
 source_adapter: "api_gov_uk_catalogue"
 ---
@@ -44,7 +46,7 @@ This generated record is standards-alignable, not standards-conformant by itself
 - OpenAPI: `OpenAPI Object`; export status `service-stub-with-gaps`.
 - OpenAPI security scheme: `unknown`.
 - OpenAPI missing requirements: `components.securitySchemes`, `info.license`
-- Crosswalk: [OKF Standards Crosswalk](../../docs/okf-standards-crosswalk.md)
+- Crosswalk: [OKF Standards Crosswalk](../docs/okf-standards-crosswalk.md)
 
 ## Credential Requirements
 

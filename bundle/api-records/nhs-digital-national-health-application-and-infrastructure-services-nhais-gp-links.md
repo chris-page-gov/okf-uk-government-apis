@@ -3,8 +3,10 @@ type: "API Product"
 title: "National Health Application and Infrastructure Services - NHAIS GP Links"
 description: "Use this integration to manage GP registrations and other patient data in National Health Application and Infrastructure Services (NHAIS).You can:- register a patient at a GP practice- receive a patient deregistration (deduction) notification at the previous GP practice- update patient demographics information, such as addressThis integration uses MESH to send and receive messages. This integration forms part of the end-to-end GP registration process. For more details on the end-to-end process, contact us."
 resource: "https://digital.nhs.uk/developer/api-catalogue/nhais-gp-links"
-timestamp: "2024-04-23"
-tags: "health-and-care, mesh, nhs-digital, planning-and-property, streaming"
+tags: ["health-and-care", "mesh", "nhs-digital", "planning-and-property", "streaming"]
+generated: { by: process:uk-government-api-okf-builder, at: "2026-07-16T00:00:00Z" }
+status: draft
+sources: [{ id: "api_gov_uk_catalogue", resource: "https://raw.githubusercontent.com/co-cddo/api-catalogue/main/data/catalogue.csv", title: "GOV.UK API Catalogue CSV", last_modified: "2024-04-23" }]
 confidence: "declared"
 source_adapter: "api_gov_uk_catalogue"
 ---
@@ -44,7 +46,7 @@ This generated record is standards-alignable, not standards-conformant by itself
 - OpenAPI: `OpenAPI Object`; export status `service-stub-with-gaps`.
 - OpenAPI security scheme: `metadata-only`.
 - OpenAPI missing requirements: `info.license`
-- Crosswalk: [OKF Standards Crosswalk](../../docs/okf-standards-crosswalk.md)
+- Crosswalk: [OKF Standards Crosswalk](../docs/okf-standards-crosswalk.md)
 
 ## Credential Requirements
 

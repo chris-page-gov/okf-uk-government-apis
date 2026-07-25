@@ -3,8 +3,10 @@ type: "API Product"
 title: "GP2GP - HL7 V3"
 description: "Use this integration to transfer patients' electronic health records between old and new practices when they change GPs.You can:- include large records and those with many attachments- reduce paper printing when patients leave a practice- integrate (file) the electronic health record for returning patients- log issues easily with easy-to-understand and more informative error messages- monitor in real time the processes to track issues and performanceFor more details, see GP2GP."
 resource: "https://digital.nhs.uk/developer/api-catalogue/gp2gp"
-timestamp: "2024-04-23"
-tags: "health-and-care, hl7-v3, nhs-digital"
+tags: ["health-and-care", "hl7-v3", "nhs-digital"]
+generated: { by: process:uk-government-api-okf-builder, at: "2026-07-16T00:00:00Z" }
+status: draft
+sources: [{ id: "api_gov_uk_catalogue", resource: "https://raw.githubusercontent.com/co-cddo/api-catalogue/main/data/catalogue.csv", title: "GOV.UK API Catalogue CSV", last_modified: "2024-04-23" }]
 confidence: "declared"
 source_adapter: "api_gov_uk_catalogue"
 ---
@@ -44,7 +46,7 @@ This generated record is standards-alignable, not standards-conformant by itself
 - OpenAPI: `OpenAPI Object`; export status `service-stub-with-gaps`.
 - OpenAPI security scheme: `unknown`.
 - OpenAPI missing requirements: `components.securitySchemes`, `info.license`
-- Crosswalk: [OKF Standards Crosswalk](../../docs/okf-standards-crosswalk.md)
+- Crosswalk: [OKF Standards Crosswalk](../docs/okf-standards-crosswalk.md)
 
 ## Credential Requirements
 

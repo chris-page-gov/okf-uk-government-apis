@@ -3,8 +3,10 @@ type: "API Product"
 title: "Discovery"
 description: "Our Discovery application programming interface (API) is designed to maximise access to the information held in The National Archives' Discovery service. Discovery holds more than 35 million descriptions of records held by The National Archives and more than 2,500 archives and institutions across the United Kingdom, as well as a smaller number of archives around the world. The information in Discovery is made up of record descriptions provided by or derived from the catalogues of the different archives. Discovery also contains significant information on hundreds of thousands of record creators from anonymous diarists to the world renowned. The API is open and a [sandbox](https://discovery.nationalarchives.gov.uk/API/sandbox/index#!/) and documentation are provided."
 resource: "https://discovery.nationalarchives.gov.uk/API"
-timestamp: "2020-10-05"
-tags: "government-services, rest-http, the-national-archives"
+tags: ["government-services", "rest-http", "the-national-archives"]
+generated: { by: process:uk-government-api-okf-builder, at: "2026-07-16T00:00:00Z" }
+status: draft
+sources: [{ id: "api_gov_uk_catalogue", resource: "https://raw.githubusercontent.com/co-cddo/api-catalogue/main/data/catalogue.csv", title: "GOV.UK API Catalogue CSV", last_modified: "2020-10-05" }]
 confidence: "declared"
 source_adapter: "api_gov_uk_catalogue"
 ---
@@ -44,7 +46,7 @@ This generated record is standards-alignable, not standards-conformant by itself
 - OpenAPI: `OpenAPI Object`; export status `service-stub-with-gaps`.
 - OpenAPI security scheme: `unknown`.
 - OpenAPI missing requirements: `components.securitySchemes`, `info.license`
-- Crosswalk: [OKF Standards Crosswalk](../../docs/okf-standards-crosswalk.md)
+- Crosswalk: [OKF Standards Crosswalk](../docs/okf-standards-crosswalk.md)
 
 ## Credential Requirements
 

@@ -3,8 +3,10 @@ type: "API Product"
 title: "GIAS read-only API prototype"
 description: "DfE prototype for read-only access to GIAS Establishments and Establishment Groups, designed to return selected fields as streamed JSON or CSV. DfE is validating the prototype and exploring authentication, rate limiting and versioning; no published, supported public endpoint is currently documented."
 resource: ""
-timestamp: "2026-03-05"
-tags: "beta, csv, department-for-education, education, education-establishments, gias, json, prototype, read-only, rest-http, schools, urn"
+tags: ["beta", "csv", "department-for-education", "education", "education-establishments", "gias", "json", "prototype", "read-only", "rest-http", "schools", "urn"]
+generated: { by: process:uk-government-api-okf-builder, at: "2026-07-16T00:00:00Z" }
+status: draft
+sources: [{ id: "dfe_gias", resource: "https://design-histories.education.gov.uk/get-information-about-schools/designing-the-read-api-for-get-information-about-schools-gias", title: "Department for Education GIAS Read API design history", last_modified: "2026-03-05" }]
 confidence: "declared"
 source_adapter: "dfe_gias"
 ---
@@ -43,7 +45,7 @@ This generated record is standards-alignable, not standards-conformant by itself
 - OpenAPI: `OpenAPI Object`; export status `service-stub-with-gaps`.
 - OpenAPI security scheme: `unknown`.
 - OpenAPI missing requirements: `components.securitySchemes`, `servers[].url`
-- Crosswalk: [OKF Standards Crosswalk](../../docs/okf-standards-crosswalk.md)
+- Crosswalk: [OKF Standards Crosswalk](../docs/okf-standards-crosswalk.md)
 
 ## Credential Requirements
 

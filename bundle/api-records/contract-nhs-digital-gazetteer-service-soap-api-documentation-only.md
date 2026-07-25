@@ -3,8 +3,10 @@ type: "Contract"
 title: "Gazetteer Service - SOAP API contract"
 description: "Machine-readable or service-description contract inferred for Gazetteer Service - SOAP API from public metadata."
 resource: "https://digital.nhs.uk/developer/api-catalogue/gazetteer-service-soap"
-timestamp: "2024-04-23"
-tags: "business-and-economy, geospatial, government-services, health-and-care, nhs-digital, planning-and-property, soap-wsdl"
+tags: ["business-and-economy", "geospatial", "government-services", "health-and-care", "nhs-digital", "planning-and-property", "soap-wsdl"]
+generated: { by: process:uk-government-api-okf-builder, at: "2026-07-16T00:00:00Z" }
+status: draft
+sources: [{ id: "contract_discovery", resource: "https://raw.githubusercontent.com/co-cddo/api-catalogue/main/data/catalogue.csv", title: "Contract discovery from harvested API metadata", last_modified: "2024-04-23" }]
 confidence: "observed"
 source_adapter: "contract_discovery"
 ---
@@ -44,7 +46,7 @@ This generated record is standards-alignable, not standards-conformant by itself
 - OpenAPI: `OpenAPI Description or external contract`; export status `contract-reference`.
 - OpenAPI security scheme: `unknown`.
 - OpenAPI missing requirements: `info.license`
-- Crosswalk: [OKF Standards Crosswalk](../../docs/okf-standards-crosswalk.md)
+- Crosswalk: [OKF Standards Crosswalk](../docs/okf-standards-crosswalk.md)
 
 ## Credential Requirements
 

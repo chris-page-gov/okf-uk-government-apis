@@ -3,8 +3,10 @@ type: "API Product"
 title: "OS Download API"
 description: "The OS Downloads API is a service that lets users automate the discovery and download of OS OpenData. In doing so it improves the accessibility of the OS OpenData products. Using the OS Downloads API, you can: - discover which OS OpenData is available - automate the download of OS OpenData - request various coverage areas depending on the dataset - request various formats depending on the dataset - request metadata on available datasets including thumbnail images"
 resource: "https://api.os.uk/downloads/v1"
-timestamp: "2020-08-24"
-tags: "geospatial, government-services, ordnance-survey, population-and-statistics, rest-http"
+tags: ["geospatial", "government-services", "ordnance-survey", "population-and-statistics", "rest-http"]
+generated: { by: process:uk-government-api-okf-builder, at: "2026-07-16T00:00:00Z" }
+status: draft
+sources: [{ id: "api_gov_uk_catalogue", resource: "https://raw.githubusercontent.com/co-cddo/api-catalogue/main/data/catalogue.csv", title: "GOV.UK API Catalogue CSV", last_modified: "2020-08-24" }]
 confidence: "declared"
 source_adapter: "api_gov_uk_catalogue"
 ---
@@ -44,7 +46,7 @@ This generated record is standards-alignable, not standards-conformant by itself
 - OpenAPI: `OpenAPI Object`; export status `service-stub-with-gaps`.
 - OpenAPI security scheme: `unknown`.
 - OpenAPI missing requirements: `components.securitySchemes`
-- Crosswalk: [OKF Standards Crosswalk](../../docs/okf-standards-crosswalk.md)
+- Crosswalk: [OKF Standards Crosswalk](../docs/okf-standards-crosswalk.md)
 
 ## Credential Requirements
 

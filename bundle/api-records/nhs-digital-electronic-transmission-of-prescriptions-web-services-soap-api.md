@@ -3,8 +3,10 @@ type: "API Product"
 title: "Electronic Transmission of Prescriptions Web Services - SOAP API"
 description: "Use this API to get Electronic Prescription Service (EPS) dispenser (and dispensing appliance contractor) information for a patient via NHS UK Web Services.You can search for dispenser information using:a valid ODS code (previously known as NACS code)their name and service type (community pharmacy or appliance contractor), and whether they are EPS-enabled or nottheir name and location and the service type, and whether they are EPS-enabled or nottheir postcode and service type, and whether they are EPS-enabled or notUse this API if you are building GP software - it provides additional information about dispensing appliance contractors that is not available through Electronic Prescription Service Directory of Services API.As one of the Directory of Services APIs, this also provides data to the Electronic Prescription Service Directory of Services API.Before you begin any development work using this API, contact us to discuss your best options."
 resource: "https://digital.nhs.uk/developer/api-catalogue/electronic-transmission-of-prescriptions-web-services-soap"
-timestamp: "2024-04-23"
-tags: "geospatial, government-services, health-and-care, nhs-digital, planning-and-property, soap-wsdl"
+tags: ["geospatial", "government-services", "health-and-care", "nhs-digital", "planning-and-property", "soap-wsdl"]
+generated: { by: process:uk-government-api-okf-builder, at: "2026-07-16T00:00:00Z" }
+status: draft
+sources: [{ id: "api_gov_uk_catalogue", resource: "https://raw.githubusercontent.com/co-cddo/api-catalogue/main/data/catalogue.csv", title: "GOV.UK API Catalogue CSV", last_modified: "2024-04-23" }]
 confidence: "declared"
 source_adapter: "api_gov_uk_catalogue"
 ---
@@ -44,7 +46,7 @@ This generated record is standards-alignable, not standards-conformant by itself
 - OpenAPI: `OpenAPI Object`; export status `service-stub-with-gaps`.
 - OpenAPI security scheme: `unknown`.
 - OpenAPI missing requirements: `components.securitySchemes`, `info.license`
-- Crosswalk: [OKF Standards Crosswalk](../../docs/okf-standards-crosswalk.md)
+- Crosswalk: [OKF Standards Crosswalk](../docs/okf-standards-crosswalk.md)
 
 ## Credential Requirements
 

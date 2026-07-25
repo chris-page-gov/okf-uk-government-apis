@@ -3,8 +3,10 @@ type: "API Product"
 title: "Electronic Prescription Service - FHIR API"
 description: "Use this API to access the Electronic Prescription Service (EPS). EPS is the national service used to send electronic prescription messages between prescribers and community dispensers. Prescribers in primary and secondary care can: - create a prescription- encode data so the prescription is ready to sign- cancel a prescriptionCreating and cancelling a prescription are both done by the prescriber. Encoding data so the prescription is ready to sign is done by the prescribing system. Dispensers can: - download an individual prescription from EPS- download a batch of prescriptions from EPS- return a prescription to EPS- submit a dispense notification to EPS- withdraw a dispense notification from EPS- submit a dispense claimYou cannot currently use this API to: - view a prescription's detailed dispense history"
 resource: "https://digital.nhs.uk/developer/api-catalogue/electronic-prescription-service-fhir"
-timestamp: "2024-04-23"
-tags: "fhir, government-services, health-and-care, nhs-digital, streaming"
+tags: ["fhir", "government-services", "health-and-care", "nhs-digital", "streaming"]
+generated: { by: process:uk-government-api-okf-builder, at: "2026-07-16T00:00:00Z" }
+status: draft
+sources: [{ id: "api_gov_uk_catalogue", resource: "https://raw.githubusercontent.com/co-cddo/api-catalogue/main/data/catalogue.csv", title: "GOV.UK API Catalogue CSV", last_modified: "2024-04-23" }]
 confidence: "declared"
 source_adapter: "api_gov_uk_catalogue"
 ---
@@ -44,7 +46,7 @@ This generated record is standards-alignable, not standards-conformant by itself
 - OpenAPI: `OpenAPI Object`; export status `service-stub-with-gaps`.
 - OpenAPI security scheme: `unknown`.
 - OpenAPI missing requirements: `components.securitySchemes`, `info.license`
-- Crosswalk: [OKF Standards Crosswalk](../../docs/okf-standards-crosswalk.md)
+- Crosswalk: [OKF Standards Crosswalk](../docs/okf-standards-crosswalk.md)
 
 ## Credential Requirements
 

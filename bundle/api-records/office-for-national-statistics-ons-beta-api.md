@@ -3,8 +3,10 @@ type: "API Product"
 title: "ONS Beta API"
 description: "The Office for National Statistics API makes datasets and other data available programmatically using HTTP."
 resource: "https://api.beta.ons.gov.uk/v1"
-timestamp: ""
-tags: "office-for-national-statistics, population-and-statistics, rest-http"
+tags: ["office-for-national-statistics", "population-and-statistics", "rest-http"]
+generated: { by: process:uk-government-api-okf-builder, at: "2026-07-16T00:00:00Z" }
+status: draft
+sources: [{ id: "ons_beta_api", resource: "https://api.beta.ons.gov.uk/v1", title: "ONS Beta API" }]
 confidence: "declared"
 source_adapter: "ons_beta_api"
 ---
@@ -44,7 +46,7 @@ This generated record is standards-alignable, not standards-conformant by itself
 - OpenAPI: `OpenAPI Object`; export status `service-stub-ready`.
 - OpenAPI security scheme: `none`.
 - OpenAPI missing requirements: none recorded
-- Crosswalk: [OKF Standards Crosswalk](../../docs/okf-standards-crosswalk.md)
+- Crosswalk: [OKF Standards Crosswalk](../docs/okf-standards-crosswalk.md)
 
 ## Credential Requirements
 

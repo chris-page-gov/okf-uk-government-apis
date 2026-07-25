@@ -3,8 +3,10 @@ type: "Capability Document"
 title: "INSPIRE View Service contract"
 description: "Machine-readable or service-description contract inferred for INSPIRE View Service from public metadata."
 resource: "https://www.data.gov.uk/dataset/hedgerows3"
-timestamp: "2014-11-14T08:20:07.336422"
-tags: "geospatial, government-services, south-northamptonshire-council, wms"
+tags: ["geospatial", "government-services", "south-northamptonshire-council", "wms"]
+generated: { by: process:uk-government-api-okf-builder, at: "2026-07-16T00:00:00Z" }
+status: draft
+sources: [{ id: "contract_discovery", resource: "https://ckan.publishing.service.gov.uk/api/3/action/package_search?fq=res_format:(\"WMS\" OR \"WFS\" OR \"WMTS\" OR \"WCS\" OR \"OGC API - Features\" OR \"OGC WFS\" OR \"OGC WMS\" OR \"ogc wfs\" OR \"ogc wms\" OR \"ArcGIS GeoServices REST API\" OR \"arcgis geoservices rest api\" OR \"Esri REST\" OR \"ESRI REST API\" OR \"ESRI Rest API\" OR \"esri rest api\" OR \"SPARQL\" OR \"API\" OR \"api\")", title: "Contract discovery from harvested API metadata", last_modified: "2014-11-14" }]
 confidence: "observed"
 source_adapter: "contract_discovery"
 ---
@@ -44,7 +46,7 @@ This generated record is standards-alignable, not standards-conformant by itself
 - OpenAPI: `OpenAPI Description or external contract`; export status `contract-reference`.
 - OpenAPI security scheme: `none`.
 - OpenAPI missing requirements: `info.license`
-- Crosswalk: [OKF Standards Crosswalk](../../docs/okf-standards-crosswalk.md)
+- Crosswalk: [OKF Standards Crosswalk](../docs/okf-standards-crosswalk.md)
 
 ## Credential Requirements
 

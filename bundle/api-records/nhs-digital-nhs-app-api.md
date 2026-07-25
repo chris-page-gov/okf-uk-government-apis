@@ -3,8 +3,10 @@ type: "API Product"
 title: "NHS App API"
 description: "Use this API to engage with users of the NHS App - a simple and secure way for patients registered with a GP surgery in England to access a range of services on their smartphone or tablet. You can: - send in-app messages to specific users of the NHS App- include keyword replies to in-app messages- include free text replies to in-app messages- send native Apple or Android push notifications to mobile devices registered by specific users of the NHS App"
 resource: "https://digital.nhs.uk/developer/api-catalogue/nhs-app"
-timestamp: "2024-04-23"
-tags: "health-and-care, nhs-digital, streaming"
+tags: ["health-and-care", "nhs-digital", "streaming"]
+generated: { by: process:uk-government-api-okf-builder, at: "2026-07-16T00:00:00Z" }
+status: draft
+sources: [{ id: "api_gov_uk_catalogue", resource: "https://raw.githubusercontent.com/co-cddo/api-catalogue/main/data/catalogue.csv", title: "GOV.UK API Catalogue CSV", last_modified: "2024-04-23" }]
 confidence: "declared"
 source_adapter: "api_gov_uk_catalogue"
 ---
@@ -44,7 +46,7 @@ This generated record is standards-alignable, not standards-conformant by itself
 - OpenAPI: `OpenAPI Object`; export status `service-stub-with-gaps`.
 - OpenAPI security scheme: `metadata-only`.
 - OpenAPI missing requirements: `info.license`
-- Crosswalk: [OKF Standards Crosswalk](../../docs/okf-standards-crosswalk.md)
+- Crosswalk: [OKF Standards Crosswalk](../docs/okf-standards-crosswalk.md)
 
 ## Credential Requirements
 

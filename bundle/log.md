@@ -1,7 +1,4 @@
----
-type: "Log"
-title: "UK Government APIs OKF generation log"
----
+# UK Government APIs OKF generation log
 
 ## 2026-07-16
 

@@ -3,8 +3,10 @@ type: "Contract"
 title: "Prison API contract"
 description: "Machine-readable or service-description contract inferred for Prison API from public metadata."
 resource: "https://github.com/ministryofjustice/prison-api"
-timestamp: "2023-02-20"
-tags: "government-services, justice-and-policing, ministry-of-justice, rest-http"
+tags: ["government-services", "justice-and-policing", "ministry-of-justice", "rest-http"]
+generated: { by: process:uk-government-api-okf-builder, at: "2026-07-16T00:00:00Z" }
+status: draft
+sources: [{ id: "contract_discovery", resource: "https://raw.githubusercontent.com/co-cddo/api-catalogue/main/data/catalogue.csv", title: "Contract discovery from harvested API metadata", last_modified: "2023-02-20" }]
 confidence: "observed"
 source_adapter: "contract_discovery"
 ---
@@ -44,7 +46,7 @@ This generated record is standards-alignable, not standards-conformant by itself
 - OpenAPI: `OpenAPI Description or external contract`; export status `contract-reference`.
 - OpenAPI security scheme: `unknown`.
 - OpenAPI missing requirements: `info.license`
-- Crosswalk: [OKF Standards Crosswalk](../../docs/okf-standards-crosswalk.md)
+- Crosswalk: [OKF Standards Crosswalk](../docs/okf-standards-crosswalk.md)
 
 ## Credential Requirements
 

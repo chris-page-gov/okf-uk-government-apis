@@ -3,8 +3,10 @@ type: "API Product"
 title: "OS Maps API"
 description: "Add Ordnance Survey's detailed maps to your GIS, web or mobile applications with ease and make location-based decisions with confidence. Available in four styles, two projections and two access methods, OS Maps API gives unrivalled geographic context to your data. You can access these maps via OGC standard WMTS or Restful ZXY."
 resource: "https://api.os.uk/maps/raster/v1"
-timestamp: "2020-08-24"
-tags: "geospatial, ordnance-survey, wms"
+tags: ["geospatial", "ordnance-survey", "wms"]
+generated: { by: process:uk-government-api-okf-builder, at: "2026-07-16T00:00:00Z" }
+status: draft
+sources: [{ id: "api_gov_uk_catalogue", resource: "https://raw.githubusercontent.com/co-cddo/api-catalogue/main/data/catalogue.csv", title: "GOV.UK API Catalogue CSV", last_modified: "2020-08-24" }]
 confidence: "declared"
 source_adapter: "api_gov_uk_catalogue"
 ---
@@ -44,7 +46,7 @@ This generated record is standards-alignable, not standards-conformant by itself
 - OpenAPI: `OpenAPI Object`; export status `service-stub-with-gaps`.
 - OpenAPI security scheme: `unknown`.
 - OpenAPI missing requirements: `components.securitySchemes`
-- Crosswalk: [OKF Standards Crosswalk](../../docs/okf-standards-crosswalk.md)
+- Crosswalk: [OKF Standards Crosswalk](../docs/okf-standards-crosswalk.md)
 
 ## Credential Requirements
 

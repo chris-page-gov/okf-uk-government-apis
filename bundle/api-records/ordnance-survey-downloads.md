@@ -3,8 +3,10 @@ type: "API Product"
 title: "OS Downloads API"
 description: "The available Download APIs offered by Ordnance Survey. These provide access to bulk data through RESTful services."
 resource: "https://api.os.uk/downloads"
-timestamp: ""
-tags: "geospatial, openapi, ordnance-survey, rest-http"
+tags: ["geospatial", "openapi", "ordnance-survey", "rest-http"]
+generated: { by: process:uk-government-api-okf-builder, at: "2026-07-16T00:00:00Z" }
+status: draft
+sources: [{ id: "ordnance_survey_api_os_uk", resource: "https://api.os.uk/downloads", title: "Ordnance Survey API link document" }]
 confidence: "declared"
 source_adapter: "ordnance_survey_api_os_uk"
 ---
@@ -44,7 +46,7 @@ This generated record is standards-alignable, not standards-conformant by itself
 - OpenAPI: `OpenAPI Object`; export status `service-stub-ready`.
 - OpenAPI security scheme: `apiKey`.
 - OpenAPI missing requirements: none recorded
-- Crosswalk: [OKF Standards Crosswalk](../../docs/okf-standards-crosswalk.md)
+- Crosswalk: [OKF Standards Crosswalk](../docs/okf-standards-crosswalk.md)
 
 ## Credential Requirements
 

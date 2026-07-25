@@ -3,8 +3,10 @@ type: "API Product"
 title: "DVLA Vehicle Enquiry Service"
 description: "The DVLA Vehicle Enquiry Service API provides vehicle details of a specified vehicle. It uses the vehicle registration number as input to search and provide details of the vehicle."
 resource: "https://driver-vehicle-licensing.api.gov.uk/vehicle-enquiry"
-timestamp: "2020-08-24"
-tags: "driver-and-vehicle-licensing-agency, government-services, rest-http, transport"
+tags: ["driver-and-vehicle-licensing-agency", "government-services", "rest-http", "transport"]
+generated: { by: process:uk-government-api-okf-builder, at: "2026-07-16T00:00:00Z" }
+status: draft
+sources: [{ id: "api_gov_uk_catalogue", resource: "https://raw.githubusercontent.com/co-cddo/api-catalogue/main/data/catalogue.csv", title: "GOV.UK API Catalogue CSV", last_modified: "2020-08-24" }]
 confidence: "declared"
 source_adapter: "api_gov_uk_catalogue"
 ---
@@ -44,7 +46,7 @@ This generated record is standards-alignable, not standards-conformant by itself
 - OpenAPI: `OpenAPI Object`; export status `service-stub-with-gaps`.
 - OpenAPI security scheme: `unknown`.
 - OpenAPI missing requirements: `components.securitySchemes`, `info.license`
-- Crosswalk: [OKF Standards Crosswalk](../../docs/okf-standards-crosswalk.md)
+- Crosswalk: [OKF Standards Crosswalk](../docs/okf-standards-crosswalk.md)
 
 ## Credential Requirements
 

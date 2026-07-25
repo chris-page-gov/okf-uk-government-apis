@@ -3,8 +3,10 @@ type: "API Product"
 title: "Police API"
 description: "The API provides a rich data source for information, including: - neighbourhood team members - upcoming events - street-level crime and outcome data - nearest police stations The API is implemented as a standard JSON web service using HTTP GET and POST requests. Full request and response examples are provided in the documentation."
 resource: "https://data.police.uk/api/"
-timestamp: "2020-10-28"
-tags: "government-services, justice-and-policing, rest-http, uk-police"
+tags: ["government-services", "justice-and-policing", "rest-http", "uk-police"]
+generated: { by: process:uk-government-api-okf-builder, at: "2026-07-16T00:00:00Z" }
+status: draft
+sources: [{ id: "api_gov_uk_catalogue", resource: "https://raw.githubusercontent.com/co-cddo/api-catalogue/main/data/catalogue.csv", title: "GOV.UK API Catalogue CSV", last_modified: "2020-10-28" }]
 confidence: "declared"
 source_adapter: "api_gov_uk_catalogue"
 ---
@@ -44,7 +46,7 @@ This generated record is standards-alignable, not standards-conformant by itself
 - OpenAPI: `OpenAPI Object`; export status `service-stub-with-gaps`.
 - OpenAPI security scheme: `unknown`.
 - OpenAPI missing requirements: `components.securitySchemes`, `info.license`
-- Crosswalk: [OKF Standards Crosswalk](../../docs/okf-standards-crosswalk.md)
+- Crosswalk: [OKF Standards Crosswalk](../docs/okf-standards-crosswalk.md)
 
 ## Credential Requirements
 

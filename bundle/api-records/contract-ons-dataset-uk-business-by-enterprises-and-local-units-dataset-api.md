@@ -3,8 +3,10 @@ type: "Contract"
 title: "UK Business: Activity, Size and Location contract"
 description: "Machine-readable or service-description contract inferred for UK Business: Activity, Size and Location from public metadata."
 resource: "https://api.beta.ons.gov.uk/v1/datasets/uk-business-by-enterprises-and-local-units"
-timestamp: "2022-11-03T09:50:09.932Z"
-tags: "business-and-economy, office-for-national-statistics, planning-and-property, population-and-statistics, rest-http, tax-and-customs"
+tags: ["business-and-economy", "office-for-national-statistics", "planning-and-property", "population-and-statistics", "rest-http", "tax-and-customs"]
+generated: { by: process:uk-government-api-okf-builder, at: "2026-07-16T00:00:00Z" }
+status: draft
+sources: [{ id: "contract_discovery", resource: "https://api.beta.ons.gov.uk/v1/datasets", title: "Contract discovery from harvested API metadata", last_modified: "2022-11-03" }]
 confidence: "observed"
 source_adapter: "contract_discovery"
 ---
@@ -44,7 +46,7 @@ This generated record is standards-alignable, not standards-conformant by itself
 - OpenAPI: `OpenAPI Description or external contract`; export status `contract-reference`.
 - OpenAPI security scheme: `none`.
 - OpenAPI missing requirements: none recorded
-- Crosswalk: [OKF Standards Crosswalk](../../docs/okf-standards-crosswalk.md)
+- Crosswalk: [OKF Standards Crosswalk](../docs/okf-standards-crosswalk.md)
 
 ## Credential Requirements
 

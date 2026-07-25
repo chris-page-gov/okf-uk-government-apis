@@ -3,8 +3,10 @@ type: "API Product"
 title: "Tide Gauge"
 description: "The UK National Tide Gauge Network is owned and operated by the Environment Agency on behalf of the UK Coastal Flood Forecasting service (a partnership between the Environment Agency, Natural Resources Wales, the Scottish Environment Protection Agency and Northern Ireland Department for Infrastructure - Rivers). It records tidal elevations at 44 locations around the UK coast. Data is made available in near real-time with measurements reported every 15 mins. The measurements provide mean sea level within each 15 min window and are reported both relative to local datum (unit m) and relative to the Ordnance Datum at Newlyn (unit mAOD). The Tide Gauge API provides access to these measurements, and to information on the monitoring stations providing those measurements. It is compatible with (and integrated into) the API for water level/flow and rainfall readings. The API data is normally updated every 15 mins so typically the latest available reading will lag between 15 and 30 mins. Note that all times given by the API are in GMT (also known as UTC), as indicated by the Z suffix (see XML Schema datatypes). These APIs are provided as open data under the Open Government Licence with no r…"
 resource: "http://environment.data.gov.uk/flood-monitoring/id/stations?type=TideGauge"
-timestamp: "2020-08-26"
-tags: "environment, environment-agency, geospatial, government-services, rest-http"
+tags: ["environment", "environment-agency", "geospatial", "government-services", "rest-http"]
+generated: { by: process:uk-government-api-okf-builder, at: "2026-07-16T00:00:00Z" }
+status: draft
+sources: [{ id: "api_gov_uk_catalogue", resource: "https://raw.githubusercontent.com/co-cddo/api-catalogue/main/data/catalogue.csv", title: "GOV.UK API Catalogue CSV", last_modified: "2020-08-26" }]
 confidence: "declared"
 source_adapter: "api_gov_uk_catalogue"
 ---
@@ -44,7 +46,7 @@ This generated record is standards-alignable, not standards-conformant by itself
 - OpenAPI: `OpenAPI Object`; export status `service-stub-with-gaps`.
 - OpenAPI security scheme: `none`.
 - OpenAPI missing requirements: `info.license`
-- Crosswalk: [OKF Standards Crosswalk](../../docs/okf-standards-crosswalk.md)
+- Crosswalk: [OKF Standards Crosswalk](../docs/okf-standards-crosswalk.md)
 
 ## Credential Requirements
 

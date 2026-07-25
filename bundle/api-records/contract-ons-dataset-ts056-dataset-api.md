@@ -3,8 +3,10 @@ type: "Contract"
 title: "Second address indicator contract"
 description: "Machine-readable or service-description contract inferred for Second address indicator from public metadata."
 resource: "https://api.beta.ons.gov.uk/v1/datasets/TS056"
-timestamp: "2023-05-24T13:20:21.43Z"
-tags: "geospatial, office-for-national-statistics, planning-and-property, population-and-statistics, rest-http"
+tags: ["geospatial", "office-for-national-statistics", "planning-and-property", "population-and-statistics", "rest-http"]
+generated: { by: process:uk-government-api-okf-builder, at: "2026-07-16T00:00:00Z" }
+status: draft
+sources: [{ id: "contract_discovery", resource: "https://api.beta.ons.gov.uk/v1/datasets", title: "Contract discovery from harvested API metadata", last_modified: "2023-05-24" }]
 confidence: "observed"
 source_adapter: "contract_discovery"
 ---
@@ -44,7 +46,7 @@ This generated record is standards-alignable, not standards-conformant by itself
 - OpenAPI: `OpenAPI Description or external contract`; export status `contract-reference`.
 - OpenAPI security scheme: `none`.
 - OpenAPI missing requirements: none recorded
-- Crosswalk: [OKF Standards Crosswalk](../../docs/okf-standards-crosswalk.md)
+- Crosswalk: [OKF Standards Crosswalk](../docs/okf-standards-crosswalk.md)
 
 ## Credential Requirements
 

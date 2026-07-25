@@ -3,8 +3,10 @@ type: "Capability Document"
 title: "Bathing Water contract"
 description: "Machine-readable or service-description contract inferred for Bathing Water from public metadata."
 resource: "https://environment.data.gov.uk/bwq/doc/api-reference-v0.6.html"
-timestamp: "2020-08-26"
-tags: "environment, environment-agency, government-services, sparql"
+tags: ["environment", "environment-agency", "government-services", "sparql"]
+generated: { by: process:uk-government-api-okf-builder, at: "2026-07-16T00:00:00Z" }
+status: draft
+sources: [{ id: "contract_discovery", resource: "https://raw.githubusercontent.com/co-cddo/api-catalogue/main/data/catalogue.csv", title: "Contract discovery from harvested API metadata", last_modified: "2020-08-26" }]
 confidence: "observed"
 source_adapter: "contract_discovery"
 ---
@@ -44,7 +46,7 @@ This generated record is standards-alignable, not standards-conformant by itself
 - OpenAPI: `OpenAPI Description or external contract`; export status `contract-reference`.
 - OpenAPI security scheme: `unknown`.
 - OpenAPI missing requirements: `info.license`
-- Crosswalk: [OKF Standards Crosswalk](../../docs/okf-standards-crosswalk.md)
+- Crosswalk: [OKF Standards Crosswalk](../docs/okf-standards-crosswalk.md)
 
 ## Credential Requirements
 

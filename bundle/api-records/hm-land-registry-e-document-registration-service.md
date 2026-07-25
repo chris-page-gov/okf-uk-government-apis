@@ -3,8 +3,10 @@ type: "API Product"
 title: "e-Document Registration Service"
 description: "Use this service to: send applications to change the register - automate the collection of correspondence and responses - receive the completed application back If you are a software developer: - Use this document to integrate data into your system Poll Request Service URL for production environment https://businessgateway.landregistry.gov.uk/b2b/ECDRS_SoapEngine/EDocumentRegistrationV2_1PollRequestWebService?wsdl Attachment Service URLs: https://businessgateway.landregistry.gov.uk/b2b/ECDRS_SoapEngine/AttachmentV2_1WebService?wsdl https://businessgateway.landregistry.gov.uk/b2b/ECDRS_SoapEngine/AttachmentV2_1PollRequestWebService?wsdl Correspondence/Requisition URL: https://businessgateway.landregistry.gov.uk/b2b/ECDRS_SoapEngine/CorrespondenceV2_1PollRequestWebService?wsdl Early Completion URL: https://businessgateway.landregistry.gov.uk/b2b/ECDRS_SoapEngine/EarlyCompletionV2_1PollRequestWebService?wsdl For test environment endpoints replace https://businessgateway.landregistry.gov.uk/b2b/ECDRS_SoapEngine with https://bgtest.landregistry.gov.uk/b2b/ECDRS_StubService"
 resource: "https://businessgateway.landregistry.gov.uk/b2b/ECDRS_SoapEngine/EDocumentRegistrationV2_1WebService?wsdl"
-timestamp: "2022-11-23"
-tags: "environment, government-services, hm-land-registry, planning-and-property, soap-wsdl"
+tags: ["environment", "government-services", "hm-land-registry", "planning-and-property", "soap-wsdl"]
+generated: { by: process:uk-government-api-okf-builder, at: "2026-07-16T00:00:00Z" }
+status: draft
+sources: [{ id: "api_gov_uk_catalogue", resource: "https://raw.githubusercontent.com/co-cddo/api-catalogue/main/data/catalogue.csv", title: "GOV.UK API Catalogue CSV", last_modified: "2022-11-23" }]
 confidence: "declared"
 source_adapter: "api_gov_uk_catalogue"
 ---
@@ -44,7 +46,7 @@ This generated record is standards-alignable, not standards-conformant by itself
 - OpenAPI: `OpenAPI Object`; export status `service-stub-with-gaps`.
 - OpenAPI security scheme: `metadata-only`.
 - OpenAPI missing requirements: `info.license`
-- Crosswalk: [OKF Standards Crosswalk](../../docs/okf-standards-crosswalk.md)
+- Crosswalk: [OKF Standards Crosswalk](../docs/okf-standards-crosswalk.md)
 
 ## Credential Requirements
 

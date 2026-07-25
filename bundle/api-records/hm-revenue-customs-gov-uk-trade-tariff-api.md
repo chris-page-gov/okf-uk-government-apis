@@ -3,8 +3,10 @@ type: "API Product"
 title: "GOV.UK Trade Tariff API"
 description: "The GOV.UK Trade Tariff API makes it easy to access UK Trade Tariff data from [the Trade Tariff service](https://www.gov.uk/trade-tariff). The data includes commodity codes, import/export controls, customs duty and VAT rates. It is accessed via HTTPS and returns data in a JSON format. The reference documentation provides a thorough overview of the endpoints and the response format."
 resource: "https://www.trade-tariff.service.gov.uk/uk/api"
-timestamp: "2025-03-23"
-tags: "business-and-economy, government-services, hm-revenue-customs, rest-http, tax-and-customs"
+tags: ["business-and-economy", "government-services", "hm-revenue-customs", "rest-http", "tax-and-customs"]
+generated: { by: process:uk-government-api-okf-builder, at: "2026-07-16T00:00:00Z" }
+status: draft
+sources: [{ id: "api_gov_uk_catalogue", resource: "https://raw.githubusercontent.com/co-cddo/api-catalogue/main/data/catalogue.csv", title: "GOV.UK API Catalogue CSV", last_modified: "2025-03-23" }]
 confidence: "declared"
 source_adapter: "api_gov_uk_catalogue"
 ---
@@ -44,7 +46,7 @@ This generated record is standards-alignable, not standards-conformant by itself
 - OpenAPI: `OpenAPI Object`; export status `service-stub-with-gaps`.
 - OpenAPI security scheme: `unknown`.
 - OpenAPI missing requirements: `components.securitySchemes`
-- Crosswalk: [OKF Standards Crosswalk](../../docs/okf-standards-crosswalk.md)
+- Crosswalk: [OKF Standards Crosswalk](../docs/okf-standards-crosswalk.md)
 
 ## Credential Requirements
 

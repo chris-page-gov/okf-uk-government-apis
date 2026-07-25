@@ -3,8 +3,10 @@ type: "Contract"
 title: "OS Downloads API contract"
 description: "Machine-readable or service-description contract inferred for OS Downloads API from public metadata."
 resource: "https://osdatahub.os.uk/docs/downloads/overview"
-timestamp: ""
-tags: "geospatial, openapi, ordnance-survey, rest-http"
+tags: ["geospatial", "openapi", "ordnance-survey", "rest-http"]
+generated: { by: process:uk-government-api-okf-builder, at: "2026-07-16T00:00:00Z" }
+status: draft
+sources: [{ id: "contract_discovery", resource: "https://api.os.uk/downloads", title: "Contract discovery from harvested API metadata" }]
 confidence: "observed"
 source_adapter: "contract_discovery"
 ---
@@ -44,7 +46,7 @@ This generated record is standards-alignable, not standards-conformant by itself
 - OpenAPI: `OpenAPI Description or external contract`; export status `contract-reference`.
 - OpenAPI security scheme: `apiKey`.
 - OpenAPI missing requirements: none recorded
-- Crosswalk: [OKF Standards Crosswalk](../../docs/okf-standards-crosswalk.md)
+- Crosswalk: [OKF Standards Crosswalk](../docs/okf-standards-crosswalk.md)
 
 ## Credential Requirements
 

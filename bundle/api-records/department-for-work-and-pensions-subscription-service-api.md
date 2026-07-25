@@ -3,8 +3,10 @@ type: "API Product"
 title: "Subscription Service API"
 description: "ECNS subscription API allows other government departments and organisations to register or de-register subscriptions to citizen updates."
 resource: ""
-timestamp: "2023-05-16"
-tags: "department-for-work-and-pensions, government-services, planning-and-property, rest-http"
+tags: ["department-for-work-and-pensions", "government-services", "planning-and-property", "rest-http"]
+generated: { by: process:uk-government-api-okf-builder, at: "2026-07-16T00:00:00Z" }
+status: draft
+sources: [{ id: "api_gov_uk_catalogue", resource: "https://raw.githubusercontent.com/co-cddo/api-catalogue/main/data/catalogue.csv", title: "GOV.UK API Catalogue CSV", last_modified: "2023-05-16" }]
 confidence: "declared"
 source_adapter: "api_gov_uk_catalogue"
 ---
@@ -42,7 +44,7 @@ This generated record is standards-alignable, not standards-conformant by itself
 - OpenAPI: `OpenAPI Object`; export status `service-stub-with-gaps`.
 - OpenAPI security scheme: `metadata-only`.
 - OpenAPI missing requirements: `externalDocs.url`, `servers[].url`
-- Crosswalk: [OKF Standards Crosswalk](../../docs/okf-standards-crosswalk.md)
+- Crosswalk: [OKF Standards Crosswalk](../docs/okf-standards-crosswalk.md)
 
 ## Credential Requirements
 

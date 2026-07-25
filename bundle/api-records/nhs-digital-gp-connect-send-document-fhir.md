@@ -3,8 +3,10 @@ type: "API Product"
 title: "GP Connect Send Document - FHIR"
 description: "Use this integration to send a PDF consultation summary to a registered GP practice - using GP Connect Messaging.For example, use it to send a document containing a patient's consultation notes to their GP practice when a patient is seen:- at another GP practice than their own- by an out of hours service- by a district nurse at homeEach message sent using this integration uses the GP Connect Messaging components, MESH, and ITK3, to deliver the message.Each message sent is a FHIR Message, defined as a FHIR composition, constructed to meet the ITK3 standard with a specific payload structure.For more details, see the GP Connect specifications for developers."
 resource: "https://digital.nhs.uk/developer/api-catalogue/gp-connect-send-document-fhir"
-timestamp: "2024-04-23"
-tags: "fhir, government-services, health-and-care, mesh, nhs-digital"
+tags: ["fhir", "government-services", "health-and-care", "mesh", "nhs-digital"]
+generated: { by: process:uk-government-api-okf-builder, at: "2026-07-16T00:00:00Z" }
+status: draft
+sources: [{ id: "api_gov_uk_catalogue", resource: "https://raw.githubusercontent.com/co-cddo/api-catalogue/main/data/catalogue.csv", title: "GOV.UK API Catalogue CSV", last_modified: "2024-04-23" }]
 confidence: "declared"
 source_adapter: "api_gov_uk_catalogue"
 ---
@@ -44,7 +46,7 @@ This generated record is standards-alignable, not standards-conformant by itself
 - OpenAPI: `OpenAPI Object`; export status `service-stub-with-gaps`.
 - OpenAPI security scheme: `metadata-only`.
 - OpenAPI missing requirements: `info.license`
-- Crosswalk: [OKF Standards Crosswalk](../../docs/okf-standards-crosswalk.md)
+- Crosswalk: [OKF Standards Crosswalk](../docs/okf-standards-crosswalk.md)
 
 ## Credential Requirements
 

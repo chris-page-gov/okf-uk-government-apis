@@ -7,7 +7,6 @@ import gzip
 import html
 import json
 from pathlib import Path
-import shutil
 
 import build_uk_government_api_okf as helpers
 
@@ -20,6 +19,29 @@ def load(path: Path):
     if path.suffix == ".gz":
         data = gzip.decompress(data)
     return json.loads(data)
+
+
+def documentation_concept(source: Path, generated_at: str) -> str:
+    relative = source.relative_to(ROOT).as_posix()
+    repository_url = f"https://github.com/chris-page-gov/okf-uk-government-apis/blob/main/{relative}"
+    title = source.stem.replace("-", " ").replace("_", " ")
+    frontmatter = "\n".join(
+        [
+            "---",
+            'type: "Reference"',
+            f"title: {helpers.yaml_scalar(title)}",
+            f"generated: {{ by: process:uk-government-api-okf-builder, at: {helpers.yaml_scalar(generated_at)} }}",
+            "status: draft",
+            "sources: [{ "
+            f"id: {helpers.yaml_scalar('repository-source')}, "
+            f"resource: {helpers.yaml_scalar(repository_url)}, "
+            f"title: {helpers.yaml_scalar(source.name)}"
+            " }]",
+            "---",
+            "",
+        ]
+    )
+    return frontmatter + source.read_text(encoding="utf-8").lstrip("\n")
 
 
 def main() -> int:
@@ -49,19 +71,49 @@ def main() -> int:
         "publisher": "https://github.com/chris-page-gov",
         "license": "https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/",
         "semantic_descriptor": "https://chris-page-gov.github.io/okf-uk-government-apis/okf-bundle.yamlld",
+        "okf_version": "0.2",
+        "core_conformance": "Markdown concept layer",
     })
     descriptor["entrypoints"].update({"viewer": "https://chris-page-gov.github.io/okf-explorer/", "relationship_adjacency": "data/adjacency/manifest.json", "notes": "docs/UK-Government-API-OKF.md", "standards_crosswalk": "docs/okf-standards-crosswalk.md"})
+    descriptor["extensions"]["okf-standards-crosswalk.v1"]["crosswalk"] = (
+        "docs/okf-standards-crosswalk.md"
+    )
     manifest["indexes"]["relationship_adjacency"] = "data/adjacency/manifest.json"
     manifest["performance"]["route_relationship_hydration"] = "hash-sharded adjacency"
+    manifest["okf_version"] = "0.2"
+    analysis_path = BUNDLE / manifest["indexes"]["analysis"]
+    analysis = load(analysis_path)
+    analysis["standards_alignment"]["crosswalk"] = "docs/okf-standards-crosswalk.md"
     descriptor_path.write_text(helpers.render_json(descriptor), encoding="utf-8")
     manifest_path.write_text(helpers.render_json(manifest), encoding="utf-8")
-    semantic = {"@context": descriptor["@context"], "@id": "https://chris-page-gov.github.io/okf-uk-government-apis/", "@type": "okf:Bundle", "title": descriptor["title"], "description": descriptor["description"], "version": descriptor["version"], "status": descriptor["status"], "profile": {"@id": descriptor["profile"]}, "descriptor": {"@id": descriptor["@id"]}, "publisher": {"@id": descriptor["publisher"]}, "license": {"@id": descriptor["license"]}, "generatedAt": descriptor["generated_at"]}
+    analysis_path.write_text(helpers.render_json(analysis), encoding="utf-8")
+    semantic = {"@context": descriptor["@context"], "@id": "https://chris-page-gov.github.io/okf-uk-government-apis/", "@type": "okf:Bundle", "okf_version": "0.2", "title": descriptor["title"], "description": descriptor["description"], "version": descriptor["version"], "status": descriptor["status"], "profile": {"@id": descriptor["profile"]}, "descriptor": {"@id": descriptor["@id"]}, "publisher": {"@id": descriptor["publisher"]}, "license": {"@id": descriptor["license"]}, "generatedAt": descriptor["generated_at"]}
     (BUNDLE / "okf-bundle.yamlld").write_text(json.dumps(semantic, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     (BUNDLE / "okf-bundle.jsonld").write_text(helpers.render_json(semantic), encoding="utf-8")
     docs_root = BUNDLE / "docs"
     docs_root.mkdir(parents=True, exist_ok=True)
     for source in (ROOT / "docs").glob("*.md"):
-        shutil.copy2(source, docs_root / source.name)
+        (docs_root / source.name).write_text(
+            documentation_concept(source, descriptor["generated_at"]),
+            encoding="utf-8",
+        )
+    records = [
+        row
+        for relative in manifest["chunks"]["datasets"]
+        for row in load(BUNDLE / relative)
+    ]
+    publishers = [
+        row
+        for relative in manifest["chunks"]["publishers"]
+        for row in load(BUNDLE / relative)
+    ]
+    markdown_files = helpers.markdown_output_files(
+        {"records": records, "publishers": publishers, "descriptor": descriptor}
+    )
+    for relative, content in markdown_files.items():
+        target = BUNDLE / relative
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_text(content, encoding="utf-8")
     counts = manifest["counts"]
     explorer_url = (
         "https://chris-page-gov.github.io/okf-explorer/?bundle="

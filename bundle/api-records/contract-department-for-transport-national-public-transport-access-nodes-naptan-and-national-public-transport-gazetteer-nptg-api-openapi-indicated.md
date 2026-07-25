@@ -3,8 +3,10 @@ type: "Contract"
 title: "National Public Transport Access Nodes (NaPTAN) and National Public Transport Gazetteer (NPTG) API contract"
 description: "Machine-readable or service-description contract inferred for National Public Transport Access Nodes (NaPTAN) and National Public Transport Gazetteer (NPTG) API from public metadata."
 resource: "https://naptan.api.dft.gov.uk/swagger/index.html"
-timestamp: "2022-01-07"
-tags: "department-for-transport, geospatial, population-and-statistics, rest-http, transport"
+tags: ["department-for-transport", "geospatial", "population-and-statistics", "rest-http", "transport"]
+generated: { by: process:uk-government-api-okf-builder, at: "2026-07-16T00:00:00Z" }
+status: draft
+sources: [{ id: "contract_discovery", resource: "https://raw.githubusercontent.com/co-cddo/api-catalogue/main/data/catalogue.csv", title: "Contract discovery from harvested API metadata", last_modified: "2022-01-07" }]
 confidence: "observed"
 source_adapter: "contract_discovery"
 ---
@@ -44,7 +46,7 @@ This generated record is standards-alignable, not standards-conformant by itself
 - OpenAPI: `OpenAPI Description or external contract`; export status `contract-reference`.
 - OpenAPI security scheme: `unknown`.
 - OpenAPI missing requirements: `info.license`
-- Crosswalk: [OKF Standards Crosswalk](../../docs/okf-standards-crosswalk.md)
+- Crosswalk: [OKF Standards Crosswalk](../docs/okf-standards-crosswalk.md)
 
 ## Credential Requirements
 

@@ -3,8 +3,10 @@ type: "API Product"
 title: "Official Copy Document Availability V2"
 description: "Check which register referred documents are available for immediate download. Use a title number to find out the Official Copy Document Availability status via a RESTful API. When you know what is available, you can order using the Official Copy Title Known service (https://landregistry.github.io/bgtechdoc/services/official_copy_title_known/). Test URL: https://bgtest.landregistry.gov.uk/bg2test/api/v2/titles/[title_number]/official-copies/availability Where [title_number] is replaced by the title number you need to use."
 resource: "https://businessgateway.landregistry.gov.uk/bg2/api/v2/titles/{title_number}/official-copies/availability"
-timestamp: "2026-03-31"
-tags: "government-services, hm-land-registry, planning-and-property, rest-http"
+tags: ["government-services", "hm-land-registry", "planning-and-property", "rest-http"]
+generated: { by: process:uk-government-api-okf-builder, at: "2026-07-16T00:00:00Z" }
+status: draft
+sources: [{ id: "api_gov_uk_catalogue", resource: "https://raw.githubusercontent.com/co-cddo/api-catalogue/main/data/catalogue.csv", title: "GOV.UK API Catalogue CSV", last_modified: "2026-03-31" }]
 confidence: "declared"
 source_adapter: "api_gov_uk_catalogue"
 ---
@@ -44,7 +46,7 @@ This generated record is standards-alignable, not standards-conformant by itself
 - OpenAPI: `OpenAPI Object`; export status `service-stub-with-gaps`.
 - OpenAPI security scheme: `metadata-only`.
 - OpenAPI missing requirements: `info.license`
-- Crosswalk: [OKF Standards Crosswalk](../../docs/okf-standards-crosswalk.md)
+- Crosswalk: [OKF Standards Crosswalk](../docs/okf-standards-crosswalk.md)
 
 ## Credential Requirements
 

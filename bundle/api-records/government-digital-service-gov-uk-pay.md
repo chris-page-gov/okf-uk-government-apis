@@ -3,8 +3,10 @@ type: "API Product"
 title: "GOV.UK Pay"
 description: "Anyone in the public sector can use GOV.UK Pay to take online payments. It only takes minutes to get set up with GOV.UK Pay. Then you can: - take payments using debit cards, credit cards or digital wallets - give full or partial refunds - switch Payment Service Providers, for free, when you choose - use custom branding on your payment pages. GOV.UK Pay is ideal if you currently take payments using paper forms, by email or if you have an online service."
 resource: "https://publicapi.payments.service.gov.uk/"
-timestamp: "2020-08-24"
-tags: "government-digital-service, government-services, rest-http"
+tags: ["government-digital-service", "government-services", "rest-http"]
+generated: { by: process:uk-government-api-okf-builder, at: "2026-07-16T00:00:00Z" }
+status: draft
+sources: [{ id: "api_gov_uk_catalogue", resource: "https://raw.githubusercontent.com/co-cddo/api-catalogue/main/data/catalogue.csv", title: "GOV.UK API Catalogue CSV", last_modified: "2020-08-24" }]
 confidence: "declared"
 source_adapter: "api_gov_uk_catalogue"
 ---
@@ -44,7 +46,7 @@ This generated record is standards-alignable, not standards-conformant by itself
 - OpenAPI: `OpenAPI Object`; export status `service-stub-with-gaps`.
 - OpenAPI security scheme: `unknown`.
 - OpenAPI missing requirements: `components.securitySchemes`, `info.license`
-- Crosswalk: [OKF Standards Crosswalk](../../docs/okf-standards-crosswalk.md)
+- Crosswalk: [OKF Standards Crosswalk](../docs/okf-standards-crosswalk.md)
 
 ## Credential Requirements
 

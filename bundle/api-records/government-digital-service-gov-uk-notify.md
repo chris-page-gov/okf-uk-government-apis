@@ -3,8 +3,10 @@ type: "API Product"
 title: "GOV.UK Notify"
 description: "GOV.UK Notify allows government departments to send emails, text messages and letters to their users. The API contains: - the public-facing REST API for GOV.UK Notify, which teams can integrate with using our clients - an internal-only REST API built using Flask to manage services, users, templates, etc (this is what the admin app talks to) - asynchronous workers built using Celery to put things on queues and read them off to be processed, sent to providers, updated, etc."
 resource: "https://api.notifications.service.gov.uk/"
-timestamp: "2020-08-24"
-tags: "government-digital-service, government-services, streaming"
+tags: ["government-digital-service", "government-services", "streaming"]
+generated: { by: process:uk-government-api-okf-builder, at: "2026-07-16T00:00:00Z" }
+status: draft
+sources: [{ id: "api_gov_uk_catalogue", resource: "https://raw.githubusercontent.com/co-cddo/api-catalogue/main/data/catalogue.csv", title: "GOV.UK API Catalogue CSV", last_modified: "2020-08-24" }]
 confidence: "declared"
 source_adapter: "api_gov_uk_catalogue"
 ---
@@ -44,7 +46,7 @@ This generated record is standards-alignable, not standards-conformant by itself
 - OpenAPI: `OpenAPI Object`; export status `service-stub-with-gaps`.
 - OpenAPI security scheme: `unknown`.
 - OpenAPI missing requirements: `components.securitySchemes`, `info.license`
-- Crosswalk: [OKF Standards Crosswalk](../../docs/okf-standards-crosswalk.md)
+- Crosswalk: [OKF Standards Crosswalk](../docs/okf-standards-crosswalk.md)
 
 ## Credential Requirements
 

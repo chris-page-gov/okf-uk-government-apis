@@ -3,8 +3,10 @@ type: "API Product"
 title: "Check barriers to trading and investing abroad"
 description: "Check barriers to trading and investing abroad is the service to which DBT publishes trade barriers. It is aimed at UK-based businesses planning to export goods, provide services or invest money in another country. The dataset will give you information about things that could slow down, stop or raise costs for UK companies and citizens doing business in a specific country (a ‘trade barrier’). API calls can be made using a GET request to `https://data.api.trade.gov.uk/v1/datasets/market-barriers/versions/latest/data?format=json`."
 resource: "https://data.api.trade.gov.uk/v1/datasets/market-barriers/versions/latest/data?format=json"
-timestamp: "2020-03-09"
-tags: "business-and-economy, department-for-business-and-trade, government-services, planning-and-property, population-and-statistics, rest-http"
+tags: ["business-and-economy", "department-for-business-and-trade", "government-services", "planning-and-property", "population-and-statistics", "rest-http"]
+generated: { by: process:uk-government-api-okf-builder, at: "2026-07-16T00:00:00Z" }
+status: draft
+sources: [{ id: "api_gov_uk_catalogue", resource: "https://raw.githubusercontent.com/co-cddo/api-catalogue/main/data/catalogue.csv", title: "GOV.UK API Catalogue CSV", last_modified: "2020-03-09" }]
 confidence: "declared"
 source_adapter: "api_gov_uk_catalogue"
 ---
@@ -44,7 +46,7 @@ This generated record is standards-alignable, not standards-conformant by itself
 - OpenAPI: `OpenAPI Object`; export status `service-stub-with-gaps`.
 - OpenAPI security scheme: `unknown`.
 - OpenAPI missing requirements: `components.securitySchemes`, `info.license`
-- Crosswalk: [OKF Standards Crosswalk](../../docs/okf-standards-crosswalk.md)
+- Crosswalk: [OKF Standards Crosswalk](../docs/okf-standards-crosswalk.md)
 
 ## Credential Requirements
 

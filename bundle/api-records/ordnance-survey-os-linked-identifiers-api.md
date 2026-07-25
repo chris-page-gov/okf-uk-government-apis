@@ -3,8 +3,10 @@ type: "API Product"
 title: "OS Linked Identifiers API"
 description: "The OS Linked Identifiers API allows users to access the valuable relationships between properties, streets and OS MasterMap identifiers for free. An identifier is a unique reference assigned to a specific thing, so when you are talking to someone else you can use it to ensure you're talking about the same thing. They are used all the time, such as telephone numbers, postcodes and customer reference numbers. OS is striving to make its identifiers more accessible and useful for its customers. The OS Linked Identifiers API takes this further by enabling the linking together of datasets that are using different identifiers; for example, linking a property address (UPRN - Unique Property Reference Number) to the street that it is on (USRN - Unique Street Reference Number)."
 resource: "https://api.os.uk/search/links/v1"
-timestamp: "2020-08-24"
-tags: "geospatial, ordnance-survey, planning-and-property, rest-http"
+tags: ["geospatial", "ordnance-survey", "planning-and-property", "rest-http"]
+generated: { by: process:uk-government-api-okf-builder, at: "2026-07-16T00:00:00Z" }
+status: draft
+sources: [{ id: "api_gov_uk_catalogue", resource: "https://raw.githubusercontent.com/co-cddo/api-catalogue/main/data/catalogue.csv", title: "GOV.UK API Catalogue CSV", last_modified: "2020-08-24" }]
 confidence: "declared"
 source_adapter: "api_gov_uk_catalogue"
 ---
@@ -44,7 +46,7 @@ This generated record is standards-alignable, not standards-conformant by itself
 - OpenAPI: `OpenAPI Object`; export status `service-stub-with-gaps`.
 - OpenAPI security scheme: `unknown`.
 - OpenAPI missing requirements: `components.securitySchemes`
-- Crosswalk: [OKF Standards Crosswalk](../../docs/okf-standards-crosswalk.md)
+- Crosswalk: [OKF Standards Crosswalk](../docs/okf-standards-crosswalk.md)
 
 ## Credential Requirements
 

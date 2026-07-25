@@ -3,8 +3,10 @@ type: "API Product"
 title: "National Event Management Service - FHIR API"
 description: "Use this API to publish and subscribe to patient-centric healthcare event messages with the National Events Management Service (NEMS). This national service is implemented on the NHS Spine.As a sending system, you can:- publish an event messageAs a subscribing system, you can:- create a subscription- read a subscription - delete a subscriptionThis API uses a publish-subscribe model - the sending system publishes specific range of healthcare event messages to National Events Management Service (NEMS), and NEMS forwards the events to all subscribed systems via MESH.NEMS authorises a specific list of system suppliers and health and social care organisations to publish information as events.For more details, see the Introduction to the National Events Management Service."
 resource: "https://digital.nhs.uk/developer/api-catalogue/national-events-management-service-fhir"
-timestamp: "2024-04-23"
-tags: "fhir, government-services, health-and-care, mesh, nhs-digital"
+tags: ["fhir", "government-services", "health-and-care", "mesh", "nhs-digital"]
+generated: { by: process:uk-government-api-okf-builder, at: "2026-07-16T00:00:00Z" }
+status: draft
+sources: [{ id: "api_gov_uk_catalogue", resource: "https://raw.githubusercontent.com/co-cddo/api-catalogue/main/data/catalogue.csv", title: "GOV.UK API Catalogue CSV", last_modified: "2024-04-23" }]
 confidence: "declared"
 source_adapter: "api_gov_uk_catalogue"
 ---
@@ -44,7 +46,7 @@ This generated record is standards-alignable, not standards-conformant by itself
 - OpenAPI: `OpenAPI Object`; export status `service-stub-with-gaps`.
 - OpenAPI security scheme: `unknown`.
 - OpenAPI missing requirements: `components.securitySchemes`, `info.license`
-- Crosswalk: [OKF Standards Crosswalk](../../docs/okf-standards-crosswalk.md)
+- Crosswalk: [OKF Standards Crosswalk](../docs/okf-standards-crosswalk.md)
 
 ## Credential Requirements
 

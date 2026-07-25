@@ -3,8 +3,10 @@ type: "Provider API Portal"
 title: "Welcome to Ordnance Survey's APIs"
 description: "Access geospatial data made available by OS under one of the following categories : mapping / features / search / download / positioning."
 resource: "https://api.os.uk/"
-timestamp: ""
-tags: "geospatial, ordnance-survey, rest-http"
+tags: ["geospatial", "ordnance-survey", "rest-http"]
+generated: { by: process:uk-government-api-okf-builder, at: "2026-07-16T00:00:00Z" }
+status: draft
+sources: [{ id: "ordnance_survey_api_os_uk", resource: "https://api.os.uk/", title: "Ordnance Survey API root" }]
 confidence: "declared"
 source_adapter: "ordnance_survey_api_os_uk"
 ---
@@ -44,7 +46,7 @@ This generated record is standards-alignable, not standards-conformant by itself
 - OpenAPI: `externalDocs`; export status `documentation-reference`.
 - OpenAPI security scheme: `apiKey`.
 - OpenAPI missing requirements: none recorded
-- Crosswalk: [OKF Standards Crosswalk](../../docs/okf-standards-crosswalk.md)
+- Crosswalk: [OKF Standards Crosswalk](../docs/okf-standards-crosswalk.md)
 
 ## Credential Requirements
 

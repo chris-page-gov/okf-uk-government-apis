@@ -3,8 +3,10 @@ type: "API Product"
 title: "Contractmap"
 description: "Contractmap is an AI-enabled system that maps contract descriptions to Categories within the Government Commercial Agency (GCA) commercial taxonomy. Given a contract description, it returns the name of a Category if a close match is found, or a null response if no close match is found."
 resource: "https://github.com/Crown-Commercial-Service/ccs-contract-map"
-timestamp: "2026-06-24"
-tags: "business-and-economy, government-commercial-agency, rest-http"
+tags: ["business-and-economy", "government-commercial-agency", "rest-http"]
+generated: { by: process:uk-government-api-okf-builder, at: "2026-07-16T00:00:00Z" }
+status: draft
+sources: [{ id: "api_gov_uk_catalogue", resource: "https://raw.githubusercontent.com/co-cddo/api-catalogue/main/data/catalogue.csv", title: "GOV.UK API Catalogue CSV", last_modified: "2026-06-24" }]
 confidence: "declared"
 source_adapter: "api_gov_uk_catalogue"
 ---
@@ -44,7 +46,7 @@ This generated record is standards-alignable, not standards-conformant by itself
 - OpenAPI: `OpenAPI Object`; export status `service-stub-with-gaps`.
 - OpenAPI security scheme: `unknown`.
 - OpenAPI missing requirements: `components.securitySchemes`, `info.license`
-- Crosswalk: [OKF Standards Crosswalk](../../docs/okf-standards-crosswalk.md)
+- Crosswalk: [OKF Standards Crosswalk](../docs/okf-standards-crosswalk.md)
 
 ## Credential Requirements
 

@@ -3,8 +3,10 @@ type: "API Product"
 title: "Electronic Prescription Service - HL7 V3 API"
 description: "Use this API to access the Electronic Prescription Service (EPS). EPS allows a prescriber (such as a GP) to send prescriptions electronically to a dispenser (such as a pharmacy) of the patient's choice. This makes the prescribing and dispensing process more efficient and convenient for patients and staff.You can do different things, depending on your role.As a prescriber you can:- send prescriptions to EPS- cancel prescriptionsAs a dispenser you can:- receive prescriptions from EPS- confirm a prescription is dispensed- claim for a dispensed prescriptionA healthcare worker must be present and authenticated with an NHS smartcard or a modern alternative to use this API."
 resource: "https://digital.nhs.uk/developer/api-catalogue/electronic-prescription-service-hl7-v3"
-timestamp: "2024-04-23"
-tags: "government-services, health-and-care, hl7-v3, nhs-digital"
+tags: ["government-services", "health-and-care", "hl7-v3", "nhs-digital"]
+generated: { by: process:uk-government-api-okf-builder, at: "2026-07-16T00:00:00Z" }
+status: draft
+sources: [{ id: "api_gov_uk_catalogue", resource: "https://raw.githubusercontent.com/co-cddo/api-catalogue/main/data/catalogue.csv", title: "GOV.UK API Catalogue CSV", last_modified: "2024-04-23" }]
 confidence: "declared"
 source_adapter: "api_gov_uk_catalogue"
 ---
@@ -44,7 +46,7 @@ This generated record is standards-alignable, not standards-conformant by itself
 - OpenAPI: `OpenAPI Object`; export status `service-stub-with-gaps`.
 - OpenAPI security scheme: `unknown`.
 - OpenAPI missing requirements: `components.securitySchemes`, `info.license`
-- Crosswalk: [OKF Standards Crosswalk](../../docs/okf-standards-crosswalk.md)
+- Crosswalk: [OKF Standards Crosswalk](../docs/okf-standards-crosswalk.md)
 
 ## Credential Requirements
 
