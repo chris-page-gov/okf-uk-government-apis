@@ -37,4 +37,34 @@ Validate without changing the publication with:
 python3 -m unittest discover -s tests -v
 python3 scripts/check_bundle.py
 python3 scripts/build_checksums.py --check
+python3 scripts/check_publication_contract.py
 ```
+
+## Publication contract and CI
+
+[`okf.publication.json`](okf.publication.json) records the repository's API
+source family, authored and generated boundaries, dependency planes, reviewed
+commands, documentation lockstep, CI policy, publication authority and
+verification route. The generated
+[`bundle/okf-bundle.yamlld`](bundle/okf-bundle.yamlld) remains the semantic
+descriptor; lifecycle governance does not alter its bytes.
+
+`scripts/check_publication_contract.py` checks local identifiers and command
+references, safe reviewed command declarations and the no-rebuild publication
+policy. In pull requests and pushes it also requires controlled changes to
+include `CHANGELOG.md` and updated human guidance in either `README.md` or
+`AGENTS.md`. Automated dependency changes receive the same assessment; there
+is no blanket exemption.
+
+CI runs once for a pull request and again for the integrated `main` commit or a
+version tag. Superseded runs are cancelled per pull request or ref. Pages is
+triggered only by a successful complete `main` validation, checks out that
+exact commit and uploads its existing `bundle/` directory without rebuilding
+or reacquiring it. A manual deployment runs the complete non-mutating
+validation first. Networked source acquisition remains a separate,
+explicitly authorised refresh operation.
+
+After deployment, `scripts/verify_deployment.py` fetches the public
+`checksums.json`, landing page, Explorer descriptor and record-count manifest
+and compares them byte for byte with the validated checkout. This is a bounded
+HTTP identity gate, not a real-browser interaction or console test.
