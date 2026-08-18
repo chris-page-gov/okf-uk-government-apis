@@ -1,0 +1,575 @@
+{
+  "schema": "okf-repository-publication-contract.v1",
+  "modified": "2026-08-18",
+  "locale": "en-GB",
+  "time_zone": "Europe/London",
+  "repository": {
+    "name": "okf-uk-government-apis",
+    "url": "https://github.com/chris-page-gov/okf-uk-government-apis",
+    "role": "large-corpus-producer",
+    "root_index": "README.md",
+    "lifecycle": "active"
+  },
+  "semantic_contract": {
+    "path": "bundle/okf-bundle.yamlld",
+    "profile": "https://chris-page-gov.github.io/okf-explorer/profile/bundle-wiki/v1/"
+  },
+  "source_families": [
+    {
+      "id": "public-api-acquisition",
+      "label": "UK public API acquisition",
+      "description": "The versioned source adapters and bounded fixtures used to acquire and test the multi-source public API catalogue.",
+      "kind": "api",
+      "paths": [
+        "scripts/build_uk_government_api_okf.py",
+        "tests/fixtures/uk_government_api_okf/*"
+      ],
+      "formats": [
+        "application/json",
+        "application/xml",
+        "text/csv"
+      ],
+      "origin": "mixed",
+      "authority": "mixed",
+      "snapshot_policy": "reviewed-live",
+      "inventory": {
+        "method": "bounded-live-observation",
+        "manifest_path": "bundle/data/manifest.json",
+        "identity": [
+          "source-identifier",
+          "source-version",
+          "observed-at",
+          "sha256"
+        ]
+      },
+      "rights": {
+        "status": "mixed",
+        "evidence": [
+          "https://github.com/chris-page-gov/okf-uk-government-apis/blob/main/LICENSE.md",
+          "https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/"
+        ],
+        "limitations": [
+          "Record-level source licence and provenance remain authoritative over the repository-level publication licence."
+        ]
+      },
+      "sensitivity": {
+        "status": "assessed-no-personal-data",
+        "assessment": "The publication describes public APIs and data access. Source adapters redact credential parameters and do not execute harvested credentials."
+      },
+      "extraction": {
+        "mode": "versioned-adapter",
+        "network_access": "required",
+        "command_ids": [
+          "acquire-publication"
+        ],
+        "limitations": [
+          "Networked acquisition is an explicitly authorised refresh operation and is not part of routine pull-request validation."
+        ]
+      },
+      "invalidates": [
+        "source",
+        "semantic",
+        "runtime",
+        "documentation",
+        "release",
+        "deployment"
+      ],
+      "limitations": [
+        "The checked-in preview is a frozen observation and does not establish that upstream APIs remain available or unchanged."
+      ]
+    }
+  ],
+  "boundaries": {
+    "authored": [
+      {
+        "path": "scripts/*",
+        "role": "generator",
+        "source_family_id": "public-api-acquisition"
+      },
+      {
+        "path": "tests/*",
+        "role": "test",
+        "source_family_id": "public-api-acquisition"
+      },
+      {
+        "path": "docs/*",
+        "role": "documentation"
+      },
+      {
+        "path": "README.md",
+        "role": "documentation"
+      },
+      {
+        "path": "AGENTS.md",
+        "role": "policy"
+      },
+      {
+        "path": "CHANGELOG.md",
+        "role": "changelog"
+      },
+      {
+        "path": "okf.publication.json",
+        "role": "publication-contract"
+      },
+      {
+        "path": ".github/workflows/*",
+        "role": "workflow"
+      }
+    ],
+    "generated": [
+      {
+        "path": "bundle/okf-bundle.yamlld",
+        "role": "semantic-yaml-ld",
+        "plane": "semantic",
+        "required": true,
+        "build_command_ids": [
+          "acquire-publication",
+          "upgrade-publication"
+        ],
+        "check_command_ids": [
+          "check-bundle"
+        ]
+      },
+      {
+        "path": "bundle/okf-bundle.jsonld",
+        "role": "semantic-json-ld",
+        "plane": "semantic",
+        "required": true,
+        "build_command_ids": [
+          "acquire-publication",
+          "upgrade-publication"
+        ],
+        "check_command_ids": [
+          "check-bundle"
+        ]
+      },
+      {
+        "path": "bundle/okf-explorer.json",
+        "role": "explorer-runtime",
+        "plane": "runtime",
+        "required": true,
+        "build_command_ids": [
+          "acquire-publication",
+          "upgrade-publication"
+        ],
+        "check_command_ids": [
+          "check-bundle"
+        ]
+      },
+      {
+        "path": "bundle/data/manifest.json",
+        "role": "explorer-runtime",
+        "plane": "runtime",
+        "required": true,
+        "build_command_ids": [
+          "acquire-publication",
+          "upgrade-publication"
+        ],
+        "check_command_ids": [
+          "check-bundle"
+        ]
+      },
+      {
+        "path": "bundle/data/adjacency/*",
+        "role": "relationship-runtime",
+        "plane": "runtime",
+        "required": true,
+        "build_command_ids": [
+          "acquire-publication",
+          "upgrade-publication"
+        ],
+        "check_command_ids": [
+          "check-bundle"
+        ]
+      },
+      {
+        "path": "bundle/data/search/*",
+        "role": "search-index",
+        "plane": "runtime",
+        "required": true,
+        "build_command_ids": [
+          "acquire-publication"
+        ],
+        "check_command_ids": [
+          "check-bundle"
+        ]
+      },
+      {
+        "path": "bundle/*.md",
+        "role": "other",
+        "plane": "semantic",
+        "required": true,
+        "build_command_ids": [
+          "acquire-publication",
+          "upgrade-publication"
+        ],
+        "check_command_ids": [
+          "check-bundle"
+        ]
+      },
+      {
+        "path": "bundle/api-records/*",
+        "role": "semantic-shards",
+        "plane": "semantic",
+        "required": true,
+        "build_command_ids": [
+          "acquire-publication",
+          "upgrade-publication"
+        ],
+        "check_command_ids": [
+          "check-bundle"
+        ]
+      },
+      {
+        "path": "bundle/organisations/*",
+        "role": "semantic-shards",
+        "plane": "semantic",
+        "required": true,
+        "build_command_ids": [
+          "acquire-publication",
+          "upgrade-publication"
+        ],
+        "check_command_ids": [
+          "check-bundle"
+        ]
+      },
+      {
+        "path": "bundle/checksums.json",
+        "role": "checksum-manifest",
+        "plane": "release",
+        "required": true,
+        "build_command_ids": [
+          "build-checksums"
+        ],
+        "check_command_ids": [
+          "check-checksums"
+        ]
+      },
+      {
+        "path": "bundle/index.html",
+        "role": "site",
+        "plane": "deployment",
+        "required": true,
+        "build_command_ids": [
+          "acquire-publication",
+          "upgrade-publication"
+        ],
+        "check_command_ids": [
+          "check-bundle"
+        ]
+      }
+    ]
+  },
+  "planes": [
+    {
+      "id": "source",
+      "depends_on": [],
+      "paths": [
+        "scripts/build_uk_government_api_okf.py",
+        "tests/fixtures/uk_government_api_okf/*"
+      ],
+      "command_ids": [
+        "acquire-publication",
+        "test-all"
+      ]
+    },
+    {
+      "id": "semantic",
+      "depends_on": [
+        "source"
+      ],
+      "paths": [
+        "bundle/okf-bundle.yamlld",
+        "bundle/okf-bundle.jsonld",
+        "bundle/*.md",
+        "bundle/api-records/*",
+        "bundle/organisations/*"
+      ],
+      "command_ids": [
+        "upgrade-publication",
+        "check-bundle"
+      ]
+    },
+    {
+      "id": "runtime",
+      "depends_on": [
+        "semantic"
+      ],
+      "paths": [
+        "bundle/okf-explorer.json",
+        "bundle/data/*"
+      ],
+      "command_ids": [
+        "upgrade-publication",
+        "check-bundle"
+      ]
+    },
+    {
+      "id": "documentation",
+      "depends_on": [
+        "source",
+        "semantic"
+      ],
+      "paths": [
+        "README.md",
+        "AGENTS.md",
+        "CHANGELOG.md",
+        "docs/*"
+      ],
+      "command_ids": [
+        "check-contract"
+      ]
+    },
+    {
+      "id": "release",
+      "depends_on": [
+        "semantic",
+        "runtime",
+        "documentation"
+      ],
+      "paths": [
+        "bundle/checksums.json"
+      ],
+      "command_ids": [
+        "build-checksums",
+        "check-checksums",
+        "test-all"
+      ]
+    },
+    {
+      "id": "deployment",
+      "depends_on": [
+        "release"
+      ],
+      "paths": [
+        "bundle/index.html",
+        ".github/workflows/pages.yml"
+      ],
+      "command_ids": [
+        "check-bundle",
+        "check-checksums",
+        "verify-pages"
+      ]
+    }
+  ],
+  "tooling": {
+    "commands": [
+      {
+        "id": "acquire-publication",
+        "kind": "acquire",
+        "planes": [
+          "source",
+          "semantic",
+          "runtime",
+          "deployment"
+        ],
+        "command": "python3 scripts/build_uk_government_api_okf.py",
+        "source": "README.md",
+        "review_status": "reviewed-local-guidance",
+        "network": "acquisition",
+        "mutates": "generated-only",
+        "timeout_minutes": 180
+      },
+      {
+        "id": "upgrade-publication",
+        "kind": "build",
+        "planes": [
+          "semantic",
+          "runtime",
+          "documentation",
+          "deployment"
+        ],
+        "command": "python3 scripts/upgrade_publication.py",
+        "source": "README.md",
+        "review_status": "reviewed-local-guidance",
+        "network": "none",
+        "mutates": "generated-only",
+        "timeout_minutes": 30
+      },
+      {
+        "id": "build-checksums",
+        "kind": "build",
+        "planes": [
+          "release"
+        ],
+        "command": "python3 scripts/build_checksums.py",
+        "source": "README.md",
+        "review_status": "reviewed-local-guidance",
+        "network": "none",
+        "mutates": "generated-only",
+        "timeout_minutes": 10
+      },
+      {
+        "id": "check-bundle",
+        "kind": "check",
+        "planes": [
+          "semantic",
+          "runtime",
+          "deployment"
+        ],
+        "command": "python3 scripts/check_bundle.py",
+        "source": "README.md",
+        "review_status": "reviewed-local-guidance",
+        "network": "none",
+        "mutates": "none",
+        "timeout_minutes": 20
+      },
+      {
+        "id": "check-checksums",
+        "kind": "check",
+        "planes": [
+          "release",
+          "deployment"
+        ],
+        "command": "python3 scripts/build_checksums.py --check",
+        "source": "README.md",
+        "review_status": "reviewed-local-guidance",
+        "network": "none",
+        "mutates": "none",
+        "timeout_minutes": 10
+      },
+      {
+        "id": "check-contract",
+        "kind": "check",
+        "planes": [
+          "source",
+          "documentation",
+          "release"
+        ],
+        "command": "python3 scripts/check_publication_contract.py",
+        "source": "AGENTS.md",
+        "review_status": "reviewed-local-guidance",
+        "network": "none",
+        "mutates": "none",
+        "timeout_minutes": 5
+      },
+      {
+        "id": "test-all",
+        "kind": "test",
+        "planes": [
+          "source",
+          "semantic",
+          "runtime",
+          "documentation",
+          "release"
+        ],
+        "command": "python3 -m unittest discover -s tests -v",
+        "source": "README.md",
+        "review_status": "reviewed-local-guidance",
+        "network": "none",
+        "mutates": "none",
+        "timeout_minutes": 20
+      },
+      {
+        "id": "verify-pages",
+        "kind": "verify",
+        "planes": [
+          "deployment"
+        ],
+        "command": "python3 scripts/verify_deployment.py",
+        "source": ".github/workflows/pages.yml",
+        "review_status": "reviewed-local-guidance",
+        "network": "bounded-read",
+        "mutates": "none",
+        "timeout_minutes": 5
+      }
+    ]
+  },
+  "lockstep": {
+    "controlled_paths": [
+      "scripts/*",
+      "tests/*",
+      "docs/*",
+      ".github/workflows/*",
+      "okf.publication.json",
+      "bundle/*"
+    ],
+    "documentation_paths": [
+      "README.md",
+      "AGENTS.md",
+      "CHANGELOG.md"
+    ],
+    "changelog_path": "CHANGELOG.md",
+    "check_command_id": "check-contract",
+    "dependency_update_policy": "assess-release-bound-bytes-no-blanket-exemption",
+    "unknown_path_policy": "fail-closed"
+  },
+  "ci": {
+    "provider": "github-actions",
+    "workflow_paths": [
+      ".github/workflows/ci.yml",
+      ".github/workflows/pages.yml"
+    ],
+    "impact_routing": "full-suite",
+    "parallelism": "serial",
+    "unknown_path_policy": "full-suite",
+    "browser": {
+      "ordinary": {
+        "policy": "not-applicable",
+        "engines": [],
+        "command_ids": []
+      },
+      "cross_engine": {
+        "policy": "not-applicable",
+        "engines": [],
+        "command_ids": [],
+        "installation": {
+          "policy": "none",
+          "command_ids": []
+        }
+      }
+    }
+  },
+  "publication": {
+    "mode": "automatic-protected-main",
+    "scope": "bounded-demonstrator",
+    "authority": {
+      "decision": "Protected main may publish the checked-in bounded preview only after the complete local validation contract passes.",
+      "evidence_paths": [
+        "README.md"
+      ]
+    },
+    "candidate_policy": "promote-exact-assured-bytes-without-rebuild",
+    "targets": [
+      {
+        "id": "github-pages",
+        "kind": "github-pages",
+        "workflow_path": ".github/workflows/pages.yml",
+        "public_base_url": "https://chris-page-gov.github.io/okf-uk-government-apis/",
+        "exact_commit_required": true,
+        "promote_without_rebuild": true
+      }
+    ]
+  },
+  "verification": {
+    "required": false,
+    "browser": "not-applicable",
+    "exact_commit_required": true,
+    "identity_checks": [
+      "sha256",
+      "descriptor",
+      "record-count",
+      "route"
+    ],
+    "journeys": [
+      {
+        "id": "verify-published-preview",
+        "url": "https://chris-page-gov.github.io/okf-uk-government-apis/",
+        "expected_identity": "The deployed checksum manifest, landing page, Explorer descriptor and data manifest are byte-for-byte equal to the validated preview commit.",
+        "steps": [
+          "Fetch the deployed checksum manifest without rebuilding.",
+          "Compare the landing page, Explorer descriptor and record-count manifest with the checked-out candidate bytes."
+        ]
+      }
+    ],
+    "console_policy": "not-applicable",
+    "command_ids": [
+      "verify-pages"
+    ]
+  },
+  "limitations": [
+    "The checked-in corpus remains a bounded preview; validation and deployment do not establish current completeness across upstream public APIs.",
+    "The post-deploy hook proves HTTP route and byte identity through the checksum manifest; this static bundle has no browser interaction or console assurance gate.",
+    "Networked source acquisition remains a separately authorised operation and does not run in routine CI or Pages deployment."
+  ]
+}
