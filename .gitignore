@@ -4,3 +4,7 @@
 __pycache__/
 *.pyc
 tmp/
+.playwright-cli/
+
+# Private source correspondence; never publish or commit.
+.email.md

@@ -1,0 +1,161 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://chris-page-gov.github.io/okf-uk-government-apis/schemas/relationship-runtime-row.schema.json",
+  "title": "UK Government APIs rich relationship runtime row",
+  "type": "object",
+  "required": [
+    "schema", "id", "assertion_id", "source", "target", "source_route",
+    "target_route", "source_iri", "target_iri", "predicate", "predicate_iri",
+    "kind", "label", "inverse_label", "direction", "assertion_status",
+    "assertion_scope", "authority", "derivation", "observed_at", "evidence",
+    "rights", "plane", "lifecycle", "active", "scope_detail",
+    "derivation_activity", "freshness", "evidence_type", "confidence",
+    "confidence_score", "source_adapter", "source_tier", "source_confidence",
+    "license_id", "license_title", "license_basis", "license_confidence"
+  ],
+  "properties": {
+    "schema": {"const": "okf-relationship-runtime-row.v1"},
+    "id": {"$ref": "#/$defs/iri"},
+    "assertion_id": {"$ref": "#/$defs/iri"},
+    "source": {"$ref": "#/$defs/route"},
+    "target": {"$ref": "#/$defs/route"},
+    "source_route": {"$ref": "#/$defs/route"},
+    "target_route": {"$ref": "#/$defs/route"},
+    "source_iri": {"$ref": "#/$defs/iri"},
+    "target_iri": {"$ref": "#/$defs/iri"},
+    "predicate": {"$ref": "#/$defs/iri"},
+    "predicate_iri": {"$ref": "#/$defs/iri"},
+    "kind": {"$ref": "#/$defs/nonEmpty"},
+    "label": {"$ref": "#/$defs/nonEmpty"},
+    "inverse_label": {"$ref": "#/$defs/nonEmpty"},
+    "direction": {"const": "source-to-target"},
+    "assertion_status": {
+      "enum": ["official", "normalized", "inferred", "model-derived"]
+    },
+    "assertion_scope": {"enum": ["real-world", "synthetic-fixture"]},
+    "authority": {
+      "type": "object",
+      "required": ["class", "label", "source"],
+      "properties": {
+        "class": {
+          "enum": ["official", "derived", "model-assisted", "synthetic", "unclassified"]
+        },
+        "label": {"$ref": "#/$defs/nonEmpty"},
+        "source": {"$ref": "#/$defs/httpUrl"}
+      },
+      "additionalProperties": true
+    },
+    "derivation": {"$ref": "#/$defs/iri"},
+    "derivation_activity": {"$ref": "#/$defs/iri"},
+    "rule": {"$ref": "#/$defs/iri"},
+    "supporting_assertions": {
+      "type": "array", "minItems": 1, "maxItems": 128, "uniqueItems": true,
+      "items": {"$ref": "#/$defs/iri"}
+    },
+    "confidence_score": {"type": "number", "minimum": 0, "maximum": 1},
+    "review_status": {"$ref": "#/$defs/nonEmpty"},
+    "observed_at": {"type": "string", "format": "date-time"},
+    "stale_after": {"type": "string", "format": "date-time"},
+    "freshness": {"$ref": "#/$defs/nonEmpty"},
+    "scope_detail": {"$ref": "#/$defs/nonEmpty"},
+    "evidence_type": {"$ref": "#/$defs/nonEmpty"},
+    "confidence": {
+      "oneOf": [{"type": "string", "minLength": 1}, {"type": "number"}]
+    },
+    "support_profile": {"$ref": "#/$defs/nonEmpty"},
+    "strength": {"type": "number"},
+    "count": {"type": "number"},
+    "official_legal_classification": {"type": "boolean"},
+    "source_adapter": {"$ref": "#/$defs/nonEmpty"},
+    "source_tier": {"$ref": "#/$defs/nonEmpty"},
+    "source_confidence": {"$ref": "#/$defs/nonEmpty"},
+    "license_id": {"$ref": "#/$defs/nonEmpty"},
+    "license_title": {"$ref": "#/$defs/nonEmpty"},
+    "license_basis": {"$ref": "#/$defs/nonEmpty"},
+    "license_confidence": {"type": "number", "minimum": 0, "maximum": 1},
+    "target_label": {"$ref": "#/$defs/nonEmpty"},
+    "target_aliases": {
+      "type": "array", "uniqueItems": true,
+      "items": {"$ref": "#/$defs/nonEmpty"}
+    },
+    "match_key": {"$ref": "#/$defs/nonEmpty"},
+    "evidence": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 16,
+      "uniqueItems": true,
+      "items": {
+        "type": "object",
+        "required": [
+          "@id", "type", "url", "source_field", "source_value_sha256",
+          "retrieved_at"
+        ],
+        "properties": {
+          "@id": {"$ref": "#/$defs/iri"},
+          "type": {"$ref": "#/$defs/nonEmpty"},
+          "url": {"$ref": "#/$defs/httpUrl"},
+          "resource": {"$ref": "#/$defs/httpUrl"},
+          "source_field": {"$ref": "#/$defs/nonEmpty"},
+          "source_value_sha256": {"$ref": "#/$defs/sha256"},
+          "retrieved_at": {"type": "string", "format": "date-time"},
+          "normalization": {"$ref": "#/$defs/iri"},
+          "rule_id": {"$ref": "#/$defs/iri"},
+          "source_sha256": {"$ref": "#/$defs/sha256"},
+          "literal_sha256": {"$ref": "#/$defs/sha256"},
+          "source_artifact": {"$ref": "#/$defs/nonEmpty"},
+          "field_provenance": {"$ref": "#/$defs/nonEmpty"},
+          "source_value_hash_canonicalization": {"$ref": "#/$defs/nonEmpty"},
+          "rationale": {"$ref": "#/$defs/nonEmpty"},
+          "locator": {"$ref": "#/$defs/nonEmpty"},
+          "source_locator": {"$ref": "#/$defs/nonEmpty"},
+          "source_adapter": {"$ref": "#/$defs/nonEmpty"},
+          "source_tier": {"$ref": "#/$defs/nonEmpty"},
+          "source_confidence": {"$ref": "#/$defs/nonEmpty"},
+          "source_licence": {"$ref": "#/$defs/sourceLicence"}
+        },
+        "additionalProperties": true
+      }
+    },
+    "rights": {
+      "type": "object",
+      "required": ["source", "assertion"],
+      "properties": {
+        "source": {"$ref": "#/$defs/httpUrl"},
+        "assertion": {"$ref": "#/$defs/nonEmpty"},
+        "source_licence": {"$ref": "#/$defs/sourceLicence"}
+      },
+      "additionalProperties": true
+    },
+    "plane": {"$ref": "#/$defs/iri"},
+    "lifecycle": {"enum": ["active", "historical", "rejected"]},
+    "active": {"type": "boolean"}
+  },
+  "additionalProperties": true,
+  "$defs": {
+    "nonEmpty": {"type": "string", "minLength": 1},
+    "iri": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "^[A-Za-z][A-Za-z0-9+.-]*:[^\\s]+$"
+    },
+    "route": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9-]*(?:/[A-Za-z0-9._~-]+)+$",
+      "not": {"pattern": "(?:^|/)\\.{1,2}(?:/|$)"}
+    },
+    "httpUrl": {"type": "string", "format": "uri", "pattern": "^https?://"},
+    "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "sourceLicence": {
+      "type": "object",
+      "required": ["id", "title", "basis", "confidence", "source"],
+      "properties": {
+        "id": {"$ref": "#/$defs/nonEmpty"},
+        "title": {"$ref": "#/$defs/nonEmpty"},
+        "basis": {"$ref": "#/$defs/nonEmpty"},
+        "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+        "source": {"type": "string"}
+      },
+      "additionalProperties": true
+    }
+  }
+}

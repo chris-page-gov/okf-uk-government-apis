@@ -6,9 +6,12 @@ from __future__ import annotations
 import argparse
 import csv
 import difflib
+import gzip
 import hashlib
 import heapq
 import html
+import importlib.util
+import io
 import json
 import math
 import re
@@ -21,7 +24,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 from urllib.error import HTTPError
-from urllib.parse import parse_qsl, urlencode, urlparse, urlsplit, urlunsplit
+from urllib.parse import parse_qsl, quote, urlencode, urlparse, urlsplit, urlunsplit
 from urllib.request import Request, urlopen
 
 # datetime.UTC is Python 3.11+; keep the script runnable on Python 3.10.
@@ -33,6 +36,70 @@ DEFAULT_SOURCE_URL = "https://raw.githubusercontent.com/co-cddo/api-catalogue/ma
 DEFAULT_CKAN_API_URL = "https://ckan.publishing.service.gov.uk/api/3/action/package_search"
 DEFAULT_OS_API_ROOT = "https://api.os.uk/"
 DEFAULT_ONS_API_ROOT = "https://api.beta.ons.gov.uk/v1"
+PUBLIC_BASE = "https://chris-page-gov.github.io/okf-uk-government-apis/"
+IDENTIFIER_BASE = f"{PUBLIC_BASE}id/"
+PREDICATE_BASE = f"{PUBLIC_BASE}terms/"
+ASSERTION_BASE = f"{PUBLIC_BASE}assertions/"
+EVIDENCE_BASE = f"{PUBLIC_BASE}evidence/relationship/"
+REPOSITORY_LICENCE_URL = (
+    "https://github.com/chris-page-gov/okf-uk-government-apis/blob/main/LICENSE.md"
+)
+SEMANTIC_CONTEXT_PATH = ROOT / "context" / "okf-bundle-v1.jsonld"
+SEMANTIC_ASSERTION_SCHEMA_PATH = (
+    ROOT / "schemas" / "okf-relationship-assertion.v2.schema.json"
+)
+RELATIONSHIP_RUNTIME_ROOT = "data/relationship-runtime"
+RELATIONSHIP_RUNTIME_MANIFEST = f"{RELATIONSHIP_RUNTIME_ROOT}/manifest.json"
+RELATIONSHIP_RUNTIME_LOCATOR = (
+    f"{RELATIONSHIP_RUNTIME_ROOT}/route-locator/manifest.json"
+)
+RELATIONSHIP_RUNTIME_PLANE_BASE = f"{PUBLIC_BASE}runtime/relationship-plane/"
+RELATIONSHIP_RUNTIME_CHUNK_SIZE = 50_000
+RELATIONSHIP_RUNTIME_SCHEMA_PATHS = {
+    "manifest": ROOT / "schemas" / "relationship-runtime-manifest.schema.json",
+    "row": ROOT / "schemas" / "relationship-runtime-row.schema.json",
+    "locator": ROOT / "schemas" / "relationship-route-locator.schema.json",
+    "locator_bucket": (
+        ROOT / "schemas" / "relationship-route-locator-bucket.schema.json"
+    ),
+}
+MATERIAL_RELATIONSHIP_LABELS = frozenset(
+    {
+        "described by",
+        "describes",
+        "shares endpoint host",
+        "same provider catalogue evidence",
+        "has documentation",
+        "uses access model",
+        "has contract signal",
+        "uses schema",
+        "has operation",
+        "has licence",
+        "listed in provider portal",
+        "has contract",
+        "has download-page",
+        "has API prototype",
+        "prototypes access to",
+        "provides supported download",
+        "downloaded from",
+        "has current supported alternative",
+        "current supported alternative to",
+    }
+)
+MAX_RICH_RUNTIME_PLANES = 16
+MAX_RICH_RUNTIME_CHUNKS = 10_000
+MAX_RICH_RUNTIME_ROWS = 1_000_000
+MAX_RICH_RUNTIME_CHUNK_ROWS = 50_000
+MAX_RICH_RUNTIME_CHUNK_BYTES = 8 * 1024 * 1024
+MAX_RICH_RUNTIME_DECODED_CHUNK_BYTES = 64 * 1024 * 1024
+MAX_RICH_RUNTIME_ROUTE_CHUNKS = 64
+MAX_RICH_RUNTIME_ROUTE_ROWS = 100_000
+MAX_RICH_RUNTIME_ROUTE_COMPRESSED_BYTES = 64 * 1024 * 1024
+MAX_RICH_RUNTIME_WHOLE_ROWS = 300_000
+MAX_RICH_RUNTIME_RETAINED_TEXT_UNITS = 32 * 1024 * 1024
+MAX_RICH_RUNTIME_ROW_TEXT_UNITS = 32 * 1024
+MAX_RICH_RUNTIME_EVIDENCE_ITEMS = 16
+MAX_RICH_RUNTIME_SUPPORTING_ASSERTIONS = 128
 GIAS_ROOT_URL = "https://get-information-schools.service.gov.uk/"
 GIAS_DOWNLOADS_URL = "https://get-information-schools.service.gov.uk/Downloads"
 GIAS_GUIDANCE_URL = "https://www.gov.uk/guidance/get-information-about-schools"
@@ -48,6 +115,8 @@ REQUEST_HEADERS = {"User-Agent": "OKF Explorer UK Government API bundle generato
 MAX_CHECK_DIFF_LINES = 400
 MAX_CHECK_DIFF_BYTES = 200_000
 SEARCH_RESULT_DOC_CHUNK_SIZE = 1000
+SEMANTIC_ENTITY_CHUNK_SIZE = 5000
+SEMANTIC_ASSERTION_CHUNK_SIZE = 5000
 MAX_SEARCH_POSTINGS_PER_TOKEN = 2000
 MAX_SEARCH_NOTES_CHARS = 360
 MAX_SEARCH_CONTEXT_CHARS = 180
@@ -271,6 +340,60 @@ PROVIDER_CANONICAL_ALIASES = {
     "ons": "office-for-national-statistics",
     "ordnance-survey": "ordnance-survey",
 }
+
+# Relationship labels are part of the public Reader contract.  Keeping the
+# inverse label explicit prevents a UI from guessing direction from English
+# word order, while the predicate IRI is derived deterministically below.
+RELATIONSHIP_INVERSE_LABELS = {
+    "current supported alternative to": "has current supported alternative",
+    "depends on": "dependency of",
+    "described by": "describes",
+    "describes": "described by",
+    "downloaded from": "provides download",
+    "exposed through endpoint": "exposes data product",
+    "exposes data product": "exposed through endpoint",
+    "harvested by": "harvests",
+    "has API prototype": "prototype of",
+    "has catalogue_record": "catalogue record of",
+    "has confidence": "confidence of",
+    "has contract": "contract for",
+    "has contract signal": "contract signal for",
+    "has current supported alternative": "supported alternative for",
+    "has documentation": "documentation for",
+    "has download-page": "download page for",
+    "has endpoint": "endpoint of",
+    "has licence": "licence for",
+    "has operation": "operation of",
+    "implements pattern": "pattern implemented by",
+    "listed in provider portal": "provider portal lists",
+    "maintained by": "maintains",
+    "prototypes access to": "access prototyped by",
+    "provides supported download": "supported download provided by",
+    "published by": "publishes",
+    "same provider catalogue evidence": "same provider catalogue evidence",
+    "shares endpoint host": "shares endpoint host",
+    "uses access model": "access model used by",
+    "uses protocol": "protocol used by",
+    "uses schema": "schema used by",
+}
+
+RICH_RELATIONSHIP_FIELDS = (
+    "id",
+    "source",
+    "target",
+    "source_iri",
+    "target_iri",
+    "predicate",
+    "label",
+    "inverse_label",
+    "assertion_status",
+    "assertion_scope",
+    "authority",
+    "derivation",
+    "observed_at",
+    "evidence",
+    "rights",
+)
 
 
 @dataclass(frozen=True)
@@ -705,7 +828,7 @@ def load_ckan_packages(api_url: str = DEFAULT_CKAN_API_URL, rows_per_page: int =
             break
         if max_packages and len(packages) >= max_packages:
             break
-    return f"{api_url}?fq={query}", packages
+    return canonical_http_url(f"{api_url}?fq={query}"), packages
 
 
 def discover_os_documents(root_url: str = DEFAULT_OS_API_ROOT, max_documents: int = 80) -> dict[str, dict[str, Any]]:
@@ -1046,6 +1169,22 @@ def resource_route(resource_id: str) -> str:
     return f"resource/{resource_id}"
 
 
+def protocol_route(label: str) -> str:
+    """Return the suffix-free canonical route for a protocol display label."""
+    text = str(label or "").strip()
+    if not text:
+        raise ValueError("protocol label is empty")
+    return f"protocol/{slugify(text, 'protocol')}"
+
+
+def safe_runtime_route(value: str) -> bool:
+    """Match the Reader's portable local-route boundary."""
+    text = str(value or "")
+    return bool(
+        re.fullmatch(r"[a-z][a-z0-9-]*(?:/[A-Za-z0-9._~-]+)+", text)
+    ) and all(part not in {".", ".."} for part in text.split("/"))
+
+
 def source_provenance(
     *,
     source: str,
@@ -1070,6 +1209,682 @@ def source_provenance(
     if extra:
         provenance.update(extra)
     return provenance
+
+
+def load_semantic_context() -> dict[str, Any]:
+    value = json.loads(SEMANTIC_CONTEXT_PATH.read_text(encoding="utf-8"))
+    context = value.get("@context")
+    if not isinstance(context, dict):
+        raise ValueError(f"{SEMANTIC_CONTEXT_PATH} must contain an @context object")
+    return context
+
+
+def load_semantic_assertion_schema() -> dict[str, Any]:
+    value = json.loads(SEMANTIC_ASSERTION_SCHEMA_PATH.read_text(encoding="utf-8"))
+    if not isinstance(value, dict):
+        raise ValueError(f"{SEMANTIC_ASSERTION_SCHEMA_PATH} must contain an object")
+    return value
+
+
+def semantic_iri(route: str) -> str:
+    """Return the stable semantic identity for one Explorer-local route."""
+    return f"{IDENTIFIER_BASE}{quote(route, safe='/-._~')}"
+
+
+def predicate_iri(label: str) -> str:
+    if label not in RELATIONSHIP_INVERSE_LABELS:
+        raise ValueError(f"relationship label has no governed inverse: {label!r}")
+    return f"{PREDICATE_BASE}{slugify(label)}"
+
+
+def _canonical_percent_encoding(value: str, *, safe: str) -> str:
+    """Quote one URL component without decoding existing escapes."""
+    if re.search(r"%(?![0-9A-Fa-f]{2})", value):
+        raise ValueError("URL contains an invalid percent escape")
+    encoded = quote(value, safe=f"{safe}%")
+    return re.sub(
+        r"%[0-9A-Fa-f]{2}",
+        lambda match: match.group(0).upper(),
+        encoded,
+    )
+
+
+def canonical_http_url(value: Any) -> str:
+    """Return one deterministic, credential-free HTTP(S) provenance URL.
+
+    Query keys and values retain their input order, but are decoded and then
+    percent-encoded with ``%20`` for spaces. This makes the policy idempotent
+    and avoids the literal whitespace/quotes that the Reader rejects.
+    """
+    text = str(value or "").strip()
+    if not text:
+        raise ValueError("URL is empty")
+    if "\\" in text or any(ord(character) < 0x20 or ord(character) == 0x7F for character in text):
+        raise ValueError("URL contains a control character or backslash")
+    if re.search(r"%(?![0-9A-Fa-f]{2})", text):
+        raise ValueError("URL contains an invalid percent escape")
+    try:
+        parsed = urlsplit(text)
+        port = parsed.port
+    except ValueError as exc:
+        raise ValueError(f"URL authority is malformed: {exc}") from exc
+    scheme = parsed.scheme.casefold()
+    if scheme not in {"http", "https"}:
+        raise ValueError("URL scheme must be http or https")
+    if parsed.username is not None or parsed.password is not None:
+        raise ValueError("URL must not contain credentials")
+    if port is not None and port < 1:
+        raise ValueError("URL port must be between 1 and 65535")
+    host = parsed.hostname
+    if not host:
+        raise ValueError("URL host is missing")
+    if ":" in host:
+        if not re.fullmatch(r"[0-9A-Fa-f:.]+", host):
+            raise ValueError("URL IPv6 host is malformed")
+        canonical_host = f"[{host.casefold()}]"
+    else:
+        try:
+            canonical_host = host.encode("idna").decode("ascii").casefold()
+        except UnicodeError as exc:
+            raise ValueError("URL host is malformed") from exc
+        labels = canonical_host.split(".")
+        if any(
+            not re.fullmatch(r"[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?", label)
+            for label in labels
+        ):
+            raise ValueError("URL host is malformed")
+    default_port = 80 if scheme == "http" else 443
+    netloc = canonical_host if port in (None, default_port) else f"{canonical_host}:{port}"
+    path = _canonical_percent_encoding(
+        parsed.path,
+        safe="/-._~:@!$&()*+,;=",
+    )
+    query = ""
+    if parsed.query:
+        try:
+            query_items = parse_qsl(
+                parsed.query,
+                keep_blank_values=True,
+                encoding="utf-8",
+                errors="strict",
+            )
+        except UnicodeDecodeError as exc:
+            raise ValueError("URL query is not valid UTF-8") from exc
+        query = urlencode(query_items, doseq=True, quote_via=quote, safe="")
+    fragment = _canonical_percent_encoding(
+        parsed.fragment,
+        safe="/-._~:@!$&()*+,;=?",
+    )
+    result = urlunsplit((scheme, netloc, path, query, fragment))
+    if any(character.isspace() for character in result):
+        raise ValueError("canonical URL contains whitespace")
+    return result
+
+
+def is_canonical_safe_http_url(value: Any) -> bool:
+    """Return whether a value already satisfies the publication URL policy."""
+    text = str(value or "")
+    try:
+        return text == canonical_http_url(text)
+    except ValueError:
+        return False
+
+
+def iri_or_fallback(value: Any, fallback: str) -> str:
+    text = str(value or "").strip()
+    if text and urlsplit(text).scheme.casefold() in {"http", "https"}:
+        return canonical_http_url(text)
+    return canonical_http_url(fallback)
+
+
+def relationship_source_index(
+    records: list[dict[str, Any]],
+    resources: list[dict[str, Any]],
+    publishers: list[dict[str, Any]],
+) -> dict[str, dict[str, Any]]:
+    return {
+        str(item["route"]): item
+        for item in [*records, *resources, *publishers]
+        if item.get("route")
+    }
+
+
+def canonicalize_derived_relationship_routes(
+    relationships: list[dict[str, Any]],
+) -> list[dict[str, Any]]:
+    """Canonicalize derived concept routes without inventing collision suffixes.
+
+    Protocol labels are harvested display values, not route identifiers. Their
+    prior ``protocol/<label>`` targets are retained as aliases while the local
+    route becomes a stable slug. Distinct labels that collapse to one slug fail
+    closed so a numeric or order-dependent suffix can never change identity.
+    """
+    normalized: list[dict[str, Any]] = []
+    protocol_labels: dict[str, str] = {}
+    for relationship in relationships:
+        row = dict(relationship)
+        target = str(row.get("target") or "")
+        if target.startswith("protocol/"):
+            legacy_label = target.partition("/")[2].strip()
+            label = str(row.get("target_label") or legacy_label).strip()
+            canonical = protocol_route(label)
+            previous = protocol_labels.get(canonical)
+            if previous is not None and previous != label:
+                raise ValueError(
+                    "protocol route collision without a safe canonical identity: "
+                    f"{previous!r} and {label!r} both map to {canonical!r}"
+                )
+            protocol_labels[canonical] = label
+            aliases = {
+                str(alias).strip()
+                for alias in row.get("target_aliases", [])
+                if str(alias).strip()
+            }
+            if target != canonical:
+                aliases.add(target)
+            row["target"] = canonical
+            row["target_label"] = label
+            if aliases:
+                row["target_aliases"] = sorted(aliases)
+            else:
+                row.pop("target_aliases", None)
+        normalized.append(row)
+    return normalized
+
+
+def compile_relationship_assertions(
+    relationships: list[dict[str, Any]],
+    records: list[dict[str, Any]],
+    resources: list[dict[str, Any]],
+    publishers: list[dict[str, Any]],
+) -> list[dict[str, Any]]:
+    """Compile legacy edge facts into the one rich assertion source.
+
+    Both semantic shards and Explorer runtime/adjacency projections are emitted
+    from this list.  The compiler is intentionally idempotent so the checked-in
+    frozen corpus can be upgraded without re-contacting any upstream service.
+    """
+    source_index = relationship_source_index(records, resources, publishers)
+    relationships = canonicalize_derived_relationship_routes(relationships)
+    compiled: list[dict[str, Any]] = []
+    seen_ids: set[str] = set()
+    for raw in relationships:
+        source_route = str(raw.get("source") or "")
+        target_route = str(raw.get("target") or "")
+        label = str(raw.get("kind") or raw.get("label") or "")
+        if not source_route or not target_route or not label:
+            raise ValueError(f"relationship is missing source, target or kind: {raw!r}")
+        if source_route not in source_index:
+            raise ValueError(f"relationship source route is not a published entity: {source_route}")
+        if not safe_runtime_route(source_route) or not safe_runtime_route(target_route):
+            raise ValueError(
+                "relationship route is not a safe local runtime identity: "
+                f"{source_route!r} -> {target_route!r}"
+            )
+        source_iri = semantic_iri(source_route)
+        target_iri = semantic_iri(target_route)
+        predicate = predicate_iri(label)
+        digest = hashlib.sha256(
+            "\0".join((source_iri, predicate, target_iri)).encode("utf-8")
+        ).hexdigest()[:24]
+        assertion_id = f"{ASSERTION_BASE}{digest}"
+        if assertion_id in seen_ids:
+            raise ValueError(
+                "duplicate semantic relationship identity for "
+                f"{source_route!r} {label!r} {target_route!r}"
+            )
+        seen_ids.add(assertion_id)
+
+        source_item = source_index[source_route]
+        provenance = source_item.get("provenance") or {}
+        evidence_type = str(raw.get("evidence_type") or "harvested_structure")
+        edge_confidence = str(raw.get("confidence") or "high")
+        observed_at = str(
+            raw.get("observed_at")
+            or provenance.get("observed_at")
+            or source_item.get("metadata_modified")
+            or source_item.get("timestamp")
+            or ""
+        )
+        if not observed_at:
+            raise ValueError(f"relationship has no observation time: {assertion_id}")
+        if "T" not in observed_at:
+            observed_at = f"{observed_at[:10]}T00:00:00Z"
+        assertion_status = (
+            "inferred" if evidence_type == "inferred_metadata_match" else "normalized"
+        )
+        derivation_slug = {
+            "contract_signal": "contract-signal-normalization-v1",
+            "inferred_metadata_match": "catalogue-metadata-match-v1",
+        }.get(evidence_type, "harvested-structure-normalization-v1")
+        derivation = f"{PUBLIC_BASE}rules/{derivation_slug}"
+        activity = f"{PUBLIC_BASE}activities/uk-government-api-okf-projection"
+        evidence_url = iri_or_fallback(
+            provenance.get("source_url")
+            or source_item.get("documentation")
+            or source_item.get("url"),
+            REPOSITORY_LICENCE_URL,
+        )
+        source_adapter = str(
+            source_item.get("source_adapter")
+            or provenance.get("source_adapter")
+            or "generated-publication"
+        )
+        source_tier = str(
+            source_item.get("source_tier")
+            or provenance.get("source_tier")
+            or "generated-aggregation"
+        )
+        source_confidence = str(
+            source_item.get("confidence")
+            or provenance.get("confidence")
+            or "observed"
+        )
+        source_artifact = str(
+            provenance.get("source_repository") or source_adapter or "frozen-corpus"
+        )
+        canonical_edge = {
+            "confidence": edge_confidence,
+            "evidence_type": evidence_type,
+            "kind": label,
+            "match_key": raw.get("match_key"),
+            "observed_at": observed_at,
+            "source": source_route,
+            "target": target_route,
+        }
+        source_value_sha256 = hashlib.sha256(
+            json.dumps(
+                canonical_edge, ensure_ascii=False, separators=(",", ":"), sort_keys=True
+            ).encode("utf-8")
+        ).hexdigest()
+        source_sha256 = str(provenance.get("source_sha256") or "")
+        licence = {
+            "id": str(source_item.get("license_id") or "not-specified"),
+            "title": str(source_item.get("license_title") or "Not specified"),
+            "basis": str(source_item.get("license_basis") or "not-specified"),
+            "confidence": source_item.get("license_confidence", 0.2),
+            "source": str(source_item.get("license_source_id") or ""),
+        }
+        evidence = {
+            "@id": f"{EVIDENCE_BASE}{digest}",
+            "type": evidence_type,
+            "url": evidence_url,
+            "source_artifact": source_artifact,
+            "source_field": (
+                f"metadata match key: {raw['match_key']}"
+                if raw.get("match_key")
+                else f"relationship: {label}"
+            ),
+            "source_value_sha256": source_value_sha256,
+            "source_value_hash_canonicalization": "sorted-keys-compact-json-utf8",
+            "normalization": derivation,
+            "retrieved_at": observed_at,
+            "source_adapter": source_adapter,
+            "source_tier": source_tier,
+            "source_confidence": source_confidence,
+            "source_licence": licence,
+        }
+        if re.fullmatch(r"[0-9a-f]{64}", source_sha256):
+            evidence["source_sha256"] = source_sha256
+        rights_source = iri_or_fallback(licence["source"], evidence_url)
+        result = {
+            "schema": "okf-relationship-assertion.v2",
+            "id": assertion_id,
+            "source": source_route,
+            "target": target_route,
+            "source_iri": source_iri,
+            "target_iri": target_iri,
+            "kind": label,
+            "label": label,
+            "inverse_label": RELATIONSHIP_INVERSE_LABELS[label],
+            "predicate": predicate,
+            "assertion_status": assertion_status,
+            "assertion_scope": "real-world",
+            "scope_detail": "metadata-only-catalogue-view",
+            "authority": {
+                "class": "derived",
+                "label": (
+                    "Deterministic inference from catalogue metadata"
+                    if assertion_status == "inferred"
+                    else "Deterministic normalisation of harvested source structure"
+                ),
+                "source": evidence_url,
+            },
+            "derivation": derivation,
+            "derivation_activity": activity,
+            "observed_at": observed_at,
+            "freshness": "source-snapshot-not-live-service-state",
+            "evidence": [evidence],
+            "rights": {
+                "source": rights_source,
+                "assertion": (
+                    "Repository-authored assertion structure is MIT licensed; "
+                    "linked source metadata remains subject to its record-level terms."
+                ),
+                "source_licence": licence,
+            },
+            # Preserve the pre-migration edge provenance as first-class fields.
+            "evidence_type": evidence_type,
+            "confidence": edge_confidence,
+            "confidence_score": {"high": 0.9, "medium": 0.65, "low": 0.35}.get(
+                edge_confidence, 0.5
+            ),
+            "source_adapter": source_adapter,
+            "source_tier": source_tier,
+            "source_confidence": source_confidence,
+            "license_id": licence["id"],
+            "license_title": licence["title"],
+            "license_basis": licence["basis"],
+            "license_confidence": licence["confidence"],
+        }
+        if "assertion_status" in raw:
+            raw_status = str(raw.get("assertion_status") or "")
+            if raw_status not in {"official", "normalized", "inferred", "model-derived"}:
+                raise ValueError(
+                    f"relationship assertion status is not governed: {raw_status!r}"
+                )
+            result["assertion_status"] = raw_status
+        if "assertion_scope" in raw:
+            raw_scope = str(raw.get("assertion_scope") or "")
+            if raw_scope not in {"real-world", "synthetic-fixture"}:
+                raise ValueError(
+                    f"relationship assertion scope is not governed: {raw_scope!r}"
+                )
+            result["assertion_scope"] = raw_scope
+        if raw.get("scope_detail"):
+            result["scope_detail"] = str(raw["scope_detail"])
+        if "authority" in raw:
+            raw_authority = raw.get("authority")
+            if not isinstance(raw_authority, dict) or any(
+                not raw_authority.get(field) for field in ("class", "label", "source")
+            ):
+                raise ValueError(
+                    f"relationship authority is incomplete: {assertion_id}"
+                )
+            result["authority"] = {
+                **raw_authority,
+                "source": canonical_http_url(raw_authority["source"]),
+            }
+        if "rights" in raw:
+            raw_rights = raw.get("rights")
+            if not isinstance(raw_rights, dict) or any(
+                not raw_rights.get(field) for field in ("source", "assertion")
+            ):
+                raise ValueError(f"relationship rights are incomplete: {assertion_id}")
+            result["rights"] = {
+                **raw_rights,
+                "source": canonical_http_url(raw_rights["source"]),
+            }
+        if "lifecycle" in raw:
+            lifecycle = str(raw.get("lifecycle") or "")
+            if lifecycle not in {"active", "historical", "rejected"}:
+                raise ValueError(
+                    f"relationship lifecycle is not governed: {lifecycle!r}"
+                )
+            result["lifecycle"] = lifecycle
+        if raw.get("match_key") is not None:
+            result["match_key"] = raw["match_key"]
+        if raw.get("target_label"):
+            result["target_label"] = raw["target_label"]
+        if raw.get("target_aliases"):
+            result["target_aliases"] = raw["target_aliases"]
+        if assertion_status == "inferred":
+            result.update(
+                {
+                    "rule": derivation,
+                    "supporting_assertions": [evidence["@id"]],
+                }
+            )
+        compiled.append(result)
+    return compiled
+
+
+def route_entity_nodes(
+    records: list[dict[str, Any]],
+    resources: list[dict[str, Any]],
+    publishers: list[dict[str, Any]],
+    relationships: list[dict[str, Any]],
+) -> list[dict[str, Any]]:
+    source_index = relationship_source_index(records, resources, publishers)
+    derived_target_metadata: dict[str, dict[str, Any]] = {}
+    for edge in relationships:
+        route = str(edge.get("target") or "")
+        label = str(edge.get("target_label") or "").strip()
+        aliases = [
+            str(alias).strip()
+            for alias in edge.get("target_aliases", [])
+            if str(alias).strip()
+        ]
+        if not route or (not label and not aliases):
+            continue
+        existing = derived_target_metadata.setdefault(
+            route, {"route": route, "title": label, "aliases": []}
+        )
+        if label and existing.get("title") not in {"", label}:
+            raise ValueError(
+                f"conflicting labels for derived route {route!r}: "
+                f"{existing.get('title')!r} and {label!r}"
+            )
+        if label:
+            existing["title"] = label
+        existing["aliases"] = sorted(set(existing.get("aliases", [])) | set(aliases))
+    routes = sorted(
+        set(source_index)
+        | {str(row["source"]) for row in relationships}
+        | {str(row["target"]) for row in relationships}
+    )
+    nodes: list[dict[str, Any]] = []
+    for route in routes:
+        item = {**derived_target_metadata.get(route, {}), **source_index.get(route, {})}
+        route_family, _, route_value = route.partition("/")
+        record_type = str(
+            item.get("record_type")
+            or item.get("type")
+            or {
+                "resource": "API Evidence",
+                "publisher": "Organisation",
+                "protocol": "Protocol",
+                "confidence": "Confidence Classification",
+                "source-adapter": "Source Adapter",
+                "access-model": "Access Model",
+                "contract-status": "Contract Status",
+            }.get(route_family, "Catalogue Concept")
+        )
+        node = {
+            "@id": semantic_iri(route),
+            "@type": f"{PUBLIC_BASE}types/{slugify(record_type)}",
+            "route": route,
+            "title": str(
+                item.get("title")
+                or item.get("name")
+                or route_value.replace("_", " ").replace("-", " ")
+            ),
+            "assertion_status": "normalized",
+        }
+        description = item.get("notes") or item.get("description")
+        if description:
+            node["description"] = truncate_text(description, 360)
+        if item.get("source_adapter"):
+            node["source_adapter"] = item["source_adapter"]
+        if item.get("source_tier"):
+            node["source_tier"] = item["source_tier"]
+        if item.get("aliases"):
+            node["aliases"] = item["aliases"]
+        nodes.append(node)
+    node_by_iri = {str(node["@id"]): node for node in nodes}
+    for edge in relationships:
+        source_node = node_by_iri[edge["source_iri"]]
+        target = {"@id": edge["target_iri"]}
+        values = source_node.setdefault(edge["predicate"], [])
+        if not isinstance(values, list):
+            raise ValueError(f"direct triple property is not a list: {edge['predicate']}")
+        values.append(target)
+    return nodes
+
+
+def semantic_assertion_node(edge: dict[str, Any]) -> dict[str, Any]:
+    excluded = {"schema", "id", "source", "source_iri", "predicate", "target", "target_iri"}
+    return {
+        "@id": edge["id"],
+        "@type": ["rdf:Statement", "okf:RelationshipAssertion"],
+        "source": {"@id": edge["source_iri"]},
+        "source_route": edge["source"],
+        "predicate": {"@id": edge["predicate"]},
+        "target": {"@id": edge["target_iri"]},
+        "target_route": edge["target"],
+        **{key: value for key, value in edge.items() if key not in excluded},
+    }
+
+
+def relationship_signature(edge: dict[str, Any]) -> str:
+    return "\0".join(
+        (edge["id"], edge["source_iri"], edge["predicate"], edge["target_iri"])
+    )
+
+
+def predicate_registry(relationships: list[dict[str, Any]]) -> dict[str, Any]:
+    counts = Counter(row["predicate"] for row in relationships)
+    labels = {row["predicate"]: row for row in relationships}
+    return {
+        "schema": "okf-predicate-registry.v1",
+        "predicates": [
+            {
+                "id": predicate,
+                "label": labels[predicate]["label"],
+                "inverse_label": labels[predicate]["inverse_label"],
+                "direction": "source-to-target",
+                "assertions": counts[predicate],
+                "scope_detail": "metadata-only-catalogue-view",
+            }
+            for predicate in sorted(counts)
+        ],
+    }
+
+
+def semantic_publication_files(
+    *,
+    descriptor: dict[str, Any],
+    records: list[dict[str, Any]],
+    resources: list[dict[str, Any]],
+    publishers: list[dict[str, Any]],
+    relationships: list[dict[str, Any]],
+) -> tuple[dict[Path, str | bytes], dict[str, Any]]:
+    """Create bounded semantic graph shards and their root descriptors."""
+    context = load_semantic_context()
+    entities = route_entity_nodes(records, resources, publishers, relationships)
+    files: dict[Path, str | bytes] = {}
+    shard_entries: list[dict[str, Any]] = []
+
+    def add_shard(path: Path, kind: str, graph: list[dict[str, Any]], triples: int) -> None:
+        document = {
+            "@context": context,
+            "@id": f"{PUBLIC_BASE}{path.as_posix()}",
+            "@type": f"okf:{'EntityGraphShard' if kind == 'entity-direct-triples' else 'AssertionGraphShard'}",
+            "shard_kind": kind,
+            "@graph": graph,
+        }
+        rendered = render_json(document).encode("utf-8")
+        compressed = gzip.compress(rendered, compresslevel=6, mtime=0)
+        files[path] = compressed
+        shard_entries.append(
+            {
+                "path": path.as_posix(),
+                "kind": kind,
+                "nodes": len(graph),
+                "direct_relationships": triples,
+                "uncompressed_bytes": len(rendered),
+                "compressed_bytes": len(compressed),
+                "sha256": hashlib.sha256(compressed).hexdigest(),
+                "uncompressed_sha256": hashlib.sha256(rendered).hexdigest(),
+            }
+        )
+
+    predicates = {row["predicate"] for row in relationships}
+    for index in range(0, len(entities), SEMANTIC_ENTITY_CHUNK_SIZE):
+        chunk = entities[index : index + SEMANTIC_ENTITY_CHUNK_SIZE]
+        direct_count = sum(
+            len(value)
+            for node in chunk
+            for key, value in node.items()
+            if key in predicates and isinstance(value, list)
+        )
+        add_shard(
+            Path(f"data/semantic/entities-{index // SEMANTIC_ENTITY_CHUNK_SIZE}.jsonld.gz"),
+            "entity-direct-triples",
+            chunk,
+            direct_count,
+        )
+    for index in range(0, len(relationships), SEMANTIC_ASSERTION_CHUNK_SIZE):
+        chunk = relationships[index : index + SEMANTIC_ASSERTION_CHUNK_SIZE]
+        add_shard(
+            Path(f"data/semantic/assertions-{index // SEMANTIC_ASSERTION_CHUNK_SIZE}.jsonld.gz"),
+            "reified-assertions",
+            [semantic_assertion_node(edge) for edge in chunk],
+            0,
+        )
+
+    assertion_digest = hashlib.sha256()
+    for edge in relationships:
+        assertion_digest.update(relationship_signature(edge).encode("utf-8"))
+        assertion_digest.update(b"\n")
+    manifest = {
+        "schema": "okf-semantic-graph-manifest.v1",
+        "@id": f"{PUBLIC_BASE}data/semantic/manifest.json",
+        "bundle": f"{PUBLIC_BASE}okf-bundle.yamlld",
+        "generated_at": descriptor["generated_at"],
+        "context": "context/okf-bundle-v1.jsonld",
+        "assertion_schema": "schemas/okf-relationship-assertion.v2.schema.json",
+        "identity_policy": "absolute-semantic-iri-plus-validated-local-route",
+        "direct_triple_policy": "generated-from-one-assertion-source-across-pinned-shards",
+        "counts": {
+            "entities": len(entities),
+            "direct_relationships": len(relationships),
+            "reified_assertions": len(relationships),
+            "predicates": len(predicates),
+            "shards": len(shard_entries),
+        },
+        "assertion_set_sha256": assertion_digest.hexdigest(),
+        "shards": shard_entries,
+    }
+    files[Path("data/semantic/manifest.json")] = render_json(manifest)
+    files[Path("data/predicate-registry.json")] = render_json(
+        predicate_registry(relationships)
+    )
+    files[Path("context/okf-bundle-v1.jsonld")] = render_json(
+        {"@context": context}
+    )
+    files[Path("schemas/okf-relationship-assertion.v2.schema.json")] = (
+        SEMANTIC_ASSERTION_SCHEMA_PATH.read_text(encoding="utf-8")
+    )
+    semantic_descriptor = {
+        "@context": context,
+        "@id": f"{PUBLIC_BASE}semantic/uk-government-api-corpus",
+        "@type": "okf:Bundle",
+        "okf_version": "0.2",
+        "title": descriptor["title"],
+        "description": (
+            "Bounded YAML-LD descriptor for the complete sharded semantic graph. "
+            "The graph manifest identifies route-bearing direct-triple shards and "
+            "matching evidence-bearing relationship assertion shards."
+        ),
+        "version": descriptor["version"],
+        "status": descriptor["status"],
+        "profile": {"@id": descriptor["profile"]},
+        "descriptor": {"@id": descriptor["@id"]},
+        "publisher": {"@id": descriptor["publisher"]},
+        "license": {"@id": descriptor["license"]},
+        "generatedAt": descriptor["generated_at"],
+        "graph_manifest": {"@id": f"{PUBLIC_BASE}data/semantic/manifest.json"},
+        "semantic_delivery": "gzip-json-ld-shards",
+        "direct_triple_policy": manifest["direct_triple_policy"],
+        "counts": manifest["counts"],
+    }
+    files[Path("okf-bundle.yamlld")] = (
+        json.dumps(semantic_descriptor, ensure_ascii=False, indent=2, sort_keys=True)
+        + "\n"
+    )
+    files[Path("okf-bundle.jsonld")] = render_json(semantic_descriptor)
+    return files, manifest
 
 
 class CorpusBuilder:
@@ -1368,7 +2183,15 @@ class CorpusBuilder:
         self.add_relationship(record_route(slug), f"source-adapter/{source_adapter}", "harvested by")
         self.add_relationship(record_route(slug), f"confidence/{confidence}", "has confidence")
         for protocol in protocols:
-            self.add_relationship(record_route(slug), f"protocol/{protocol}", "uses protocol")
+            canonical_route = protocol_route(protocol)
+            legacy_route = f"protocol/{protocol}"
+            self.add_relationship(
+                record_route(slug),
+                canonical_route,
+                "uses protocol",
+                target_label=protocol,
+                target_aliases=[legacy_route] if legacy_route != canonical_route else [],
+            )
         return record
 
     def attach_resource_ids(self) -> None:
@@ -2454,10 +3277,17 @@ def markdown_output_files(corpus: dict[str, Any]) -> dict[Path, str]:
             "",
             "## Standards Alignment",
             "",
-            "Each generated API/data record carries compact DCAT/OpenAPI alignment fields: `dcat_type`, `openapi_type`, export-readiness status, OpenAPI security-scheme type and missing standard requirements. The pack remains standards-alignable rather than DCAT-AP/OpenAPI conformant until RDF or `openapi` artefacts are emitted by an exporter.",
+            "Each generated API/data record carries compact DCAT/OpenAPI alignment fields: `dcat_type`, `openapi_type`, export-readiness status, OpenAPI security-scheme type and missing standard requirements. The pack remains standards-alignable rather than DCAT-AP/OpenAPI conformant until a DCAT-shaped RDF export or complete `openapi` artefacts are emitted and validated.",
+            "",
+            "## Directed Semantic Relationships",
+            "",
+            "Every relationship is compiled into a rich runtime assertion and matching semantic direct/reified representation. The bounded semantic graph manifest links gzip JSON-LD shards, while the predicate registry makes forward and inverse direction explicit. The graph remains a metadata-only catalogue snapshot and is not live-service assurance.",
             "",
             "## Entry Points",
             "",
+            "- [Semantic graph descriptor](okf-bundle.yamlld)",
+            "- [Semantic graph manifest](data/semantic/manifest.json)",
+            "- [Predicate registry](data/predicate-registry.json)",
             "- [Explorer descriptor](okf-explorer.json)",
             "- [Specification notes](docs/UK-Government-API-OKF.md)",
             "- [Standards crosswalk](docs/okf-standards-crosswalk.md)",
@@ -2474,6 +3304,7 @@ def markdown_output_files(corpus: dict[str, Any]) -> dict[Path, str]:
             "- Canonicalised OGL licence variants, inferred OGL v3.0 for ONS records where source metadata omitted a licence, and inferred OS licence-required status for Ordnance Survey provider-native records; inferred records are counted in `licence_inferred_from_provider_terms`.",
             "- Added DCAT/OpenAPI alignment metadata, standards references and export-readiness gap summaries to records, descriptors and selected Markdown concept pages.",
             "- Added the DfE Get Information about Schools register, the beta read-only API prototype (not yet a published supported endpoint), and the official GIAS downloads as the current supported alternative.",
+            "- Compiled all directed relationships into rich runtime assertions plus matching bounded JSON-LD direct-triple and reified assertion shards, with pinned context/schema and an explicit predicate registry.",
             "",
         ]
     )
@@ -2656,6 +3487,21 @@ def chunk_paths(prefix: str, rows: list[dict[str, Any]], chunk_size: int = 1000)
     return [(Path(f"data/{prefix}-{index // chunk_size}.json"), rows[index : index + chunk_size]) for index in range(0, len(rows), chunk_size)]
 
 
+def relationship_chunk_paths(
+    rows: list[dict[str, Any]], chunk_size: int = 2000
+) -> list[tuple[Path, list[dict[str, Any]]]]:
+    """Return Reader-supported gzip paths for the rich corpus-wide edge plane."""
+    if not rows:
+        return [(Path("data/relationships-0.json.gz"), [])]
+    return [
+        (
+            Path(f"data/relationships-{index // chunk_size}.json.gz"),
+            rows[index : index + chunk_size],
+        )
+        for index in range(0, len(rows), chunk_size)
+    ]
+
+
 def relationship_bucket(route: str) -> str:
     value = 0x811C9DC5
     for byte in route.encode("utf-8"):
@@ -2765,6 +3611,12 @@ def build_corpus(
         }
         for provider in sorted(publisher_counts)
     ]
+
+    # This is the single relationship source consumed by every downstream
+    # projection: runtime chunks, adjacency and the sharded semantic graph.
+    relationships = compile_relationship_assertions(
+        relationships, records, resources, publishers
+    )
 
     for record in records:
         record["update_year"] = str(record.get("metadata_modified") or record.get("timestamp") or "")[:4] or "not-specified"
@@ -2992,12 +3844,13 @@ def build_corpus(
     record_chunks = chunk_paths("apis", records)
     resource_chunks = chunk_paths("resources", resources)
     publisher_chunks = chunk_paths("providers", publishers)
-    relationship_chunks = chunk_paths("relationships", relationships, chunk_size=2000)
+    relationship_chunks = relationship_chunk_paths(relationships)
     relationship_adjacency, relationship_adjacency_buckets = build_relationship_adjacency(relationships)
     manifest = {
         "okf_version": "0.2",
         "title": "UK Government APIs static corpus",
         "generated_at": generated_at,
+        "snapshot": generated_at,
         "counts": overview["counts"],
         "indexes": {
             "overview": "data/overview.json",
@@ -3005,7 +3858,9 @@ def build_corpus(
             "search": "data/search/manifest.json",
             "facets": "data/facets.json",
             "graph": "data/graph.json",
+            "predicate_registry": "data/predicate-registry.json",
             "relationship_adjacency": "data/adjacency/manifest.json",
+            "semantic_graph": "data/semantic/manifest.json",
         },
         "chunks": {
             "datasets": [str(path) for path, _ in record_chunks],
@@ -3043,6 +3898,7 @@ def build_corpus(
         "license": OGL_V3_URL,
         "semantic_descriptor": "https://chris-page-gov.github.io/okf-uk-government-apis/okf-bundle.yamlld",
         "generated_at": generated_at,
+        "snapshot": generated_at,
         "entrypoints": {
             "viewer": "https://chris-page-gov.github.io/okf-explorer/",
             "data_manifest": "data/manifest.json",
@@ -3050,6 +3906,10 @@ def build_corpus(
             "analysis_overview": "data/analysis/overview.json",
             "search_manifest": "data/search/manifest.json",
             "relationship_adjacency": "data/adjacency/manifest.json",
+            "semantic_graph": "data/semantic/manifest.json",
+            "semantic_context": "context/okf-bundle-v1.jsonld",
+            "semantic_assertion_schema": "schemas/okf-relationship-assertion.v2.schema.json",
+            "predicate_registry": "data/predicate-registry.json",
             "markdown_index": "index.md",
             "notes": "docs/UK-Government-API-OKF.md",
             "standards_crosswalk": "docs/okf-standards-crosswalk.md",
@@ -3080,6 +3940,13 @@ def build_corpus(
         },
         "extensions": {
             "okf-explorer-analysis.v1": {"mode": "external", "entrypoint": "analysis_overview"},
+            "okf-semantic-relationships.v1": {
+                "mode": "generated-sharded-assertion-graph",
+                "manifest": "data/semantic/manifest.json",
+                "runtime_projection": "data/relationships-*.json.gz",
+                "direct_triple_policy": "generated-from-one-assertion-source-across-pinned-shards",
+                "metadata_scope": "metadata-only-catalogue-view",
+            },
             "okf-standards-crosswalk.v1": {
                 "mode": "standards-alignable",
                 "crosswalk": "docs/okf-standards-crosswalk.md",
@@ -3108,7 +3975,9 @@ def build_corpus(
             "schema": count_values["schemas"],
         },
         "edge_counts": [{"kind": kind, "count": count} for kind, count in relationship_counts.most_common()],
-        "relationship_index": "data/relationships-0.json",
+        "relationship_index": "data/relationships-0.json.gz",
+        "semantic_graph": "data/semantic/manifest.json",
+        "predicate_registry": "data/predicate-registry.json",
         "top_publishers": top_publishers,
     }
     return {
@@ -3136,8 +4005,640 @@ def render_json(value: Any) -> str:
     return json.dumps(value, ensure_ascii=False, separators=(",", ":"), sort_keys=True) + "\n"
 
 
-def output_files(corpus: dict[str, Any]) -> dict[Path, str]:
-    files = {
+def deterministic_gzip(raw: bytes) -> bytes:
+    """Return deterministic gzip bytes for an already canonical payload."""
+    output = io.BytesIO()
+    with gzip.GzipFile(fileobj=output, mode="wb", filename="", mtime=0) as handle:
+        handle.write(raw)
+    return output.getvalue()
+
+
+def gzip_json(value: Any) -> bytes:
+    """Return deterministic gzip-compressed canonical JSON bytes."""
+    return deterministic_gzip(render_json(value).encode("utf-8"))
+
+
+def sha256_bytes(value: bytes) -> str:
+    return hashlib.sha256(value).hexdigest()
+
+
+def rich_runtime_assertion_digest(identifiers: list[str] | set[str]) -> str:
+    """Bind an incident route set to its sorted assertion identities."""
+    canonical = json.dumps(
+        sorted(identifiers), ensure_ascii=False, separators=(",", ":")
+    ).encode("utf-8")
+    return sha256_bytes(canonical)
+
+
+def rich_runtime_route_bucket(route: str) -> str:
+    return hashlib.sha256(route.encode("utf-8")).hexdigest()[:2]
+
+
+def rich_runtime_text_units(value: Any) -> int:
+    """Count JavaScript UTF-16 units retained by the Reader projection."""
+    if isinstance(value, str):
+        return sum(2 if ord(character) > 0xFFFF else 1 for character in value)
+    if isinstance(value, list):
+        return sum(rich_runtime_text_units(item) for item in value)
+    if isinstance(value, dict):
+        return sum(rich_runtime_text_units(item) for item in value.values())
+    return 0
+
+
+def rich_runtime_reader_projection(row: dict[str, Any]) -> dict[str, Any]:
+    """Reduce one row to the fields retained by the bounded Reader."""
+    evidence_fields = (
+        "@id",
+        "type",
+        "url",
+        "source_field",
+        "source_value_sha256",
+        "retrieved_at",
+        "resource",
+        "normalization",
+        "rule_id",
+        "source_sha256",
+        "literal_sha256",
+        "source_artifact",
+        "field_provenance",
+        "source_value",
+        "source_value_hash_canonicalization",
+        "value",
+        "rationale",
+        "locator",
+        "source_locator",
+        "source_adapter",
+        "source_tier",
+        "source_confidence",
+        "source_licence",
+    )
+    projected: dict[str, Any] = {
+        "schema": row["schema"],
+        "id": row["id"],
+        "assertion_id": row["assertion_id"],
+        "source": row["source"],
+        "target": row["target"],
+        "source_route": row["source_route"],
+        "target_route": row["target_route"],
+        "source_iri": row["source_iri"],
+        "target_iri": row["target_iri"],
+        "predicate": row["predicate"],
+        "predicate_iri": row["predicate_iri"],
+        "kind": row["kind"],
+        "label": row["label"],
+        "inverse_label": row["inverse_label"],
+        "direction": row["direction"],
+        "assertion_status": row["assertion_status"],
+        "assertion_scope": row["assertion_scope"],
+        "authority": {
+            key: row["authority"][key] for key in ("class", "label", "source")
+        },
+        "derivation": row["derivation"],
+        "observed_at": row["observed_at"],
+        "evidence": [
+            {key: item[key] for key in evidence_fields if key in item}
+            for item in row["evidence"]
+        ],
+        "rights": {
+            key: row["rights"][key]
+            for key in ("source", "assertion", "source_licence")
+            if key in row["rights"]
+        },
+        "plane": row["plane"],
+        "lifecycle": row["lifecycle"],
+        "active": row["active"],
+    }
+    for field in (
+        "rule",
+        "derivation_activity",
+        "confidence_score",
+        "supporting_assertions",
+        "review_status",
+        "stale_after",
+        "freshness",
+        "support_profile",
+        "confidence",
+        "strength",
+        "count",
+        "official_legal_classification",
+        "scope_detail",
+        "evidence_type",
+        "source_adapter",
+        "source_tier",
+        "source_confidence",
+        "license_id",
+        "license_title",
+        "license_basis",
+        "license_confidence",
+        "target_label",
+        "target_aliases",
+        "match_key",
+    ):
+        if field in row:
+            projected[field] = row[field]
+    return projected
+
+
+_SEMANTIC_VALIDATION_MODULE: Any | None = None
+_RUNTIME_SCHEMA_VALIDATORS: dict[str, Any] | None = None
+
+
+def semantic_validation_module() -> Any:
+    """Load the shared validator without relying on the caller's sys.path."""
+    global _SEMANTIC_VALIDATION_MODULE
+    if _SEMANTIC_VALIDATION_MODULE is not None:
+        return _SEMANTIC_VALIDATION_MODULE
+    module_name = "semantic_assertion_validation"
+    module = sys.modules.get(module_name)
+    if module is None:
+        path = ROOT / "scripts" / "semantic_assertion_validation.py"
+        spec = importlib.util.spec_from_file_location(module_name, path)
+        if spec is None or spec.loader is None:
+            raise RuntimeError(f"cannot load semantic validator from {path}")
+        module = importlib.util.module_from_spec(spec)
+        sys.modules[module_name] = module
+        spec.loader.exec_module(module)
+    _SEMANTIC_VALIDATION_MODULE = module
+    return module
+
+
+def relationship_runtime_schema_validators() -> dict[str, Any]:
+    """Load and compile every authored Draft 2020-12 runtime schema."""
+    global _RUNTIME_SCHEMA_VALIDATORS
+    if _RUNTIME_SCHEMA_VALIDATORS is not None:
+        return _RUNTIME_SCHEMA_VALIDATORS
+    validation = semantic_validation_module()
+    validators: dict[str, Any] = {}
+    for name, path in RELATIONSHIP_RUNTIME_SCHEMA_PATHS.items():
+        schema = json.loads(path.read_text(encoding="utf-8"))
+        if schema.get("$schema") != validation.SEMANTIC_ASSERTION_SCHEMA_DRAFT:
+            raise ValueError(f"{path} is not a Draft 2020-12 schema")
+        validation.Draft202012Validator.check_schema(schema)
+        validators[name] = validation.Draft202012Validator(
+            schema, format_checker=validation.FormatChecker()
+        )
+    _RUNTIME_SCHEMA_VALIDATORS = validators
+    return validators
+
+
+def validate_runtime_schema(value: Any, schema_name: str, label: str) -> None:
+    validator = relationship_runtime_schema_validators()[schema_name]
+    errors = sorted(
+        validator.iter_errors(value),
+        key=lambda error: (
+            tuple(str(item) for item in error.absolute_path),
+            error.message,
+        ),
+    )
+    if errors:
+        error = errors[0]
+        location = "/".join(str(item) for item in error.absolute_path) or "<root>"
+        raise ValueError(f"{label} fails its runtime schema at {location}: {error.message}")
+
+
+def rich_runtime_row(
+    relationship: dict[str, Any], *, plane_id: str, lifecycle: str
+) -> dict[str, Any]:
+    """Project one full assertion into the route-hydratable rich row."""
+    row = {key: value for key, value in relationship.items() if key != "schema"}
+    row.update(
+        {
+            "schema": "okf-relationship-runtime-row.v1",
+            "id": relationship["id"],
+            "assertion_id": relationship["id"],
+            "source_route": relationship["source"],
+            "target_route": relationship["target"],
+            "predicate_iri": relationship["predicate"],
+            "direction": "source-to-target",
+            "plane": plane_id,
+            "lifecycle": lifecycle,
+            "active": lifecycle == "active",
+        }
+    )
+    validate_runtime_schema(row, "row", f"relationship runtime row {row['id']}")
+    if row["source_route"] != row["source"] or row["target_route"] != row["target"]:
+        raise ValueError("relationship runtime route aliases differ")
+    if row["predicate_iri"] != row["predicate"]:
+        raise ValueError("relationship runtime predicate aliases differ")
+    retained_units = rich_runtime_text_units(rich_runtime_reader_projection(row))
+    if retained_units > MAX_RICH_RUNTIME_ROW_TEXT_UNITS:
+        raise ValueError(
+            f"relationship runtime row {row['id']} exceeds the Reader's "
+            f"{MAX_RICH_RUNTIME_ROW_TEXT_UNITS}-unit retained-text ceiling"
+        )
+    if len(row["evidence"]) > MAX_RICH_RUNTIME_EVIDENCE_ITEMS:
+        raise ValueError(
+            f"relationship runtime row {row['id']} exceeds the Reader's evidence ceiling"
+        )
+    evidence_ids = [str(item.get("@id") or "") for item in row["evidence"]]
+    if len(set(evidence_ids)) != len(evidence_ids):
+        raise ValueError(
+            f"relationship runtime row {row['id']} repeats an evidence identity"
+        )
+    supporting = row.get("supporting_assertions", [])
+    if len(supporting) > MAX_RICH_RUNTIME_SUPPORTING_ASSERTIONS:
+        raise ValueError(
+            f"relationship runtime row {row['id']} exceeds the Reader's support ceiling"
+        )
+    return row
+
+
+def rich_relationship_runtime_outputs(
+    relationships: list[dict[str, Any]], *, generated_at: str, snapshot: str
+) -> tuple[dict[Path, str | bytes], dict[str, Any]]:
+    """Build the bounded material runtime and digest-bound SHA-256 locator."""
+    selected = [
+        relationship
+        for relationship in relationships
+        if relationship.get("label") in MATERIAL_RELATIONSHIP_LABELS
+    ]
+    if not selected:
+        raise ValueError("material relationship runtime selection is empty")
+
+    status_order = {
+        "official": 0,
+        "normalized": 1,
+        "inferred": 2,
+        "model-derived": 3,
+    }
+    lifecycle_order = {"active": 0, "historical": 1, "rejected": 2}
+    scope_order = {"real-world": 0, "synthetic-fixture": 1}
+    authority_order = {
+        "official": 0,
+        "derived": 1,
+        "model-assisted": 2,
+        "synthetic": 3,
+        "unclassified": 4,
+    }
+    grouped: dict[tuple[str, str, str, str], list[dict[str, Any]]] = defaultdict(
+        list
+    )
+    for relationship in selected:
+        status = str(relationship.get("assertion_status") or "")
+        scope = str(relationship.get("assertion_scope") or "")
+        authority_class = str(
+            (relationship.get("authority") or {}).get("class") or ""
+        )
+        lifecycle = str(relationship.get("lifecycle", "active"))
+        if status not in status_order:
+            raise ValueError(f"unsupported relationship assertion status: {status}")
+        if scope not in scope_order:
+            raise ValueError(f"unsupported relationship assertion scope: {scope}")
+        if authority_class not in authority_order:
+            raise ValueError(
+                f"unsupported relationship authority class: {authority_class}"
+            )
+        if lifecycle not in lifecycle_order:
+            raise ValueError(f"unsupported relationship lifecycle: {lifecycle}")
+        grouped[(status, scope, authority_class, lifecycle)].append(relationship)
+
+    if len(grouped) > MAX_RICH_RUNTIME_PLANES:
+        raise ValueError(
+            f"material relationship runtime exceeds the {MAX_RICH_RUNTIME_PLANES}-plane limit"
+        )
+
+    outputs: dict[Path, str | bytes] = {}
+    route_planes: dict[str, dict[str, dict[str, set[str]]]] = defaultdict(
+        lambda: defaultdict(lambda: {"chunks": set(), "assertions": set()})
+    )
+    plane_manifests: list[dict[str, Any]] = []
+    chunk_rows: dict[str, int] = {}
+    chunk_sizes: dict[str, int] = {}
+    chunk_text_units: dict[str, int] = {}
+    chunk_plane: dict[str, str] = {}
+    totals: Counter[str] = Counter()
+    total_chunks = 0
+    total_rows = 0
+
+    for status, scope, authority_class, lifecycle in sorted(
+        grouped,
+        key=lambda item: (
+            lifecycle_order[item[3]],
+            scope_order[item[1]],
+            status_order[item[0]],
+            authority_order[item[2]],
+        ),
+    ):
+        plane_name = f"material-{status}-{scope}-{authority_class}"
+        if lifecycle != "active":
+            plane_name = f"{plane_name}-{lifecycle}"
+        plane_id = f"{RELATIONSHIP_RUNTIME_PLANE_BASE}{plane_name}"
+        relationships_for_plane = sorted(
+            grouped[(status, scope, authority_class, lifecycle)],
+            key=lambda row: row["id"],
+        )
+        rows = [
+            rich_runtime_row(item, plane_id=plane_id, lifecycle=lifecycle)
+            for item in relationships_for_plane
+        ]
+        chunks: list[dict[str, Any]] = []
+        for index in range(0, len(rows), RELATIONSHIP_RUNTIME_CHUNK_SIZE):
+            rows_for_chunk = rows[index : index + RELATIONSHIP_RUNTIME_CHUNK_SIZE]
+            chunk_number = index // RELATIONSHIP_RUNTIME_CHUNK_SIZE
+            chunk_path = (
+                f"{RELATIONSHIP_RUNTIME_ROOT}/planes/{plane_name}/"
+                f"relationships-{chunk_number:03d}.json.gz"
+            )
+            raw = render_json(rows_for_chunk).encode("utf-8")
+            if len(raw) > MAX_RICH_RUNTIME_DECODED_CHUNK_BYTES:
+                raise ValueError(
+                    f"{chunk_path} exceeds the Reader's decoded-byte limit"
+                )
+            compressed = deterministic_gzip(raw)
+            retained_units = sum(
+                rich_runtime_text_units(rich_runtime_reader_projection(row))
+                for row in rows_for_chunk
+            )
+            if len(rows_for_chunk) > MAX_RICH_RUNTIME_CHUNK_ROWS:
+                raise ValueError(f"{chunk_path} exceeds the Reader's row limit")
+            if len(compressed) > MAX_RICH_RUNTIME_CHUNK_BYTES:
+                raise ValueError(
+                    f"{chunk_path} exceeds the Reader's compressed-byte limit"
+                )
+            if retained_units > MAX_RICH_RUNTIME_RETAINED_TEXT_UNITS:
+                raise ValueError(
+                    f"{chunk_path} exceeds the Reader's retained-text ceiling"
+                )
+            outputs[Path(chunk_path)] = compressed
+            chunks.append(
+                {
+                    "id": (
+                        f"{PUBLIC_BASE}chunks/relationship-runtime/"
+                        f"{plane_name}/{chunk_number:03d}"
+                    ),
+                    "path": chunk_path,
+                    "media_type": "application/json",
+                    "content_encoding": "gzip",
+                    "bytes": len(compressed),
+                    "sha256": sha256_bytes(compressed),
+                    "count": len(rows_for_chunk),
+                    "records": len(rows_for_chunk),
+                }
+            )
+            chunk_rows[chunk_path] = len(rows_for_chunk)
+            chunk_sizes[chunk_path] = len(compressed)
+            chunk_text_units[chunk_path] = retained_units
+            chunk_plane[chunk_path] = plane_name
+            total_chunks += 1
+            total_rows += len(rows_for_chunk)
+            for row in rows_for_chunk:
+                for route in {row["source"], row["target"]}:
+                    commitment = route_planes[route][plane_name]
+                    commitment["chunks"].add(chunk_path)
+                    commitment["assertions"].add(row["assertion_id"])
+        plane_manifests.append(
+            {
+                "name": plane_name,
+                "id": plane_id,
+                "active": lifecycle == "active",
+                "lifecycle": lifecycle,
+                "assertion_scope": scope,
+                "authority_classes": [authority_class],
+                "assertions": len(rows),
+                "chunks": chunks,
+            }
+        )
+        totals[lifecycle] += len(rows)
+
+    if total_chunks > MAX_RICH_RUNTIME_CHUNKS:
+        raise ValueError(
+            f"material relationship runtime exceeds the {MAX_RICH_RUNTIME_CHUNKS}-chunk limit"
+        )
+    if total_rows > MAX_RICH_RUNTIME_ROWS:
+        raise ValueError(
+            f"material relationship runtime exceeds the {MAX_RICH_RUNTIME_ROWS}-row limit"
+        )
+
+    default_planes = [
+        plane["name"]
+        for plane in plane_manifests
+        if plane["active"]
+    ]
+    selected_default_chunks: list[str] = []
+    for plane in plane_manifests:
+        if plane["name"] not in default_planes:
+            continue
+        for chunk in plane["chunks"]:
+            path = str(chunk["path"])
+            selected_default_chunks.append(path)
+    selected_default_rows = sum(
+        chunk_rows[path] for path in selected_default_chunks
+    )
+    if selected_default_rows > MAX_RICH_RUNTIME_WHOLE_ROWS:
+        raise ValueError(
+            "default runtime whole hydration exceeds the Reader's "
+            f"{MAX_RICH_RUNTIME_WHOLE_ROWS}-row ceiling"
+        )
+    if (
+        sum(chunk_sizes[path] for path in selected_default_chunks)
+        > MAX_RICH_RUNTIME_ROUTE_COMPRESSED_BYTES
+    ):
+        raise ValueError("default runtime hydration exceeds the Reader's byte ceiling")
+    if (
+        sum(chunk_text_units[path] for path in selected_default_chunks)
+        > MAX_RICH_RUNTIME_RETAINED_TEXT_UNITS
+    ):
+        raise ValueError(
+            "default runtime hydration exceeds the Reader's retained-text ceiling"
+        )
+
+    locator_buckets: dict[str, list[str]] = defaultdict(list)
+    for route in sorted(route_planes):
+        locator_buckets[rich_runtime_route_bucket(route)].append(route)
+    locator_metadata: list[dict[str, Any]] = []
+    locator_chunk_references = 0
+    for prefix, routes in sorted(locator_buckets.items()):
+        route_entries: list[dict[str, Any]] = []
+        for route in routes:
+            commitments: list[dict[str, Any]] = []
+            route_chunks: set[str] = set()
+            for plane_name, values in sorted(route_planes[route].items()):
+                chunks = sorted(values["chunks"])
+                identifiers = sorted(values["assertions"])
+                route_chunks.update(chunks)
+                commitments.append(
+                    {
+                        "name": plane_name,
+                        "chunks": chunks,
+                        "assertions": len(identifiers),
+                        "assertion_ids_sha256": rich_runtime_assertion_digest(
+                            identifiers
+                        ),
+                    }
+                )
+            chunks = sorted(route_chunks)
+            active_chunks = {
+                chunk
+                for commitment in commitments
+                if commitment["name"] in default_planes
+                for chunk in commitment["chunks"]
+            }
+            active_assertions = sum(
+                commitment["assertions"]
+                for commitment in commitments
+                if commitment["name"] in default_planes
+            )
+            if (
+                len(active_chunks) > MAX_RICH_RUNTIME_ROUTE_CHUNKS
+                or active_assertions > MAX_RICH_RUNTIME_ROUTE_ROWS
+                or sum(chunk_rows[path] for path in active_chunks)
+                > MAX_RICH_RUNTIME_ROUTE_ROWS
+                or sum(chunk_sizes[path] for path in active_chunks)
+                > MAX_RICH_RUNTIME_ROUTE_COMPRESSED_BYTES
+                or sum(chunk_text_units[path] for path in active_chunks)
+                > MAX_RICH_RUNTIME_RETAINED_TEXT_UNITS
+            ):
+                raise ValueError(
+                    f"relationship route {route} exceeds the bounded Reader ceilings"
+                )
+            locator_chunk_references += len(chunks)
+            route_entries.append(
+                {"route": route, "chunks": chunks, "planes": commitments}
+            )
+        bucket_value = {
+            "schema": "okf-rich-relationship-route-locator-bucket.v1",
+            "hash_algorithm": "sha256-utf8-first-byte-hex",
+            "bucket": prefix,
+            "generated_at": generated_at,
+            "routes": route_entries,
+            "counts": {
+                "routes": len(route_entries),
+                "chunk_references": sum(
+                    len(item["chunks"]) for item in route_entries
+                ),
+            },
+        }
+        validate_runtime_schema(
+            bucket_value, "locator_bucket", f"route locator bucket {prefix}"
+        )
+        bucket_path = (
+            f"{RELATIONSHIP_RUNTIME_ROOT}/route-locator/bucket-{prefix}.json.gz"
+        )
+        raw = render_json(bucket_value).encode("utf-8")
+        if len(raw) > MAX_RICH_RUNTIME_DECODED_CHUNK_BYTES:
+            raise ValueError(f"{bucket_path} exceeds the decoded-byte limit")
+        compressed = deterministic_gzip(raw)
+        if len(compressed) > MAX_RICH_RUNTIME_CHUNK_BYTES:
+            raise ValueError(f"{bucket_path} exceeds the compressed-byte limit")
+        outputs[Path(bucket_path)] = compressed
+        locator_metadata.append(
+            {
+                "bucket": prefix,
+                "path": bucket_path,
+                "content_encoding": "gzip",
+                "bytes": len(compressed),
+                "sha256": sha256_bytes(compressed),
+                "routes": len(route_entries),
+                "chunk_references": bucket_value["counts"]["chunk_references"],
+            }
+        )
+
+    locator = {
+        "schema": "okf-rich-relationship-route-locator.v1",
+        "hash_algorithm": "sha256-utf8-first-byte-hex",
+        "generated_at": generated_at,
+        "bucket_path_template": (
+            f"{RELATIONSHIP_RUNTIME_ROOT}/route-locator/bucket-{{prefix}}.json.gz"
+        ),
+        "buckets": locator_metadata,
+        "counts": {
+            "routes": len(route_planes),
+            "buckets": len(locator_metadata),
+            "chunk_references": locator_chunk_references,
+        },
+    }
+    validate_runtime_schema(locator, "locator", "relationship route locator")
+    locator_text = render_json(locator)
+    outputs[Path(RELATIONSHIP_RUNTIME_LOCATOR)] = locator_text
+    snapshot_iri = quote(snapshot, safe="")
+    runtime = {
+        "schema": "okf-rich-relationship-runtime-manifest.v1",
+        "@id": f"{PUBLIC_BASE}runtime/relationships/{snapshot_iri}",
+        "snapshot": snapshot,
+        "generated_at": generated_at,
+        "semantic_manifest": "data/semantic/manifest.json",
+        "assertion_contract": "schemas/okf-relationship-assertion.v2.schema.json",
+        "row_contract": "schemas/relationship-runtime-row.schema.json",
+        "default_planes": default_planes,
+        "planes": plane_manifests,
+        "totals": {
+            "active_assertions": totals["active"],
+            "historical_assertions": totals["historical"],
+            "rejected_assertions": totals["rejected"],
+            "all_assertions": len(selected),
+            "chunks": total_chunks,
+        },
+        "loading_policy": "bounded-route-hydration",
+        "route_locator": {
+            "id": f"{PUBLIC_BASE}runtime/relationship-route-locator/{snapshot_iri}",
+            "path": RELATIONSHIP_RUNTIME_LOCATOR,
+            "routes": len(route_planes),
+            "buckets": len(locator_metadata),
+            "sha256": sha256_bytes(locator_text.encode("utf-8")),
+        },
+    }
+    validate_runtime_schema(runtime, "manifest", "relationship runtime manifest")
+    runtime_text = render_json(runtime)
+    outputs[Path(RELATIONSHIP_RUNTIME_MANIFEST)] = runtime_text
+    for path in RELATIONSHIP_RUNTIME_SCHEMA_PATHS.values():
+        outputs[Path("schemas") / path.name] = path.read_text(encoding="utf-8")
+    runtime_bytes = runtime_text.encode("utf-8")
+    return outputs, {
+        "path": RELATIONSHIP_RUNTIME_MANIFEST,
+        "sha256": sha256_bytes(runtime_bytes),
+        "bytes": len(runtime_bytes),
+    }
+
+
+def semantic_validation_report(
+    relationships: list[dict[str, Any]], *, generated_at: str
+) -> dict[str, Any]:
+    """Validate every full runtime and semantic assertion and return its receipt."""
+    validation = semantic_validation_module()
+    receipt, violations = validation.validate_relationship_planes(
+        (semantic_assertion_node(edge) for edge in relationships), relationships
+    )
+    if violations:
+        details = "; ".join(
+            f"{item['plane']} {item['assertion_id']}{item['instance_path']}: "
+            f"{item['message']}"
+            for item in violations[:10]
+        )
+        if len(violations) > 10:
+            details += f"; and {len(violations) - 10} more"
+        raise ValueError(f"semantic assertion validation failed: {details}")
+    return {
+        "schema": "okf-semantic-assertion-validation-report.v1",
+        "generated_at": generated_at,
+        "status": "conformant",
+        "semantic_assertion_validation": receipt,
+        "violations": [],
+    }
+
+
+def output_files(corpus: dict[str, Any]) -> dict[Path, str | bytes]:
+    descriptor = corpus["descriptor"]
+    manifest = corpus["manifest"]
+    generated_at = str(descriptor["generated_at"])
+    snapshot = str(descriptor.get("snapshot") or generated_at)
+    descriptor["snapshot"] = snapshot
+    manifest["snapshot"] = snapshot
+    runtime_files, runtime_reference = rich_relationship_runtime_outputs(
+        corpus["relationships"], generated_at=generated_at, snapshot=snapshot
+    )
+    descriptor["entrypoints"]["relationship_runtime"] = runtime_reference
+    descriptor.setdefault("entrypoint_integrity", {})[
+        "relationship_runtime"
+    ] = runtime_reference
+    manifest["indexes"]["relationship_runtime"] = runtime_reference
+    validation_report = semantic_validation_report(
+        corpus["relationships"], generated_at=generated_at
+    )
+    validation_path = "data/semantic/validation-report.json"
+    descriptor["entrypoints"]["semantic_validation"] = validation_path
+    manifest["indexes"]["semantic_validation"] = validation_path
+
+    files: dict[Path, str | bytes] = {
         Path("okf-explorer.json"): render_json(corpus["descriptor"]),
         Path("data/manifest.json"): render_json(corpus["manifest"]),
         Path("data/overview.json"): render_json(corpus["overview"]),
@@ -3147,7 +4648,9 @@ def output_files(corpus: dict[str, Any]) -> dict[Path, str]:
         Path("data/adjacency/manifest.json"): render_json(corpus["relationship_adjacency"]),
         Path("data/search/manifest.json"): render_json(corpus["search"]["manifest"]),
         Path("data/search/doc-map.json"): render_json(corpus["search"]["doc_map"]),
+        Path(validation_path): render_json(validation_report),
     }
+    files.update(runtime_files)
     for path, rows in corpus["record_chunks"]:
         files[path] = render_json(rows)
     for path, rows in corpus["resource_chunks"]:
@@ -3155,7 +4658,12 @@ def output_files(corpus: dict[str, Any]) -> dict[Path, str]:
     for path, rows in corpus["publisher_chunks"]:
         files[path] = render_json(rows)
     for path, rows in corpus["relationship_chunks"]:
-        files[path] = render_json(rows)
+        rendered = render_json(rows).encode("utf-8")
+        files[path] = (
+            gzip.compress(rendered, compresslevel=6, mtime=0)
+            if path.suffix == ".gz"
+            else rendered.decode("utf-8")
+        )
     for path, routes in corpus["relationship_adjacency_buckets"]:
         files[path] = render_json(routes)
     for shard, rows in corpus["search"]["lexicon"].items():
@@ -3166,6 +4674,14 @@ def output_files(corpus: dict[str, Any]) -> dict[Path, str]:
         files[Path(path)] = render_json(payload)
     for path, rows in corpus["search"]["result_doc_chunks"]:
         files[path] = render_json(rows)
+    semantic_files, _semantic_manifest = semantic_publication_files(
+        descriptor=corpus["descriptor"],
+        records=corpus["records"],
+        resources=corpus["resources"],
+        publishers=corpus["publishers"],
+        relationships=corpus["relationships"],
+    )
+    files.update(semantic_files)
     files.update(markdown_output_files(corpus))
     return files
 
@@ -3263,7 +4779,7 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--source", default=DEFAULT_SOURCE_URL, help="GOV.UK API Catalogue CSV source path or URL")
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT, help="generated corpus directory")
-    parser.add_argument("--check", action="store_true", help="fail if generated files are not synchronized")
+    parser.add_argument("--check", action="store_true", help="fail if generated files are not synchronised")
     parser.add_argument("--generated-at", help="frozen ISO 8601 publication build time")
     parser.add_argument("--skip-ckan", action="store_true", help="skip data.gov.uk CKAN enrichment")
     parser.add_argument("--skip-os", action="store_true", help="skip Ordnance Survey API enrichment")
@@ -3333,7 +4849,7 @@ def main(argv: list[str] | None = None) -> int:
                 print(f"- ... {len(errors) - 12} more differences", file=sys.stderr)
             return 1
         print(
-            "UK Government API OKF is synchronized with "
+            "UK Government API OKF is synchronised with "
             f"{corpus['descriptor']['counts']['declared_api_products']} declared API products, "
             f"{corpus['descriptor']['counts']['data_access_endpoints']} data access endpoints, "
             f"{corpus['descriptor']['counts']['data_products']} data products"

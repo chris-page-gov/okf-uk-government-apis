@@ -11,7 +11,7 @@ The same OKF Explorer pattern should work for UK Government APIs, but the API do
 
 The OKF spec is a good envelope for this because it is deliberately simple: a knowledge bundle is a directory of Markdown files with YAML frontmatter; concepts can describe things such as APIs; frontmatter is extensible; and consumers are expected to tolerate unknown fields. It also explicitly says OKF should not replace domain-specific schemas such as OpenAPI, but should reference them. That is the key design principle: **OKF describes, links, governs and narrates the API estate; OpenAPI, AsyncAPI, Arazzo and related standards remain the executable domain contracts.** ([GitHub][1])
 
-I could not read `/Users/crpage/repos/api-mcp-wiki` directly from here, so I used the public GitHub Pages and repository versions.
+This analysis uses the public GitHub Pages and repository versions of the API/MCP wiki.
 
 ---
 
@@ -334,6 +334,47 @@ relationships:
     observed_at: 2026-07-07T00:00:00Z
 ```
 
+### Implemented semantic projection
+
+The publication implements this as an additive Bundle Wiki YAML-LD profile,
+without expanding the deliberately small OKF 0.2 core. Every generated edge
+has a stable assertion IRI, absolute source/target/predicate IRIs, local
+Explorer source/target routes, preferred and inverse labels, assertion status
+and scope, authority, derivation activity, observation time, evidence and
+rights. Source adapter, source tier, source confidence, relationship confidence
+and record-level licence context remain separate fields; confidence never
+upgrades authority.
+
+`okf-bundle.yamlld` is a bounded, human-readable graph descriptor. Its
+`data/semantic/manifest.json` points to digest-bound gzip JSON-LD shards:
+route-bearing entity shards contain the direct triples, and assertion shards
+contain matching `rdf:Statement` plus `okf:RelationshipAssertion` nodes. The
+same in-memory assertion list generates `data/relationships-*.json.gz` and the
+route-scoped adjacency used by the Explorer. This preserves a full graph while
+avoiding a monolithic file or whole-corpus browser hydration.
+
+`data/relationship-runtime/manifest.json` provides the bounded default Reader
+projection. Its material planes retain documentation, access, contract,
+schema, operation, licence, provider-portal, supported-alternative and bounded
+catalogue-evidence relationships. High-volume facet and compatibility edges
+remain in the complete semantic and relationship chunks. A SHA-256 route
+locator commits each route and plane to its exact incident assertion count and
+sorted assertion-identity digest. The pinned Reader profile default-loads every
+active plane. Synthetic relationships rejected from real-world catalogue
+admission therefore remain outside the active material runtime while staying
+available in the complete semantic and compatibility projections.
+`data/semantic/validation-report.json` records exhaustive Draft 2020-12
+validation rather than a sample.
+
+Real-world relationships in this corpus have scope detail
+`metadata-only-catalogue-view`. Wayfinder comparison relationships instead use
+`fictional-wayfinder-demo-comparison`, synthetic authority and lifecycle
+`rejected`. In both cases, the graph represents source metadata rather than
+evidence that an endpoint is currently live, accessible or assured, and no
+credential is acquired, stored or executed. See the
+[Wayfinder comparison](wayfinder-comparison-2026-09-24.md) for its source,
+rights and admission boundary.
+
 ---
 
 ## Source strategy for a UK Government API OKF
@@ -589,7 +630,11 @@ OpenAPI 3.2 was published in September 2025, and Arazzo 1.1 in May 2026, so the 
 
 ### 2. Typed relationship index
 
-Keep Markdown links, but generate `relationships.jsonl` or relationship shards with typed edges, provenance and confidence.
+Implemented: Markdown links remain readable, while rich relationship chunks,
+the bounded material runtime, route adjacency and semantic direct/reified
+shards are generated together from one deterministic assertion source. The
+predicate registry supplies explicit forward and inverse labels, so a Reader
+does not infer direction from prose.
 
 ### 3. API-specific analysis overview
 

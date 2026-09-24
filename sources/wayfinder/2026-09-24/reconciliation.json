@@ -1,0 +1,3673 @@
+{
+  "definitions": {
+    "canonicalUrl": "HTTP(S) URL with lower-case scheme/host, leading www removed, default port removed, repeated path slashes collapsed, non-root trailing slash removed and fragment discarded; path/query otherwise preserved.",
+    "exactDocumentationUrl": "Equality between canonical Wayfinder documentation and canonical OKF documentation.",
+    "exactEndpointUrl": "Equality between canonical Wayfinder endpoint and canonical OKF url.",
+    "exactStableId": "Case-sensitive equality between Wayfinder services[].id and an OKF record's id, name, final route segment, concept_id filename stem or explicitly labelled authoritative_identifier. This detects collisions, not semantic equivalence.",
+    "probableSimilarity": "A high-precision title similarity signal over API-like OKF record types. It is explicitly not a match; provider equivalence is not assumed because the Wayfinder organisations are fictional."
+  },
+  "exactMatches": {
+    "canonicalDocumentationUrls": [],
+    "canonicalEndpointUrls": [],
+    "stableIdCollisions": []
+  },
+  "fieldToOkfMapping": [
+    {
+      "lossless": false,
+      "rule": "Retain the source-local identifier verbatim in extras. Create a collision-safe namespaced slug for name/route/concept_id. Do not use the synthetic identifier as a global or semantic identity.",
+      "sourceField": "id",
+      "target": [
+        "extras.wayfinder_id",
+        "name",
+        "route",
+        "concept_id"
+      ]
+    },
+    {
+      "lossless": true,
+      "rule": "Copy as a source-supplied display title and preserve its synthetic-demo status in provenance.",
+      "sourceField": "name",
+      "target": [
+        "title"
+      ]
+    },
+    {
+      "lossless": false,
+      "rule": "Map api to API Product only when the row describes a product; map an evidenced addressable endpoint to Data Access API Endpoint. platform, library and event-stream have no automatic one-to-one API-record mapping and must retain the source type pending modelling evidence.",
+      "sourceField": "type",
+      "target": [
+        "record_type",
+        "type",
+        "extras.wayfinder_type"
+      ]
+    },
+    {
+      "lossless": false,
+      "rule": "Resolve through the department array, then only link to a real organisation after independent authority evidence. The fictional department must not be silently equated to a UK public body.",
+      "sourceField": "departmentId",
+      "target": [
+        "publisher",
+        "publisher_title",
+        "canonical_publisher",
+        "canonical_publisher_title",
+        "publisher_concept_id"
+      ]
+    },
+    {
+      "lossless": false,
+      "rule": "Resolve through the team array, retain the source team identifier/title, and create a team concept and relationship only if the target model and evidence support it.",
+      "sourceField": "teamId",
+      "target": [
+        "extras.maintaining_team",
+        "governed relationship: maintained by"
+      ]
+    },
+    {
+      "lossless": true,
+      "rule": "Copy as source-supplied notes; do not treat performance or scope claims in the prose as verified facts.",
+      "sourceField": "description",
+      "target": [
+        "notes"
+      ]
+    },
+    {
+      "lossless": false,
+      "rule": "Canonicalise and validate the HTTP(S) URL. Create a documentation resource and evidence-bearing relationship when retrievable and licensed; the captured demo links are explicitly placeholders.",
+      "sourceField": "documentation",
+      "target": [
+        "documentation",
+        "documentation_host",
+        "resource record",
+        "governed relationship: has documentation"
+      ]
+    },
+    {
+      "lossless": false,
+      "rule": "Canonicalise and validate the HTTP(S) URL. Use it as the dataset id/url only for a verified endpoint; create a resource record as appropriate. Missing or demo.gov.example values cannot evidence a live API.",
+      "sourceField": "endpoint",
+      "target": [
+        "url",
+        "id",
+        "host",
+        "endpoint_host",
+        "resource record"
+      ]
+    },
+    {
+      "lossless": true,
+      "rule": "Preserve verbatim. The current API-record projection has no first-class service-version field.",
+      "sourceField": "version",
+      "target": [
+        "extras.service_version"
+      ]
+    },
+    {
+      "lossless": false,
+      "rule": "Map each declared mechanism through a governed vocabulary; retain the complete source array because access_model and openapi_security_scheme are scalar summaries. Do not infer credentials or store secret values.",
+      "sourceField": "authentication",
+      "target": [
+        "access_model",
+        "credential_requirements",
+        "openapi_security_scheme",
+        "extras.wayfinder_authentication"
+      ]
+    },
+    {
+      "lossless": false,
+      "rule": "Resolve each target service and create an evidence-bearing depends-on assertion with stable assertion ID, local routes, source/target IRIs, governed predicate/kind, status, scope, authority, derivation, observation time, evidence and rights.",
+      "sourceField": "dependsOn",
+      "target": [
+        "rich relationship assertions"
+      ]
+    },
+    {
+      "lossless": false,
+      "rule": "Model as the inverse consumes/consumed-by assertion and deduplicate against dependsOn. Preserve direction and do not manufacture reciprocity where the source is inconsistent.",
+      "sourceField": "consumedBy",
+      "target": [
+        "rich relationship assertions"
+      ]
+    },
+    {
+      "lossless": false,
+      "rule": "Resolve a pattern concept and select an evidenced governed predicate such as implements or related to. Keep absent identifiers unresolved; do not emit dangling assertions.",
+      "sourceField": "relatedPatterns",
+      "target": [
+        "pattern concepts",
+        "rich relationship assertions"
+      ]
+    },
+    {
+      "lossless": false,
+      "rule": "Translate through an explicit lifecycle vocabulary. Treat live only as a source claim; it is not live-service verification.",
+      "sourceField": "status",
+      "target": [
+        "state",
+        "lifecycle_status",
+        "extras.wayfinder_status"
+      ]
+    },
+    {
+      "lossless": true,
+      "rule": "Parse as an ISO date for source-record modification. Keep capture/observation time separately in provenance.observed_at.",
+      "sourceField": "lastUpdated",
+      "target": [
+        "metadata_modified",
+        "timestamp"
+      ]
+    },
+    {
+      "lossless": false,
+      "rule": "Retain the display string and, if parsed, store an integer with an explicit monthly unit and source date. Do not treat K/M/B suffixes as exact without a documented convention.",
+      "sourceField": "monthlyRequests",
+      "target": [
+        "extras.monthly_requests_raw",
+        "extras.monthly_requests_count"
+      ]
+    },
+    {
+      "lossless": false,
+      "rule": "Retain the percentage string and optionally parse a ratio, with measurement period and source evidence. Do not upgrade it to assurance.",
+      "sourceField": "uptime",
+      "target": [
+        "extras.uptime_raw",
+        "extras.uptime_ratio"
+      ]
+    },
+    {
+      "lossless": false,
+      "rule": "Copy tags as source labels. Only derive governed topics through the repository's classifier and keep that derivation explicit; tags do not establish identity or authority.",
+      "sourceField": "tags",
+      "target": [
+        "tags",
+        "topics"
+      ]
+    }
+  ],
+  "generatedAt": "2026-09-24T20:22:41.964Z",
+  "publicationDecision": {
+    "defaultLoaded": false,
+    "exactMatches": 0,
+    "fuzzyTitleMatchesMerged": 0,
+    "mode": "synthetic-fixture-opt-in",
+    "newSyntheticServices": 85,
+    "rights": "not specified"
+  },
+  "schema": "wayfinder-okf-reconciliation.v1",
+  "scope": {
+    "networkAccessDuringReconciliation": false,
+    "okfBundle": {
+      "checksumsPath": "bundle/checksums.json",
+      "checksumsSha256": "85f10ca46c03b0e6c6f3740cfb0f45f496118d4bb2af06760b0b9ab6e05c98e3",
+      "chunks": 42,
+      "datasetChunkDigests": {
+        "data/apis-0.json": "bfbd3ce3fff362b836f84d254f4a15219467c34798852cc8d41e9ed7d060bf06",
+        "data/apis-1.json": "29a872be81005371fd4260aaad247b9324d4d23f8516c7fc0d3e6d9242b39723",
+        "data/apis-10.json": "b2fb5165288f849149bf52e007606e1b9db5535b73f7b742a8bc1cdb9caad194",
+        "data/apis-11.json": "0e16903deaa4ffae15e69762774b34c0a7207b2888a8bad44675308f982572ab",
+        "data/apis-12.json": "f9abef8d61660e1053364442f6e12968aa6f55b2f19ac02651ff2ff726db60a8",
+        "data/apis-13.json": "90af455e57c56229ad9438312018aff48fa621f953e9dd836f92f38eafc50293",
+        "data/apis-14.json": "cbd7fea0032fde0c1e9072447eaf34501c0e01fbe3378772d49cdd4c52e67eb6",
+        "data/apis-15.json": "7f739bd6b1e55a7bc0c2de0509c29dacfaafd9df315eb6bf2aa5e2ab7437e53b",
+        "data/apis-16.json": "7de6f73795b5b1a8d5849ae204b14626b728b9019f2aa2d2e9067c824a448df7",
+        "data/apis-17.json": "b7eb64d0c0934789586a7e173ca116ea4a836d48af16972142463cec3f9f72c8",
+        "data/apis-18.json": "a48c245755d5c9199a564634b2cc56bb0cc3efc746b097ccdf509d1d2cafc67c",
+        "data/apis-19.json": "b06e5a54c0c12219e027f6e09a0ad7000837e9cae7e4fc6c646a8eabbcb84bff",
+        "data/apis-2.json": "347fda935a0ee89f0abccc1b023e132725fda71235b269c69c96e8edb8f55929",
+        "data/apis-20.json": "388e4d93219ba671a78e8efa7354134dd43e18c73242f39c6b95405c9c7f592c",
+        "data/apis-21.json": "ed429c482b82e737d365a4b21a2c5d13251802328624e5d3d27f8f27cec11ac9",
+        "data/apis-22.json": "4f335e5886d243be89e38bb2c8104d8db331b9c710a3ffec4b04172391ad62f9",
+        "data/apis-23.json": "597f95bed746e2fd4cff090b7555648f1a9b514a14df52882bd642f6a1db4e8e",
+        "data/apis-24.json": "520436a689c679297c856fa2fd03f2e69b58287d2297f7372ed2237036c311a8",
+        "data/apis-25.json": "bba6306a2e0fe35c89359a440a1d2ca7ef51caa3a11ccf01e4309f43689f46ca",
+        "data/apis-26.json": "8bd455180667f0a50db186a23adc93523913416e2fa8ba5351f65d0dd35c9ce3",
+        "data/apis-27.json": "64b070b36fe4e49d3fe90d3b807bc43620f8d1824afd9cea2af5c083d53a87cf",
+        "data/apis-28.json": "ff36e24584b40cdcbd9a1858546076fda84221a76aa1636d759a3cc1a4c773c1",
+        "data/apis-29.json": "8f08c4c3bf014a031ddd4451feec46e81ee7c6c058e4e0b00f1372f066edeac0",
+        "data/apis-3.json": "a29f2173c4e96c5d2ff359cd13a474be869614d7f5725ef95652bee5eaae6879",
+        "data/apis-30.json": "413fbe14276fd4a887129787944350e62931beaccb825218d46a10a6e6cfd653",
+        "data/apis-31.json": "9cf32044bffa5dd891a83d57809d1c48cf36cadbcf5fc77a28fbf06645e0cb7a",
+        "data/apis-32.json": "a8fb392591332af71e3e2283354da381a51dd7e9f974d57d95669b062f8ab7b6",
+        "data/apis-33.json": "af846afef696e7a0d4975ebf347cdfd47395f0c74539b0340f57adb5cb5553ed",
+        "data/apis-34.json": "7efbe81cf167c63b0b0731ef0c5592902226dc861893136135c14bf56b53f289",
+        "data/apis-35.json": "ecb0598bb618a919f9b6d6698d02280a8c3fe50c0dd082c3124321c766d593b5",
+        "data/apis-36.json": "744273c22967709a73e42872f92df24d2fdf3ffcb833098c93ea85b8f0f1928f",
+        "data/apis-37.json": "8304a459e291faeb38bb4661ca2c14a90ff18875ffe370c3082a571d78e967b1",
+        "data/apis-38.json": "f0a8c43ba621bc5a3f6dea20bae7115d647cca96446897fa256957ce3c712d59",
+        "data/apis-39.json": "b0f893ef8c545407f3dbb8041ec754d0e1e9b1fa44e97130f038663e79a4237c",
+        "data/apis-4.json": "a76f10ffd99bee8030fe6d6c1472b22f0301fa47675c311414cf6692d0480b39",
+        "data/apis-40.json": "f65eef66c790031ea23414a883d99d4a9f85ed6ae7c2829fcd83ea70ed80bc23",
+        "data/apis-41.json": "9ccea0e4c42d2a3410dc4d3050ab507d95113b5a49b5b8cc59c4e53d5c5513e5",
+        "data/apis-5.json": "0c9e5feeaa088dc622cbe855f7fa6ab4f5cd2500317a448de3b4f7f9403d4681",
+        "data/apis-6.json": "4eba71d69a5c4e3841fb0ffeed7b03c9f260b9c9e9448864fc3c4e4c00b5d69a",
+        "data/apis-7.json": "351e004c7449463a5f6c3ce3fd013247e23054cc936a058069c89e17eec79dca",
+        "data/apis-8.json": "66d3e3ef10796bd7ce3f5519037a30aeb4f15710833e39e3949f3153f04e6536",
+        "data/apis-9.json": "57e4c3f2e1b218760dbec84936193d1b269b2e272e001c779ff8da303c7c7d03"
+      },
+      "datasetRecords": 41598,
+      "declaredCount": 41598,
+      "generatedAt": "2026-07-16T00:00:00Z",
+      "manifestPath": "bundle/data/manifest.json",
+      "manifestSha256": "2b270615604da497b80335936f427571843be3afd294036bf2975176473cb824"
+    },
+    "repositoryWritesDuringReconciliation": false,
+    "wayfinderCapture": {
+      "capturedAt": "2026-09-24T20:22:41.964Z",
+      "path": "sources/wayfinder/2026-09-24/catalogue.json",
+      "reusableLicenceFound": false,
+      "services": 85,
+      "sha256": "d15d6c8bfe9490855894aeaa1b1f82a52277737c584a2bc9944a9a906d267969",
+      "syntheticDemo": true
+    }
+  },
+  "serviceResults": [
+    {
+      "decision": "no exact match",
+      "exact": {
+        "canonicalDocumentationUrl": [],
+        "canonicalEndpointUrl": [],
+        "stableId": []
+      },
+      "probableSimilarities": [],
+      "wayfinder": {
+        "canonicalDocumentation": "https://docs.demo.gov.example/api-gateway",
+        "canonicalEndpoint": "https://gateway.demo.gov.example/",
+        "departmentId": "dso",
+        "documentation": "https://docs.demo.gov.example/api-gateway",
+        "endpoint": "https://gateway.demo.gov.example",
+        "id": "api-gateway",
+        "name": "Government API Gateway",
+        "teamId": "granite-platform",
+        "type": "platform"
+      }
+    },
+    {
+      "decision": "no exact match",
+      "exact": {
+        "canonicalDocumentationUrl": [],
+        "canonicalEndpointUrl": [],
+        "stableId": []
+      },
+      "probableSimilarities": [],
+      "wayfinder": {
+        "canonicalDocumentation": "https://docs.demo.gov.example/service-mesh",
+        "canonicalEndpoint": null,
+        "departmentId": "dso",
+        "documentation": "https://docs.demo.gov.example/service-mesh",
+        "endpoint": null,
+        "id": "service-mesh",
+        "name": "Cross-Government Service Mesh",
+        "teamId": "granite-platform",
+        "type": "platform"
+      }
+    },
+    {
+      "decision": "no exact match",
+      "exact": {
+        "canonicalDocumentationUrl": [],
+        "canonicalEndpointUrl": [],
+        "stableId": []
+      },
+      "probableSimilarities": [],
+      "wayfinder": {
+        "canonicalDocumentation": "https://docs.demo.gov.example/cloud-platform",
+        "canonicalEndpoint": null,
+        "departmentId": "dso",
+        "documentation": "https://docs.demo.gov.example/cloud-platform",
+        "endpoint": null,
+        "id": "cloud-platform",
+        "name": "Government Cloud Platform",
+        "teamId": "granite-platform",
+        "type": "platform"
+      }
+    },
+    {
+      "decision": "no exact match",
+      "exact": {
+        "canonicalDocumentationUrl": [],
+        "canonicalEndpointUrl": [],
+        "stableId": []
+      },
+      "probableSimilarities": [],
+      "wayfinder": {
+        "canonicalDocumentation": "https://docs.demo.gov.example/secrets-manager",
+        "canonicalEndpoint": "https://secrets.demo.gov.example/",
+        "departmentId": "dso",
+        "documentation": "https://docs.demo.gov.example/secrets-manager",
+        "endpoint": "https://secrets.demo.gov.example",
+        "id": "secrets-manager",
+        "name": "Government Secrets Manager",
+        "teamId": "granite-platform",
+        "type": "platform"
+      }
+    },
+    {
+      "decision": "no exact match",
+      "exact": {
+        "canonicalDocumentationUrl": [],
+        "canonicalEndpointUrl": [],
+        "stableId": []
+      },
+      "probableSimilarities": [],
+      "wayfinder": {
+        "canonicalDocumentation": "https://design.demo.gov.example/",
+        "canonicalEndpoint": null,
+        "departmentId": "dso",
+        "documentation": "https://design.demo.gov.example",
+        "endpoint": null,
+        "id": "design-system",
+        "name": "Government Design System",
+        "teamId": "cedar-design",
+        "type": "library"
+      }
+    },
+    {
+      "decision": "no exact match",
+      "exact": {
+        "canonicalDocumentationUrl": [],
+        "canonicalEndpointUrl": [],
+        "stableId": []
+      },
+      "probableSimilarities": [],
+      "wayfinder": {
+        "canonicalDocumentation": "https://components.demo.gov.example/",
+        "canonicalEndpoint": null,
+        "departmentId": "dso",
+        "documentation": "https://components.demo.gov.example",
+        "endpoint": null,
+        "id": "component-library",
+        "name": "React Component Library",
+        "teamId": "cedar-design",
+        "type": "library"
+      }
+    },
+    {
+      "decision": "no exact match",
+      "exact": {
+        "canonicalDocumentationUrl": [],
+        "canonicalEndpointUrl": [],
+        "stableId": []
+      },
+      "probableSimilarities": [],
+      "wayfinder": {
+        "canonicalDocumentation": "https://prototype-kit.demo.gov.example/",
+        "canonicalEndpoint": null,
+        "departmentId": "dso",
+        "documentation": "https://prototype-kit.demo.gov.example",
+        "endpoint": null,
+        "id": "prototype-kit",
+        "name": "Service Prototype Kit",
+        "teamId": "cedar-design",
+        "type": "library"
+      }
+    },
+    {
+      "decision": "no exact match",
+      "exact": {
+        "canonicalDocumentationUrl": [],
+        "canonicalEndpointUrl": [],
+        "stableId": []
+      },
+      "probableSimilarities": [],
+      "wayfinder": {
+        "canonicalDocumentation": "https://docs.demo.gov.example/accessibility-checker",
+        "canonicalEndpoint": "https://a11y-check.demo.gov.example/api/v1",
+        "departmentId": "dso",
+        "documentation": "https://docs.demo.gov.example/accessibility-checker",
+        "endpoint": "https://a11y-check.demo.gov.example/api/v1",
+        "id": "accessibility-checker",
+        "name": "Automated Accessibility Checker",
+        "teamId": "cedar-design",
+        "type": "api"
+      }
+    },
+    {
+      "decision": "no exact match",
+      "exact": {
+        "canonicalDocumentationUrl": [],
+        "canonicalEndpointUrl": [],
+        "stableId": []
+      },
+      "probableSimilarities": [
+        {
+          "isMatch": false,
+          "providerAssessment": {
+            "caveat": "Wayfinder's provider is fictional and cannot be equated to this real publisher.",
+            "domainResemblance": true,
+            "okfPublisher": "Government Digital Service",
+            "wayfinderDepartment": "Digital Standards Office"
+          },
+          "rankScore": 4.23,
+          "reasons": [
+            "normalised title is identical",
+            "shared distinctive title tokens: notify",
+            "high title-string similarity",
+            "publisher resembles the public-sector domain suggested by the fictional Wayfinder department"
+          ],
+          "record": {
+            "canonical_publisher": "government-digital-service",
+            "canonical_publisher_title": "Government Digital Service",
+            "concept_id": "api-records/government-digital-service-gov-uk-notify.md",
+            "confidence": "declared",
+            "documentation": "https://www.notifications.service.gov.uk/documentation",
+            "id": "https://api.notifications.service.gov.uk/",
+            "name": "government-digital-service-gov-uk-notify",
+            "provenance": {
+              "confidence": "declared",
+              "observed_at": "2026-07-16T00:00:00Z",
+              "source": "GOV.UK API Catalogue CSV",
+              "source_adapter": "api_gov_uk_catalogue",
+              "source_repository": "co-cddo/api-catalogue",
+              "source_row": 1,
+              "source_sha256": "e69f4f044b757ced12852c5245b161fd78a39d8b465884f49688066fb0fc4535",
+              "source_tier": "declared_api_catalogue",
+              "source_url": "https://raw.githubusercontent.com/co-cddo/api-catalogue/main/data/catalogue.csv"
+            },
+            "publisher": "government-digital-service",
+            "publisher_title": "Government Digital Service",
+            "record_type": "API Product",
+            "route": "dataset/government-digital-service-gov-uk-notify",
+            "source_adapter": "api_gov_uk_catalogue",
+            "source_tier": "declared_api_catalogue",
+            "title": "GOV.UK Notify",
+            "url": "https://api.notifications.service.gov.uk/"
+          },
+          "similarityStrength": "strong",
+          "titleComparison": {
+            "coreTokenJaccard": 1.0,
+            "normalisedExact": true,
+            "sequence": 1.0,
+            "sharedCoreTokens": [
+              "notify"
+            ],
+            "tokenJaccard": 1.0
+          }
+        }
+      ],
+      "wayfinder": {
+        "canonicalDocumentation": "https://docs.demo.gov.example/notify",
+        "canonicalEndpoint": "https://api.notify.demo.gov.example/v2",
+        "departmentId": "dso",
+        "documentation": "https://docs.demo.gov.example/notify",
+        "endpoint": "https://api.notify.demo.gov.example/v2",
+        "id": "gov-notify",
+        "name": "Government Notify",
+        "teamId": "birch-notify",
+        "type": "api"
+      }
+    },
+    {
+      "decision": "no exact match",
+      "exact": {
+        "canonicalDocumentationUrl": [],
+        "canonicalEndpointUrl": [],
+        "stableId": []
+      },
+      "probableSimilarities": [],
+      "wayfinder": {
+        "canonicalDocumentation": "https://docs.demo.gov.example/notify/templates",
+        "canonicalEndpoint": "https://api.notify.demo.gov.example/templates/v1",
+        "departmentId": "dso",
+        "documentation": "https://docs.demo.gov.example/notify/templates",
+        "endpoint": "https://api.notify.demo.gov.example/templates/v1",
+        "id": "template-service",
+        "name": "Notification Template Service",
+        "teamId": "birch-notify",
+        "type": "api"
+      }
+    },
+    {
+      "decision": "no exact match",
+      "exact": {
+        "canonicalDocumentationUrl": [],
+        "canonicalEndpointUrl": [],
+        "stableId": []
+      },
+      "probableSimilarities": [],
+      "wayfinder": {
+        "canonicalDocumentation": "https://docs.demo.gov.example/notify/receipts",
+        "canonicalEndpoint": "https://api.notify.demo.gov.example/receipts/v1",
+        "departmentId": "dso",
+        "documentation": "https://docs.demo.gov.example/notify/receipts",
+        "endpoint": "https://api.notify.demo.gov.example/receipts/v1",
+        "id": "delivery-receipts",
+        "name": "Delivery Receipts API",
+        "teamId": "birch-notify",
+        "type": "api"
+      }
+    },
+    {
+      "decision": "no exact match",
+      "exact": {
+        "canonicalDocumentationUrl": [],
+        "canonicalEndpointUrl": [],
+        "stableId": []
+      },
+      "probableSimilarities": [
+        {
+          "isMatch": false,
+          "providerAssessment": {
+            "caveat": "Wayfinder's provider is fictional and cannot be equated to this real publisher.",
+            "domainResemblance": true,
+            "okfPublisher": "Government Digital Service",
+            "wayfinderDepartment": "Digital Standards Office"
+          },
+          "rankScore": 4.23,
+          "reasons": [
+            "normalised title is identical",
+            "shared distinctive title tokens: pay",
+            "high title-string similarity",
+            "publisher resembles the public-sector domain suggested by the fictional Wayfinder department"
+          ],
+          "record": {
+            "canonical_publisher": "government-digital-service",
+            "canonical_publisher_title": "Government Digital Service",
+            "concept_id": "api-records/government-digital-service-gov-uk-pay.md",
+            "confidence": "declared",
+            "documentation": "https://docs.payments.service.gov.uk/api_reference/#api-reference",
+            "id": "https://publicapi.payments.service.gov.uk/",
+            "name": "government-digital-service-gov-uk-pay",
+            "provenance": {
+              "confidence": "declared",
+              "observed_at": "2026-07-16T00:00:00Z",
+              "source": "GOV.UK API Catalogue CSV",
+              "source_adapter": "api_gov_uk_catalogue",
+              "source_repository": "co-cddo/api-catalogue",
+              "source_row": 3,
+              "source_sha256": "e69f4f044b757ced12852c5245b161fd78a39d8b465884f49688066fb0fc4535",
+              "source_tier": "declared_api_catalogue",
+              "source_url": "https://raw.githubusercontent.com/co-cddo/api-catalogue/main/data/catalogue.csv"
+            },
+            "publisher": "government-digital-service",
+            "publisher_title": "Government Digital Service",
+            "record_type": "API Product",
+            "route": "dataset/government-digital-service-gov-uk-pay",
+            "source_adapter": "api_gov_uk_catalogue",
+            "source_tier": "declared_api_catalogue",
+            "title": "GOV.UK Pay",
+            "url": "https://publicapi.payments.service.gov.uk/"
+          },
+          "similarityStrength": "strong",
+          "titleComparison": {
+            "coreTokenJaccard": 1.0,
+            "normalisedExact": true,
+            "sequence": 1.0,
+            "sharedCoreTokens": [
+              "pay"
+            ],
+            "tokenJaccard": 1.0
+          }
+        }
+      ],
+      "wayfinder": {
+        "canonicalDocumentation": "https://docs.demo.gov.example/pay",
+        "canonicalEndpoint": "https://api.pay.demo.gov.example/v1",
+        "departmentId": "dso",
+        "documentation": "https://docs.demo.gov.example/pay",
+        "endpoint": "https://api.pay.demo.gov.example/v1",
+        "id": "gov-pay",
+        "name": "Government Pay",
+        "teamId": "willow-pay",
+        "type": "api"
+      }
+    },
+    {
+      "decision": "no exact match",
+      "exact": {
+        "canonicalDocumentationUrl": [],
+        "canonicalEndpointUrl": [],
+        "stableId": []
+      },
+      "probableSimilarities": [],
+      "wayfinder": {
+        "canonicalDocumentation": "https://docs.demo.gov.example/pay/refunds",
+        "canonicalEndpoint": "https://api.pay.demo.gov.example/refunds/v1",
+        "departmentId": "dso",
+        "documentation": "https://docs.demo.gov.example/pay/refunds",
+        "endpoint": "https://api.pay.demo.gov.example/refunds/v1",
+        "id": "refund-service",
+        "name": "Refund Processing Service",
+        "teamId": "willow-pay",
+        "type": "api"
+      }
+    },
+    {
+      "decision": "no exact match",
+      "exact": {
+        "canonicalDocumentationUrl": [],
+        "canonicalEndpointUrl": [],
+        "stableId": []
+      },
+      "probableSimilarities": [],
+      "wayfinder": {
+        "canonicalDocumentation": "https://docs.demo.gov.example/pay/reconciliation",
+        "canonicalEndpoint": "https://api.pay.demo.gov.example/reconciliation/v1",
+        "departmentId": "dso",
+        "documentation": "https://docs.demo.gov.example/pay/reconciliation",
+        "endpoint": "https://api.pay.demo.gov.example/reconciliation/v1",
+        "id": "reconciliation-api",
+        "name": "Payment Reconciliation API",
+        "teamId": "willow-pay",
+        "type": "api"
+      }
+    },
+    {
+      "decision": "no exact match",
+      "exact": {
+        "canonicalDocumentationUrl": [],
+        "canonicalEndpointUrl": [],
+        "stableId": []
+      },
+      "probableSimilarities": [],
+      "wayfinder": {
+        "canonicalDocumentation": "https://docs.demo.gov.example/citizen-portal",
+        "canonicalEndpoint": "https://support.demo.gov.example/",
+        "departmentId": "dcs",
+        "documentation": "https://docs.demo.gov.example/citizen-portal",
+        "endpoint": "https://support.demo.gov.example",
+        "id": "citizen-portal",
+        "name": "Citizen Support Portal",
+        "teamId": "puffin-delivery",
+        "type": "platform"
+      }
+    },
+    {
+      "decision": "no exact match",
+      "exact": {
+        "canonicalDocumentationUrl": [],
+        "canonicalEndpointUrl": [],
+        "stableId": []
+      },
+      "probableSimilarities": [],
+      "wayfinder": {
+        "canonicalDocumentation": "https://docs.demo.gov.example/eligibility",
+        "canonicalEndpoint": "https://api.citizen-support.demo.gov.example/eligibility/v2",
+        "departmentId": "dcs",
+        "documentation": "https://docs.demo.gov.example/eligibility",
+        "endpoint": "https://api.citizen-support.demo.gov.example/eligibility/v2",
+        "id": "eligibility-api",
+        "name": "Citizen Eligibility API",
+        "teamId": "puffin-delivery",
+        "type": "api"
+      }
+    },
+    {
+      "decision": "no exact match",
+      "exact": {
+        "canonicalDocumentationUrl": [],
+        "canonicalEndpointUrl": [],
+        "stableId": []
+      },
+      "probableSimilarities": [],
+      "wayfinder": {
+        "canonicalDocumentation": "https://docs.demo.gov.example/case-management",
+        "canonicalEndpoint": "https://cases.internal.demo.gov.example/",
+        "departmentId": "dcs",
+        "documentation": "https://docs.demo.gov.example/case-management",
+        "endpoint": "https://cases.internal.demo.gov.example",
+        "id": "case-management",
+        "name": "Case Management System",
+        "teamId": "puffin-delivery",
+        "type": "platform"
+      }
+    },
+    {
+      "decision": "no exact match",
+      "exact": {
+        "canonicalDocumentationUrl": [],
+        "canonicalEndpointUrl": [],
+        "stableId": []
+      },
+      "probableSimilarities": [],
+      "wayfinder": {
+        "canonicalDocumentation": "https://docs.demo.gov.example/applications",
+        "canonicalEndpoint": "https://api.citizen-support.demo.gov.example/applications/v1",
+        "departmentId": "dcs",
+        "documentation": "https://docs.demo.gov.example/applications",
+        "endpoint": "https://api.citizen-support.demo.gov.example/applications/v1",
+        "id": "application-service",
+        "name": "Benefit Application Service",
+        "teamId": "puffin-delivery",
+        "type": "api"
+      }
+    },
+    {
+      "decision": "no exact match",
+      "exact": {
+        "canonicalDocumentationUrl": [],
+        "canonicalEndpointUrl": [],
+        "stableId": []
+      },
+      "probableSimilarities": [],
+      "wayfinder": {
+        "canonicalDocumentation": "https://docs.demo.gov.example/citizen-data",
+        "canonicalEndpoint": "https://data.internal.demo.gov.example/",
+        "departmentId": "dcs",
+        "documentation": "https://docs.demo.gov.example/citizen-data",
+        "endpoint": "https://data.internal.demo.gov.example",
+        "id": "citizen-data-platform",
+        "name": "Citizen Data Platform",
+        "teamId": "cormorant-data",
+        "type": "platform"
+      }
+    },
+    {
+      "decision": "no exact match",
+      "exact": {
+        "canonicalDocumentationUrl": [],
+        "canonicalEndpointUrl": [],
+        "stableId": []
+      },
+      "probableSimilarities": [],
+      "wayfinder": {
+        "canonicalDocumentation": "https://docs.demo.gov.example/calculation-engine",
+        "canonicalEndpoint": "https://api.citizen-support.demo.gov.example/calculations/v3",
+        "departmentId": "dcs",
+        "documentation": "https://docs.demo.gov.example/calculation-engine",
+        "endpoint": "https://api.citizen-support.demo.gov.example/calculations/v3",
+        "id": "calculation-engine",
+        "name": "Benefit Calculation Engine",
+        "teamId": "cormorant-data",
+        "type": "api"
+      }
+    },
+    {
+      "decision": "no exact match",
+      "exact": {
+        "canonicalDocumentationUrl": [],
+        "canonicalEndpointUrl": [],
+        "stableId": []
+      },
+      "probableSimilarities": [],
+      "wayfinder": {
+        "canonicalDocumentation": "https://docs.demo.gov.example/dcs-reporting",
+        "canonicalEndpoint": "https://api.citizen-support.demo.gov.example/reporting/v1",
+        "departmentId": "dcs",
+        "documentation": "https://docs.demo.gov.example/dcs-reporting",
+        "endpoint": "https://api.citizen-support.demo.gov.example/reporting/v1",
+        "id": "reporting-api",
+        "name": "DCS Reporting API",
+        "teamId": "cormorant-data",
+        "type": "api"
+      }
+    },
+    {
+      "decision": "no exact match",
+      "exact": {
+        "canonicalDocumentationUrl": [],
+        "canonicalEndpointUrl": [],
+        "stableId": []
+      },
+      "probableSimilarities": [],
+      "wayfinder": {
+        "canonicalDocumentation": "https://docs.demo.gov.example/data-quality",
+        "canonicalEndpoint": "https://api.citizen-support.demo.gov.example/data-quality/v1",
+        "departmentId": "dcs",
+        "documentation": "https://docs.demo.gov.example/data-quality",
+        "endpoint": "https://api.citizen-support.demo.gov.example/data-quality/v1",
+        "id": "data-quality-service",
+        "name": "Data Quality Service",
+        "teamId": "cormorant-data",
+        "type": "api"
+      }
+    },
+    {
+      "decision": "no exact match",
+      "exact": {
+        "canonicalDocumentationUrl": [],
+        "canonicalEndpointUrl": [],
+        "stableId": []
+      },
+      "probableSimilarities": [],
+      "wayfinder": {
+        "canonicalDocumentation": "https://docs.demo.gov.example/dcs-platform",
+        "canonicalEndpoint": null,
+        "departmentId": "dcs",
+        "documentation": "https://docs.demo.gov.example/dcs-platform",
+        "endpoint": null,
+        "id": "dcs-platform",
+        "name": "DCS Hosting Platform",
+        "teamId": "gannet-platform",
+        "type": "platform"
+      }
+    },
+    {
+      "decision": "no exact match",
+      "exact": {
+        "canonicalDocumentationUrl": [],
+        "canonicalEndpointUrl": [],
+        "stableId": []
+      },
+      "probableSimilarities": [],
+      "wayfinder": {
+        "canonicalDocumentation": "https://docs.demo.gov.example/dcs-monitoring",
+        "canonicalEndpoint": null,
+        "departmentId": "dcs",
+        "documentation": "https://docs.demo.gov.example/dcs-monitoring",
+        "endpoint": null,
+        "id": "monitoring-stack",
+        "name": "DCS Monitoring Stack",
+        "teamId": "gannet-platform",
+        "type": "platform"
+      }
+    },
+    {
+      "decision": "no exact match",
+      "exact": {
+        "canonicalDocumentationUrl": [],
+        "canonicalEndpointUrl": [],
+        "stableId": []
+      },
+      "probableSimilarities": [],
+      "wayfinder": {
+        "canonicalDocumentation": "https://docs.demo.gov.example/dcs-cicd",
+        "canonicalEndpoint": null,
+        "departmentId": "dcs",
+        "documentation": "https://docs.demo.gov.example/dcs-cicd",
+        "endpoint": null,
+        "id": "ci-cd-service",
+        "name": "DCS CI/CD Service",
+        "teamId": "gannet-platform",
+        "type": "platform"
+      }
+    },
+    {
+      "decision": "no exact match",
+      "exact": {
+        "canonicalDocumentationUrl": [],
+        "canonicalEndpointUrl": [],
+        "stableId": []
+      },
+      "probableSimilarities": [],
+      "wayfinder": {
+        "canonicalDocumentation": "https://docs.demo.gov.example/integration-hub",
+        "canonicalEndpoint": "https://integration.citizen-support.demo.gov.example/",
+        "departmentId": "dcs",
+        "documentation": "https://docs.demo.gov.example/integration-hub",
+        "endpoint": "https://integration.citizen-support.demo.gov.example",
+        "id": "integration-hub",
+        "name": "DCS Integration Hub",
+        "teamId": "tern-integration",
+        "type": "platform"
+      }
+    },
+    {
+      "decision": "no exact match",
+      "exact": {
+        "canonicalDocumentationUrl": [],
+        "canonicalEndpointUrl": [],
+        "stableId": []
+      },
+      "probableSimilarities": [],
+      "wayfinder": {
+        "canonicalDocumentation": "https://docs.demo.gov.example/partner-gateway",
+        "canonicalEndpoint": "https://partners.citizen-support.demo.gov.example/api/v1",
+        "departmentId": "dcs",
+        "documentation": "https://docs.demo.gov.example/partner-gateway",
+        "endpoint": "https://partners.citizen-support.demo.gov.example/api/v1",
+        "id": "partner-gateway",
+        "name": "Partner Gateway",
+        "teamId": "tern-integration",
+        "type": "api"
+      }
+    },
+    {
+      "decision": "no exact match",
+      "exact": {
+        "canonicalDocumentationUrl": [],
+        "canonicalEndpointUrl": [],
+        "stableId": []
+      },
+      "probableSimilarities": [],
+      "wayfinder": {
+        "canonicalDocumentation": "https://docs.demo.gov.example/data-exchange",
+        "canonicalEndpoint": "https://api.citizen-support.demo.gov.example/exchange/v2",
+        "departmentId": "dcs",
+        "documentation": "https://docs.demo.gov.example/data-exchange",
+        "endpoint": "https://api.citizen-support.demo.gov.example/exchange/v2",
+        "id": "data-exchange-api",
+        "name": "Cross-Department Data Exchange",
+        "teamId": "tern-integration",
+        "type": "api"
+      }
+    },
+    {
+      "decision": "no exact match",
+      "exact": {
+        "canonicalDocumentationUrl": [],
+        "canonicalEndpointUrl": [],
+        "stableId": []
+      },
+      "probableSimilarities": [],
+      "wayfinder": {
+        "canonicalDocumentation": "https://docs.demo.gov.example/tax-calculation",
+        "canonicalEndpoint": "https://api.revenue.demo.gov.example/calculations/v3",
+        "departmentId": "rts",
+        "documentation": "https://docs.demo.gov.example/tax-calculation",
+        "endpoint": "https://api.revenue.demo.gov.example/calculations/v3",
+        "id": "tax-calculation-engine",
+        "name": "Tax Calculation Engine",
+        "teamId": "falcon-core",
+        "type": "api"
+      }
+    },
+    {
+      "decision": "no exact match",
+      "exact": {
+        "canonicalDocumentationUrl": [],
+        "canonicalEndpointUrl": [],
+        "stableId": []
+      },
+      "probableSimilarities": [],
+      "wayfinder": {
+        "canonicalDocumentation": "https://docs.demo.gov.example/assessment",
+        "canonicalEndpoint": "https://api.revenue.demo.gov.example/assessment/v2",
+        "departmentId": "rts",
+        "documentation": "https://docs.demo.gov.example/assessment",
+        "endpoint": "https://api.revenue.demo.gov.example/assessment/v2",
+        "id": "assessment-service",
+        "name": "Tax Assessment Service",
+        "teamId": "falcon-core",
+        "type": "api"
+      }
+    },
+    {
+      "decision": "no exact match",
+      "exact": {
+        "canonicalDocumentationUrl": [],
+        "canonicalEndpointUrl": [],
+        "stableId": []
+      },
+      "probableSimilarities": [],
+      "wayfinder": {
+        "canonicalDocumentation": "https://docs.demo.gov.example/tax-account",
+        "canonicalEndpoint": "https://api.revenue.demo.gov.example/accounts/v2",
+        "departmentId": "rts",
+        "documentation": "https://docs.demo.gov.example/tax-account",
+        "endpoint": "https://api.revenue.demo.gov.example/accounts/v2",
+        "id": "tax-account-api",
+        "name": "Tax Account API",
+        "teamId": "falcon-core",
+        "type": "api"
+      }
+    },
+    {
+      "decision": "no exact match",
+      "exact": {
+        "canonicalDocumentationUrl": [],
+        "canonicalEndpointUrl": [],
+        "stableId": []
+      },
+      "probableSimilarities": [],
+      "wayfinder": {
+        "canonicalDocumentation": "https://docs.demo.gov.example/payment-allocation",
+        "canonicalEndpoint": "https://api.revenue.demo.gov.example/allocation/v1",
+        "departmentId": "rts",
+        "documentation": "https://docs.demo.gov.example/payment-allocation",
+        "endpoint": "https://api.revenue.demo.gov.example/allocation/v1",
+        "id": "payment-allocation",
+        "name": "Payment Allocation Service",
+        "teamId": "falcon-core",
+        "type": "api"
+      }
+    },
+    {
+      "decision": "no exact match",
+      "exact": {
+        "canonicalDocumentationUrl": [],
+        "canonicalEndpointUrl": [],
+        "stableId": []
+      },
+      "probableSimilarities": [],
+      "wayfinder": {
+        "canonicalDocumentation": "https://docs.demo.gov.example/income-verification",
+        "canonicalEndpoint": "https://api.revenue.demo.gov.example/income/v2",
+        "departmentId": "rts",
+        "documentation": "https://docs.demo.gov.example/income-verification",
+        "endpoint": "https://api.revenue.demo.gov.example/income/v2",
+        "id": "income-verification-api",
+        "name": "Income Verification API",
+        "teamId": "kestrel-api",
+        "type": "api"
+      }
+    },
+    {
+      "decision": "no exact match",
+      "exact": {
+        "canonicalDocumentationUrl": [],
+        "canonicalEndpointUrl": [],
+        "stableId": []
+      },
+      "probableSimilarities": [],
+      "wayfinder": {
+        "canonicalDocumentation": "https://docs.demo.gov.example/employer-api",
+        "canonicalEndpoint": "https://api.revenue.demo.gov.example/employer/v3",
+        "departmentId": "rts",
+        "documentation": "https://docs.demo.gov.example/employer-api",
+        "endpoint": "https://api.revenue.demo.gov.example/employer/v3",
+        "id": "employer-api",
+        "name": "Employer Services API",
+        "teamId": "kestrel-api",
+        "type": "api"
+      }
+    },
+    {
+      "decision": "no exact match",
+      "exact": {
+        "canonicalDocumentationUrl": [],
+        "canonicalEndpointUrl": [],
+        "stableId": []
+      },
+      "probableSimilarities": [],
+      "wayfinder": {
+        "canonicalDocumentation": "https://docs.demo.gov.example/agent-services",
+        "canonicalEndpoint": "https://api.revenue.demo.gov.example/agents/v2",
+        "departmentId": "rts",
+        "documentation": "https://docs.demo.gov.example/agent-services",
+        "endpoint": "https://api.revenue.demo.gov.example/agents/v2",
+        "id": "agent-services-api",
+        "name": "Agent Services API",
+        "teamId": "kestrel-api",
+        "type": "api"
+      }
+    },
+    {
+      "decision": "no exact match",
+      "exact": {
+        "canonicalDocumentationUrl": [],
+        "canonicalEndpointUrl": [],
+        "stableId": []
+      },
+      "probableSimilarities": [],
+      "wayfinder": {
+        "canonicalDocumentation": "https://developer.revenue.demo.gov.example/",
+        "canonicalEndpoint": "https://developer.revenue.demo.gov.example/",
+        "departmentId": "rts",
+        "documentation": "https://developer.revenue.demo.gov.example",
+        "endpoint": "https://developer.revenue.demo.gov.example",
+        "id": "rts-developer-portal",
+        "name": "RTS Developer Portal",
+        "teamId": "kestrel-api",
+        "type": "platform"
+      }
+    },
+    {
+      "decision": "no exact match",
+      "exact": {
+        "canonicalDocumentationUrl": [],
+        "canonicalEndpointUrl": [],
+        "stableId": []
+      },
+      "probableSimilarities": [],
+      "wayfinder": {
+        "canonicalDocumentation": "https://docs.demo.gov.example/rts-data-lake",
+        "canonicalEndpoint": null,
+        "departmentId": "rts",
+        "documentation": "https://docs.demo.gov.example/rts-data-lake",
+        "endpoint": null,
+        "id": "rts-data-lake",
+        "name": "RTS Data Lake",
+        "teamId": "merlin-data",
+        "type": "platform"
+      }
+    },
+    {
+      "decision": "no exact match",
+      "exact": {
+        "canonicalDocumentationUrl": [],
+        "canonicalEndpointUrl": [],
+        "stableId": []
+      },
+      "probableSimilarities": [],
+      "wayfinder": {
+        "canonicalDocumentation": "https://docs.demo.gov.example/rti-processor",
+        "canonicalEndpoint": null,
+        "departmentId": "rts",
+        "documentation": "https://docs.demo.gov.example/rti-processor",
+        "endpoint": null,
+        "id": "rti-processor",
+        "name": "Real-Time Information Processor",
+        "teamId": "merlin-data",
+        "type": "event-stream"
+      }
+    },
+    {
+      "decision": "no exact match",
+      "exact": {
+        "canonicalDocumentationUrl": [],
+        "canonicalEndpointUrl": [],
+        "stableId": []
+      },
+      "probableSimilarities": [],
+      "wayfinder": {
+        "canonicalDocumentation": "https://docs.demo.gov.example/rts-analytics",
+        "canonicalEndpoint": null,
+        "departmentId": "rts",
+        "documentation": "https://docs.demo.gov.example/rts-analytics",
+        "endpoint": null,
+        "id": "analytics-platform",
+        "name": "RTS Analytics Platform",
+        "teamId": "merlin-data",
+        "type": "platform"
+      }
+    },
+    {
+      "decision": "no exact match",
+      "exact": {
+        "canonicalDocumentationUrl": [],
+        "canonicalEndpointUrl": [],
+        "stableId": []
+      },
+      "probableSimilarities": [],
+      "wayfinder": {
+        "canonicalDocumentation": "https://docs.demo.gov.example/data-governance",
+        "canonicalEndpoint": null,
+        "departmentId": "rts",
+        "documentation": "https://docs.demo.gov.example/data-governance",
+        "endpoint": null,
+        "id": "data-governance-tools",
+        "name": "Data Governance Toolkit",
+        "teamId": "merlin-data",
+        "type": "platform"
+      }
+    },
+    {
+      "decision": "no exact match",
+      "exact": {
+        "canonicalDocumentationUrl": [],
+        "canonicalEndpointUrl": [],
+        "stableId": []
+      },
+      "probableSimilarities": [],
+      "wayfinder": {
+        "canonicalDocumentation": "https://docs.demo.gov.example/fraud-detection",
+        "canonicalEndpoint": "https://api.revenue.demo.gov.example/fraud/v2",
+        "departmentId": "rts",
+        "documentation": "https://docs.demo.gov.example/fraud-detection",
+        "endpoint": "https://api.revenue.demo.gov.example/fraud/v2",
+        "id": "fraud-detection-api",
+        "name": "Fraud Detection API",
+        "teamId": "osprey-compliance",
+        "type": "api"
+      }
+    },
+    {
+      "decision": "no exact match",
+      "exact": {
+        "canonicalDocumentationUrl": [],
+        "canonicalEndpointUrl": [],
+        "stableId": []
+      },
+      "probableSimilarities": [],
+      "wayfinder": {
+        "canonicalDocumentation": "https://docs.demo.gov.example/risk-scoring",
+        "canonicalEndpoint": "https://api.revenue.demo.gov.example/risk/v1",
+        "departmentId": "rts",
+        "documentation": "https://docs.demo.gov.example/risk-scoring",
+        "endpoint": "https://api.revenue.demo.gov.example/risk/v1",
+        "id": "risk-scoring-service",
+        "name": "Risk Scoring Service",
+        "teamId": "osprey-compliance",
+        "type": "api"
+      }
+    },
+    {
+      "decision": "no exact match",
+      "exact": {
+        "canonicalDocumentationUrl": [],
+        "canonicalEndpointUrl": [],
+        "stableId": []
+      },
+      "probableSimilarities": [],
+      "wayfinder": {
+        "canonicalDocumentation": "https://docs.demo.gov.example/compliance-rules",
+        "canonicalEndpoint": "https://api.revenue.demo.gov.example/compliance/v1",
+        "departmentId": "rts",
+        "documentation": "https://docs.demo.gov.example/compliance-rules",
+        "endpoint": "https://api.revenue.demo.gov.example/compliance/v1",
+        "id": "compliance-rules-engine",
+        "name": "Compliance Rules Engine",
+        "teamId": "osprey-compliance",
+        "type": "api"
+      }
+    },
+    {
+      "decision": "no exact match",
+      "exact": {
+        "canonicalDocumentationUrl": [],
+        "canonicalEndpointUrl": [],
+        "stableId": []
+      },
+      "probableSimilarities": [],
+      "wayfinder": {
+        "canonicalDocumentation": "https://docs.demo.gov.example/identity-verification",
+        "canonicalEndpoint": "https://api.identity.demo.gov.example/verify/v2",
+        "departmentId": "bia",
+        "documentation": "https://docs.demo.gov.example/identity-verification",
+        "endpoint": "https://api.identity.demo.gov.example/verify/v2",
+        "id": "identity-verification-api",
+        "name": "Identity Verification API",
+        "teamId": "wolf-identity",
+        "type": "api"
+      }
+    },
+    {
+      "decision": "no exact match",
+      "exact": {
+        "canonicalDocumentationUrl": [],
+        "canonicalEndpointUrl": [],
+        "stableId": []
+      },
+      "probableSimilarities": [],
+      "wayfinder": {
+        "canonicalDocumentation": "https://docs.demo.gov.example/document-check",
+        "canonicalEndpoint": "https://api.identity.demo.gov.example/documents/v2",
+        "departmentId": "bia",
+        "documentation": "https://docs.demo.gov.example/document-check",
+        "endpoint": "https://api.identity.demo.gov.example/documents/v2",
+        "id": "document-check-service",
+        "name": "Document Checking Service",
+        "teamId": "wolf-identity",
+        "type": "api"
+      }
+    },
+    {
+      "decision": "no exact match",
+      "exact": {
+        "canonicalDocumentationUrl": [],
+        "canonicalEndpointUrl": [],
+        "stableId": []
+      },
+      "probableSimilarities": [],
+      "wayfinder": {
+        "canonicalDocumentation": "https://docs.demo.gov.example/id-proofing",
+        "canonicalEndpoint": "https://api.identity.demo.gov.example/proofing/v1",
+        "departmentId": "bia",
+        "documentation": "https://docs.demo.gov.example/id-proofing",
+        "endpoint": "https://api.identity.demo.gov.example/proofing/v1",
+        "id": "id-proofing-service",
+        "name": "Identity Proofing Service",
+        "teamId": "wolf-identity",
+        "type": "api"
+      }
+    },
+    {
+      "decision": "no exact match",
+      "exact": {
+        "canonicalDocumentationUrl": [],
+        "canonicalEndpointUrl": [],
+        "stableId": []
+      },
+      "probableSimilarities": [],
+      "wayfinder": {
+        "canonicalDocumentation": "https://docs.demo.gov.example/border-control",
+        "canonicalEndpoint": "https://api.border.demo.gov.example/control/v3",
+        "departmentId": "bia",
+        "documentation": "https://docs.demo.gov.example/border-control",
+        "endpoint": "https://api.border.demo.gov.example/control/v3",
+        "id": "border-control-api",
+        "name": "Border Control API",
+        "teamId": "bear-border",
+        "type": "api"
+      }
+    },
+    {
+      "decision": "no exact match",
+      "exact": {
+        "canonicalDocumentationUrl": [],
+        "canonicalEndpointUrl": [],
+        "stableId": []
+      },
+      "probableSimilarities": [],
+      "wayfinder": {
+        "canonicalDocumentation": "https://docs.demo.gov.example/api",
+        "canonicalEndpoint": "https://api.border.demo.gov.example/api/v2",
+        "departmentId": "bia",
+        "documentation": "https://docs.demo.gov.example/api",
+        "endpoint": "https://api.border.demo.gov.example/api/v2",
+        "id": "advance-passenger-info",
+        "name": "Advance Passenger Information",
+        "teamId": "bear-border",
+        "type": "event-stream"
+      }
+    },
+    {
+      "decision": "no exact match",
+      "exact": {
+        "canonicalDocumentationUrl": [],
+        "canonicalEndpointUrl": [],
+        "stableId": []
+      },
+      "probableSimilarities": [],
+      "wayfinder": {
+        "canonicalDocumentation": "https://docs.demo.gov.example/watchlist",
+        "canonicalEndpoint": "https://api.border.demo.gov.example/watchlist/v2",
+        "departmentId": "bia",
+        "documentation": "https://docs.demo.gov.example/watchlist",
+        "endpoint": "https://api.border.demo.gov.example/watchlist/v2",
+        "id": "watchlist-service",
+        "name": "Watchlist Checking Service",
+        "teamId": "bear-border",
+        "type": "api"
+      }
+    },
+    {
+      "decision": "no exact match",
+      "exact": {
+        "canonicalDocumentationUrl": [],
+        "canonicalEndpointUrl": [],
+        "stableId": []
+      },
+      "probableSimilarities": [],
+      "wayfinder": {
+        "canonicalDocumentation": "https://docs.demo.gov.example/egates",
+        "canonicalEndpoint": "https://api.border.demo.gov.example/egates/v1",
+        "departmentId": "bia",
+        "documentation": "https://docs.demo.gov.example/egates",
+        "endpoint": "https://api.border.demo.gov.example/egates/v1",
+        "id": "egate-service",
+        "name": "E-Gate Integration Service",
+        "teamId": "bear-border",
+        "type": "api"
+      }
+    },
+    {
+      "decision": "no exact match",
+      "exact": {
+        "canonicalDocumentationUrl": [],
+        "canonicalEndpointUrl": [],
+        "stableId": []
+      },
+      "probableSimilarities": [],
+      "wayfinder": {
+        "canonicalDocumentation": "https://docs.demo.gov.example/passport-application",
+        "canonicalEndpoint": "https://api.identity.demo.gov.example/passport/v2",
+        "departmentId": "bia",
+        "documentation": "https://docs.demo.gov.example/passport-application",
+        "endpoint": "https://api.identity.demo.gov.example/passport/v2",
+        "id": "passport-application-api",
+        "name": "Passport Application API",
+        "teamId": "lynx-documents",
+        "type": "api"
+      }
+    },
+    {
+      "decision": "no exact match",
+      "exact": {
+        "canonicalDocumentationUrl": [],
+        "canonicalEndpointUrl": [],
+        "stableId": []
+      },
+      "probableSimilarities": [],
+      "wayfinder": {
+        "canonicalDocumentation": "https://docs.demo.gov.example/visa-status",
+        "canonicalEndpoint": "https://api.identity.demo.gov.example/visa/v2",
+        "departmentId": "bia",
+        "documentation": "https://docs.demo.gov.example/visa-status",
+        "endpoint": "https://api.identity.demo.gov.example/visa/v2",
+        "id": "visa-status-api",
+        "name": "Visa Status API",
+        "teamId": "lynx-documents",
+        "type": "api"
+      }
+    },
+    {
+      "decision": "no exact match",
+      "exact": {
+        "canonicalDocumentationUrl": [],
+        "canonicalEndpointUrl": [],
+        "stableId": []
+      },
+      "probableSimilarities": [],
+      "wayfinder": {
+        "canonicalDocumentation": "https://docs.demo.gov.example/right-to-work",
+        "canonicalEndpoint": "https://api.identity.demo.gov.example/rtw/v2",
+        "departmentId": "bia",
+        "documentation": "https://docs.demo.gov.example/right-to-work",
+        "endpoint": "https://api.identity.demo.gov.example/rtw/v2",
+        "id": "right-to-work-api",
+        "name": "Right to Work Check API",
+        "teamId": "lynx-documents",
+        "type": "api"
+      }
+    },
+    {
+      "decision": "no exact match",
+      "exact": {
+        "canonicalDocumentationUrl": [],
+        "canonicalEndpointUrl": [],
+        "stableId": []
+      },
+      "probableSimilarities": [],
+      "wayfinder": {
+        "canonicalDocumentation": "https://docs.demo.gov.example/right-to-rent",
+        "canonicalEndpoint": "https://api.identity.demo.gov.example/rtr/v1",
+        "departmentId": "bia",
+        "documentation": "https://docs.demo.gov.example/right-to-rent",
+        "endpoint": "https://api.identity.demo.gov.example/rtr/v1",
+        "id": "right-to-rent-api",
+        "name": "Right to Rent Check API",
+        "teamId": "lynx-documents",
+        "type": "api"
+      }
+    },
+    {
+      "decision": "no exact match",
+      "exact": {
+        "canonicalDocumentationUrl": [],
+        "canonicalEndpointUrl": [],
+        "stableId": []
+      },
+      "probableSimilarities": [],
+      "wayfinder": {
+        "canonicalDocumentation": "https://docs.demo.gov.example/document-issuance",
+        "canonicalEndpoint": "https://api.identity.demo.gov.example/issuance/v1",
+        "departmentId": "bia",
+        "documentation": "https://docs.demo.gov.example/document-issuance",
+        "endpoint": "https://api.identity.demo.gov.example/issuance/v1",
+        "id": "document-issuance",
+        "name": "Document Issuance Service",
+        "teamId": "lynx-documents",
+        "type": "api"
+      }
+    },
+    {
+      "decision": "no exact match",
+      "exact": {
+        "canonicalDocumentationUrl": [],
+        "canonicalEndpointUrl": [],
+        "stableId": []
+      },
+      "probableSimilarities": [],
+      "wayfinder": {
+        "canonicalDocumentation": "https://docs.demo.gov.example/biometric-matching",
+        "canonicalEndpoint": "https://api.biometrics.demo.gov.example/match/v2",
+        "departmentId": "bia",
+        "documentation": "https://docs.demo.gov.example/biometric-matching",
+        "endpoint": "https://api.biometrics.demo.gov.example/match/v2",
+        "id": "biometric-matching-api",
+        "name": "Biometric Matching API",
+        "teamId": "fox-biometrics",
+        "type": "api"
+      }
+    },
+    {
+      "decision": "no exact match",
+      "exact": {
+        "canonicalDocumentationUrl": [],
+        "canonicalEndpointUrl": [],
+        "stableId": []
+      },
+      "probableSimilarities": [],
+      "wayfinder": {
+        "canonicalDocumentation": "https://docs.demo.gov.example/facial-recognition",
+        "canonicalEndpoint": "https://api.biometrics.demo.gov.example/face/v2",
+        "departmentId": "bia",
+        "documentation": "https://docs.demo.gov.example/facial-recognition",
+        "endpoint": "https://api.biometrics.demo.gov.example/face/v2",
+        "id": "facial-recognition-service",
+        "name": "Facial Recognition Service",
+        "teamId": "fox-biometrics",
+        "type": "api"
+      }
+    },
+    {
+      "decision": "no exact match",
+      "exact": {
+        "canonicalDocumentationUrl": [],
+        "canonicalEndpointUrl": [],
+        "stableId": []
+      },
+      "probableSimilarities": [],
+      "wayfinder": {
+        "canonicalDocumentation": "https://docs.demo.gov.example/biometric-enrolment",
+        "canonicalEndpoint": "https://api.biometrics.demo.gov.example/enrol/v1",
+        "departmentId": "bia",
+        "documentation": "https://docs.demo.gov.example/biometric-enrolment",
+        "endpoint": "https://api.biometrics.demo.gov.example/enrol/v1",
+        "id": "biometric-enrolment",
+        "name": "Biometric Enrolment Service",
+        "teamId": "fox-biometrics",
+        "type": "api"
+      }
+    },
+    {
+      "decision": "no exact match",
+      "exact": {
+        "canonicalDocumentationUrl": [],
+        "canonicalEndpointUrl": [],
+        "stableId": []
+      },
+      "probableSimilarities": [],
+      "wayfinder": {
+        "canonicalDocumentation": "https://docs.demo.gov.example/vehicle-register",
+        "canonicalEndpoint": "https://api.vehicles.demo.gov.example/register/v3",
+        "departmentId": "vla",
+        "documentation": "https://docs.demo.gov.example/vehicle-register",
+        "endpoint": "https://api.vehicles.demo.gov.example/register/v3",
+        "id": "vehicle-register-api",
+        "name": "Vehicle Register API",
+        "teamId": "badger-registry",
+        "type": "api"
+      }
+    },
+    {
+      "decision": "no exact match",
+      "exact": {
+        "canonicalDocumentationUrl": [],
+        "canonicalEndpointUrl": [],
+        "stableId": []
+      },
+      "probableSimilarities": [],
+      "wayfinder": {
+        "canonicalDocumentation": "https://docs.demo.gov.example/keeper-records",
+        "canonicalEndpoint": "https://api.vehicles.demo.gov.example/keepers/v2",
+        "departmentId": "vla",
+        "documentation": "https://docs.demo.gov.example/keeper-records",
+        "endpoint": "https://api.vehicles.demo.gov.example/keepers/v2",
+        "id": "keeper-records-api",
+        "name": "Keeper Records API",
+        "teamId": "badger-registry",
+        "type": "api"
+      }
+    },
+    {
+      "decision": "no exact match",
+      "exact": {
+        "canonicalDocumentationUrl": [],
+        "canonicalEndpointUrl": [],
+        "stableId": []
+      },
+      "probableSimilarities": [],
+      "wayfinder": {
+        "canonicalDocumentation": "https://docs.demo.gov.example/vehicle-history",
+        "canonicalEndpoint": "https://api.vehicles.demo.gov.example/history/v2",
+        "departmentId": "vla",
+        "documentation": "https://docs.demo.gov.example/vehicle-history",
+        "endpoint": "https://api.vehicles.demo.gov.example/history/v2",
+        "id": "vehicle-history-service",
+        "name": "Vehicle History Service",
+        "teamId": "badger-registry",
+        "type": "api"
+      }
+    },
+    {
+      "decision": "no exact match",
+      "exact": {
+        "canonicalDocumentationUrl": [],
+        "canonicalEndpointUrl": [],
+        "stableId": []
+      },
+      "probableSimilarities": [],
+      "wayfinder": {
+        "canonicalDocumentation": "https://docs.demo.gov.example/trade-api",
+        "canonicalEndpoint": "https://api.vehicles.demo.gov.example/trade/v2",
+        "departmentId": "vla",
+        "documentation": "https://docs.demo.gov.example/trade-api",
+        "endpoint": "https://api.vehicles.demo.gov.example/trade/v2",
+        "id": "trade-api",
+        "name": "Motor Trade API",
+        "teamId": "badger-registry",
+        "type": "api"
+      }
+    },
+    {
+      "decision": "no exact match",
+      "exact": {
+        "canonicalDocumentationUrl": [],
+        "canonicalEndpointUrl": [],
+        "stableId": []
+      },
+      "probableSimilarities": [],
+      "wayfinder": {
+        "canonicalDocumentation": "https://docs.demo.gov.example/licence-application",
+        "canonicalEndpoint": "https://api.vehicles.demo.gov.example/licence/v2",
+        "departmentId": "vla",
+        "documentation": "https://docs.demo.gov.example/licence-application",
+        "endpoint": "https://api.vehicles.demo.gov.example/licence/v2",
+        "id": "licence-application-api",
+        "name": "Licence Application API",
+        "teamId": "otter-licensing",
+        "type": "api"
+      }
+    },
+    {
+      "decision": "no exact match",
+      "exact": {
+        "canonicalDocumentationUrl": [],
+        "canonicalEndpointUrl": [],
+        "stableId": []
+      },
+      "probableSimilarities": [],
+      "wayfinder": {
+        "canonicalDocumentation": "https://docs.demo.gov.example/entitlement-check",
+        "canonicalEndpoint": "https://api.vehicles.demo.gov.example/entitlement/v2",
+        "departmentId": "vla",
+        "documentation": "https://docs.demo.gov.example/entitlement-check",
+        "endpoint": "https://api.vehicles.demo.gov.example/entitlement/v2",
+        "id": "entitlement-check-api",
+        "name": "Driving Entitlement Check API",
+        "teamId": "otter-licensing",
+        "type": "api"
+      }
+    },
+    {
+      "decision": "no exact match",
+      "exact": {
+        "canonicalDocumentationUrl": [],
+        "canonicalEndpointUrl": [],
+        "stableId": []
+      },
+      "probableSimilarities": [],
+      "wayfinder": {
+        "canonicalDocumentation": "https://docs.demo.gov.example/penalty-points",
+        "canonicalEndpoint": "https://api.vehicles.demo.gov.example/points/v1",
+        "departmentId": "vla",
+        "documentation": "https://docs.demo.gov.example/penalty-points",
+        "endpoint": "https://api.vehicles.demo.gov.example/points/v1",
+        "id": "penalty-points-api",
+        "name": "Penalty Points API",
+        "teamId": "otter-licensing",
+        "type": "api"
+      }
+    },
+    {
+      "decision": "no exact match",
+      "exact": {
+        "canonicalDocumentationUrl": [],
+        "canonicalEndpointUrl": [],
+        "stableId": []
+      },
+      "probableSimilarities": [],
+      "wayfinder": {
+        "canonicalDocumentation": "https://docs.demo.gov.example/medical-fitness",
+        "canonicalEndpoint": "https://api.vehicles.demo.gov.example/medical/v1",
+        "departmentId": "vla",
+        "documentation": "https://docs.demo.gov.example/medical-fitness",
+        "endpoint": "https://api.vehicles.demo.gov.example/medical/v1",
+        "id": "medical-fitness-api",
+        "name": "Medical Fitness API",
+        "teamId": "otter-licensing",
+        "type": "api"
+      }
+    },
+    {
+      "decision": "no exact match",
+      "exact": {
+        "canonicalDocumentationUrl": [],
+        "canonicalEndpointUrl": [],
+        "stableId": []
+      },
+      "probableSimilarities": [
+        {
+          "isMatch": false,
+          "providerAssessment": {
+            "caveat": "Wayfinder's provider is fictional and cannot be equated to this real publisher.",
+            "domainResemblance": true,
+            "okfPublisher": "Driver And Vehicle Licensing Agency",
+            "wayfinderDepartment": "Vehicle & Licensing Authority"
+          },
+          "rankScore": 2.1001,
+          "reasons": [
+            "shared distinctive title tokens: enquiry, vehicle",
+            "publisher resembles the public-sector domain suggested by the fictional Wayfinder department"
+          ],
+          "record": {
+            "canonical_publisher": "driver-and-vehicle-licensing-agency",
+            "canonical_publisher_title": "Driver And Vehicle Licensing Agency",
+            "concept_id": "api-records/driver-and-vehicle-licensing-agency-dvla-vehicle-enquiry-service.md",
+            "confidence": "declared",
+            "documentation": "https://developer-portal.driver-vehicle-licensing.api.gov.uk/apis/vehicle-enquiry-service/vehicle-enquiry-service-description.html",
+            "id": "https://driver-vehicle-licensing.api.gov.uk/vehicle-enquiry",
+            "name": "driver-and-vehicle-licensing-agency-dvla-vehicle-enquiry-service",
+            "provenance": {
+              "confidence": "declared",
+              "observed_at": "2026-07-16T00:00:00Z",
+              "source": "GOV.UK API Catalogue CSV",
+              "source_adapter": "api_gov_uk_catalogue",
+              "source_repository": "co-cddo/api-catalogue",
+              "source_row": 10,
+              "source_sha256": "e69f4f044b757ced12852c5245b161fd78a39d8b465884f49688066fb0fc4535",
+              "source_tier": "declared_api_catalogue",
+              "source_url": "https://raw.githubusercontent.com/co-cddo/api-catalogue/main/data/catalogue.csv"
+            },
+            "publisher": "driver-and-vehicle-licensing-agency",
+            "publisher_title": "Driver And Vehicle Licensing Agency",
+            "record_type": "API Product",
+            "route": "dataset/driver-and-vehicle-licensing-agency-dvla-vehicle-enquiry-service",
+            "source_adapter": "api_gov_uk_catalogue",
+            "source_tier": "declared_api_catalogue",
+            "title": "DVLA Vehicle Enquiry Service",
+            "url": "https://driver-vehicle-licensing.api.gov.uk/vehicle-enquiry"
+          },
+          "similarityStrength": "moderate",
+          "titleComparison": {
+            "coreTokenJaccard": 0.6667,
+            "normalisedExact": false,
+            "sequence": 0.7234,
+            "sharedCoreTokens": [
+              "enquiry",
+              "vehicle"
+            ],
+            "tokenJaccard": 0.4
+          }
+        }
+      ],
+      "wayfinder": {
+        "canonicalDocumentation": "https://docs.demo.gov.example/vehicle-enquiry",
+        "canonicalEndpoint": "https://api.vehicles.demo.gov.example/enquiry/v1",
+        "departmentId": "vla",
+        "documentation": "https://docs.demo.gov.example/vehicle-enquiry",
+        "endpoint": "https://api.vehicles.demo.gov.example/enquiry/v1",
+        "id": "vehicle-enquiry-api",
+        "name": "Vehicle Enquiry API",
+        "teamId": "hare-enquiries",
+        "type": "api"
+      }
+    },
+    {
+      "decision": "no exact match",
+      "exact": {
+        "canonicalDocumentationUrl": [],
+        "canonicalEndpointUrl": [],
+        "stableId": []
+      },
+      "probableSimilarities": [],
+      "wayfinder": {
+        "canonicalDocumentation": "https://docs.demo.gov.example/driver-lookup",
+        "canonicalEndpoint": "https://api.vehicles.demo.gov.example/driver/v2",
+        "departmentId": "vla",
+        "documentation": "https://docs.demo.gov.example/driver-lookup",
+        "endpoint": "https://api.vehicles.demo.gov.example/driver/v2",
+        "id": "driver-lookup-api",
+        "name": "Driver Lookup API",
+        "teamId": "hare-enquiries",
+        "type": "api"
+      }
+    },
+    {
+      "decision": "no exact match",
+      "exact": {
+        "canonicalDocumentationUrl": [],
+        "canonicalEndpointUrl": [],
+        "stableId": []
+      },
+      "probableSimilarities": [],
+      "wayfinder": {
+        "canonicalDocumentation": "https://docs.demo.gov.example/insurance-feed",
+        "canonicalEndpoint": null,
+        "departmentId": "vla",
+        "documentation": "https://docs.demo.gov.example/insurance-feed",
+        "endpoint": null,
+        "id": "insurance-industry-feed",
+        "name": "Insurance Industry Data Feed",
+        "teamId": "hare-enquiries",
+        "type": "event-stream"
+      }
+    },
+    {
+      "decision": "no exact match",
+      "exact": {
+        "canonicalDocumentationUrl": [],
+        "canonicalEndpointUrl": [],
+        "stableId": []
+      },
+      "probableSimilarities": [],
+      "wayfinder": {
+        "canonicalDocumentation": "https://docs.demo.gov.example/police-enquiry",
+        "canonicalEndpoint": "https://api.vehicles.demo.gov.example/police/v2",
+        "departmentId": "vla",
+        "documentation": "https://docs.demo.gov.example/police-enquiry",
+        "endpoint": "https://api.vehicles.demo.gov.example/police/v2",
+        "id": "police-enquiry-api",
+        "name": "Police National Computer Link",
+        "teamId": "hare-enquiries",
+        "type": "api"
+      }
+    },
+    {
+      "decision": "no exact match",
+      "exact": {
+        "canonicalDocumentationUrl": [],
+        "canonicalEndpointUrl": [],
+        "stableId": []
+      },
+      "probableSimilarities": [
+        {
+          "isMatch": false,
+          "providerAssessment": {
+            "caveat": "Wayfinder's provider is fictional and cannot be equated to this real publisher.",
+            "domainResemblance": true,
+            "okfPublisher": "NHS Digital",
+            "wayfinderDepartment": "National Health Data Service"
+          },
+          "rankScore": 2.842,
+          "reasons": [
+            "shared distinctive title tokens: care, record, summary",
+            "high title-string similarity",
+            "publisher resembles the public-sector domain suggested by the fictional Wayfinder department"
+          ],
+          "record": {
+            "canonical_publisher": "nhs-digital",
+            "canonical_publisher_title": "NHS Digital",
+            "concept_id": "api-records/nhs-digital-summary-care-record-fhir-api.md",
+            "confidence": "declared",
+            "documentation": "https://digital.nhs.uk/developer/api-catalogue/summary-care-record-fhir",
+            "id": "https://digital.nhs.uk/developer/api-catalogue/summary-care-record-fhir",
+            "name": "nhs-digital-summary-care-record-fhir-api",
+            "provenance": {
+              "confidence": "declared",
+              "observed_at": "2026-07-16T00:00:00Z",
+              "source": "GOV.UK API Catalogue CSV",
+              "source_adapter": "api_gov_uk_catalogue",
+              "source_repository": "co-cddo/api-catalogue",
+              "source_row": 218,
+              "source_sha256": "e69f4f044b757ced12852c5245b161fd78a39d8b465884f49688066fb0fc4535",
+              "source_tier": "declared_api_catalogue",
+              "source_url": "https://raw.githubusercontent.com/co-cddo/api-catalogue/main/data/catalogue.csv"
+            },
+            "publisher": "nhs-digital",
+            "publisher_title": "NHS Digital",
+            "record_type": "API Product",
+            "route": "dataset/nhs-digital-summary-care-record-fhir-api",
+            "source_adapter": "api_gov_uk_catalogue",
+            "source_tier": "declared_api_catalogue",
+            "title": "Summary Care Record - FHIR API",
+            "url": "https://digital.nhs.uk/developer/api-catalogue/summary-care-record-fhir"
+          },
+          "similarityStrength": "strong",
+          "titleComparison": {
+            "coreTokenJaccard": 0.75,
+            "normalisedExact": false,
+            "sequence": 0.902,
+            "sharedCoreTokens": [
+              "care",
+              "record",
+              "summary"
+            ],
+            "tokenJaccard": 0.8
+          }
+        },
+        {
+          "isMatch": false,
+          "providerAssessment": {
+            "caveat": "Wayfinder's provider is fictional and cannot be equated to this real publisher.",
+            "domainResemblance": true,
+            "okfPublisher": "NHS Digital",
+            "wayfinderDepartment": "National Health Data Service"
+          },
+          "rankScore": 2.5246,
+          "reasons": [
+            "shared distinctive title tokens: care, record, summary",
+            "high title-string similarity",
+            "publisher resembles the public-sector domain suggested by the fictional Wayfinder department"
+          ],
+          "record": {
+            "canonical_publisher": "nhs-digital",
+            "canonical_publisher_title": "NHS Digital",
+            "concept_id": "api-records/nhs-digital-summary-care-record-hl7-v3-api.md",
+            "confidence": "declared",
+            "documentation": "https://digital.nhs.uk/developer/api-catalogue/summary-care-record-hl7-v3",
+            "id": "https://digital.nhs.uk/developer/api-catalogue/summary-care-record-hl7-v3",
+            "name": "nhs-digital-summary-care-record-hl7-v3-api",
+            "provenance": {
+              "confidence": "declared",
+              "observed_at": "2026-07-16T00:00:00Z",
+              "source": "GOV.UK API Catalogue CSV",
+              "source_adapter": "api_gov_uk_catalogue",
+              "source_repository": "co-cddo/api-catalogue",
+              "source_row": 219,
+              "source_sha256": "e69f4f044b757ced12852c5245b161fd78a39d8b465884f49688066fb0fc4535",
+              "source_tier": "declared_api_catalogue",
+              "source_url": "https://raw.githubusercontent.com/co-cddo/api-catalogue/main/data/catalogue.csv"
+            },
+            "publisher": "nhs-digital",
+            "publisher_title": "NHS Digital",
+            "record_type": "API Product",
+            "route": "dataset/nhs-digital-summary-care-record-hl7-v3-api",
+            "source_adapter": "api_gov_uk_catalogue",
+            "source_tier": "declared_api_catalogue",
+            "title": "Summary Care Record - HL7 V3 API",
+            "url": "https://digital.nhs.uk/developer/api-catalogue/summary-care-record-hl7-v3"
+          },
+          "similarityStrength": "strong",
+          "titleComparison": {
+            "coreTokenJaccard": 0.6,
+            "normalisedExact": false,
+            "sequence": 0.8679,
+            "sharedCoreTokens": [
+              "care",
+              "record",
+              "summary"
+            ],
+            "tokenJaccard": 0.6667
+          }
+        },
+        {
+          "isMatch": false,
+          "providerAssessment": {
+            "caveat": "Wayfinder's provider is fictional and cannot be equated to this real publisher.",
+            "domainResemblance": true,
+            "okfPublisher": "NHS Digital",
+            "wayfinderDepartment": "National Health Data Service"
+          },
+          "rankScore": 1.6617,
+          "reasons": [
+            "shared distinctive title tokens: care, record",
+            "publisher resembles the public-sector domain suggested by the fictional Wayfinder department"
+          ],
+          "record": {
+            "canonical_publisher": "nhs-digital",
+            "canonical_publisher_title": "NHS Digital",
+            "concept_id": "api-records/nhs-digital-patient-care-aggregator-record-service-api.md",
+            "confidence": "declared",
+            "documentation": "https://digital.nhs.uk/developer/api-catalogue/patient-care-aggregator-record-service/patient-care-aggregator-record-service-api",
+            "id": "https://digital.nhs.uk/developer/api-catalogue/patient-care-aggregator-record-service/patient-care-aggregator-record-service-api",
+            "name": "nhs-digital-patient-care-aggregator-record-service-api",
+            "provenance": {
+              "confidence": "declared",
+              "observed_at": "2026-07-16T00:00:00Z",
+              "source": "GOV.UK API Catalogue CSV",
+              "source_adapter": "api_gov_uk_catalogue",
+              "source_repository": "co-cddo/api-catalogue",
+              "source_row": 206,
+              "source_sha256": "e69f4f044b757ced12852c5245b161fd78a39d8b465884f49688066fb0fc4535",
+              "source_tier": "declared_api_catalogue",
+              "source_url": "https://raw.githubusercontent.com/co-cddo/api-catalogue/main/data/catalogue.csv"
+            },
+            "publisher": "nhs-digital",
+            "publisher_title": "NHS Digital",
+            "record_type": "API Product",
+            "route": "dataset/nhs-digital-patient-care-aggregator-record-service-api",
+            "source_adapter": "api_gov_uk_catalogue",
+            "source_tier": "declared_api_catalogue",
+            "title": "Patient Care Aggregator Record Service API",
+            "url": "https://digital.nhs.uk/developer/api-catalogue/patient-care-aggregator-record-service/patient-care-aggregator-record-service-api"
+          },
+          "similarityStrength": "moderate",
+          "titleComparison": {
+            "coreTokenJaccard": 0.4,
+            "normalisedExact": false,
+            "sequence": 0.5231,
+            "sharedCoreTokens": [
+              "care",
+              "record"
+            ],
+            "tokenJaccard": 0.4286
+          }
+        }
+      ],
+      "wayfinder": {
+        "canonicalDocumentation": "https://docs.demo.gov.example/scr",
+        "canonicalEndpoint": "https://api.health-data.demo.gov.example/scr/v2",
+        "departmentId": "nhds",
+        "documentation": "https://docs.demo.gov.example/scr",
+        "endpoint": "https://api.health-data.demo.gov.example/scr/v2",
+        "id": "summary-care-record-api",
+        "name": "Summary Care Record API",
+        "teamId": "oak-records",
+        "type": "api"
+      }
+    },
+    {
+      "decision": "no exact match",
+      "exact": {
+        "canonicalDocumentationUrl": [],
+        "canonicalEndpointUrl": [],
+        "stableId": []
+      },
+      "probableSimilarities": [],
+      "wayfinder": {
+        "canonicalDocumentation": "https://docs.demo.gov.example/hie",
+        "canonicalEndpoint": "https://api.health-data.demo.gov.example/hie/v1",
+        "departmentId": "nhds",
+        "documentation": "https://docs.demo.gov.example/hie",
+        "endpoint": "https://api.health-data.demo.gov.example/hie/v1",
+        "id": "health-info-exchange",
+        "name": "Health Information Exchange",
+        "teamId": "oak-records",
+        "type": "platform"
+      }
+    },
+    {
+      "decision": "no exact match",
+      "exact": {
+        "canonicalDocumentationUrl": [],
+        "canonicalEndpointUrl": [],
+        "stableId": []
+      },
+      "probableSimilarities": [
+        {
+          "isMatch": false,
+          "providerAssessment": {
+            "caveat": "Wayfinder's provider is fictional and cannot be equated to this real publisher.",
+            "domainResemblance": true,
+            "okfPublisher": "NHS Digital",
+            "wayfinderDepartment": "National Health Data Service"
+          },
+          "rankScore": 1.804,
+          "reasons": [
+            "shared distinctive title tokens: demographics",
+            "publisher resembles the public-sector domain suggested by the fictional Wayfinder department"
+          ],
+          "record": {
+            "canonical_publisher": "nhs-digital",
+            "canonical_publisher_title": "NHS Digital",
+            "concept_id": "api-records/nhs-digital-demographics-batch-service.md",
+            "confidence": "declared",
+            "documentation": "https://digital.nhs.uk/developer/api-catalogue/demographics-batch-service",
+            "id": "https://digital.nhs.uk/developer/api-catalogue/demographics-batch-service",
+            "name": "nhs-digital-demographics-batch-service",
+            "provenance": {
+              "confidence": "declared",
+              "observed_at": "2026-07-16T00:00:00Z",
+              "source": "GOV.UK API Catalogue CSV",
+              "source_adapter": "api_gov_uk_catalogue",
+              "source_repository": "co-cddo/api-catalogue",
+              "source_row": 149,
+              "source_sha256": "e69f4f044b757ced12852c5245b161fd78a39d8b465884f49688066fb0fc4535",
+              "source_tier": "declared_api_catalogue",
+              "source_url": "https://raw.githubusercontent.com/co-cddo/api-catalogue/main/data/catalogue.csv"
+            },
+            "publisher": "nhs-digital",
+            "publisher_title": "NHS Digital",
+            "record_type": "API Product",
+            "route": "dataset/nhs-digital-demographics-batch-service",
+            "source_adapter": "api_gov_uk_catalogue",
+            "source_tier": "declared_api_catalogue",
+            "title": "Demographics Batch Service",
+            "url": "https://digital.nhs.uk/developer/api-catalogue/demographics-batch-service"
+          },
+          "similarityStrength": "moderate",
+          "titleComparison": {
+            "coreTokenJaccard": 0.3333,
+            "normalisedExact": false,
+            "sequence": 0.7407,
+            "sharedCoreTokens": [
+              "demographics"
+            ],
+            "tokenJaccard": 0.5
+          }
+        },
+        {
+          "isMatch": false,
+          "providerAssessment": {
+            "caveat": "Wayfinder's provider is fictional and cannot be equated to this real publisher.",
+            "domainResemblance": true,
+            "okfPublisher": "NHS Digital",
+            "wayfinderDepartment": "National Health Data Service"
+          },
+          "rankScore": 1.6219,
+          "reasons": [
+            "shared distinctive title tokens: demographics",
+            "publisher resembles the public-sector domain suggested by the fictional Wayfinder department"
+          ],
+          "record": {
+            "canonical_publisher": "nhs-digital",
+            "canonical_publisher_title": "NHS Digital",
+            "concept_id": "api-records/nhs-digital-personal-demographics-service-mesh.md",
+            "confidence": "declared",
+            "documentation": "https://digital.nhs.uk/developer/api-catalogue/personal-demographic-service-mesh",
+            "id": "https://digital.nhs.uk/developer/api-catalogue/personal-demographic-service-mesh",
+            "name": "nhs-digital-personal-demographics-service-mesh",
+            "provenance": {
+              "confidence": "declared",
+              "observed_at": "2026-07-16T00:00:00Z",
+              "source": "GOV.UK API Catalogue CSV",
+              "source_adapter": "api_gov_uk_catalogue",
+              "source_repository": "co-cddo/api-catalogue",
+              "source_row": 209,
+              "source_sha256": "e69f4f044b757ced12852c5245b161fd78a39d8b465884f49688066fb0fc4535",
+              "source_tier": "declared_api_catalogue",
+              "source_url": "https://raw.githubusercontent.com/co-cddo/api-catalogue/main/data/catalogue.csv"
+            },
+            "publisher": "nhs-digital",
+            "publisher_title": "NHS Digital",
+            "record_type": "API Product",
+            "route": "dataset/nhs-digital-personal-demographics-service-mesh",
+            "source_adapter": "api_gov_uk_catalogue",
+            "source_tier": "declared_api_catalogue",
+            "title": "Personal Demographics Service MESH",
+            "url": "https://digital.nhs.uk/developer/api-catalogue/personal-demographic-service-mesh"
+          },
+          "similarityStrength": "moderate",
+          "titleComparison": {
+            "coreTokenJaccard": 0.25,
+            "normalisedExact": false,
+            "sequence": 0.7419,
+            "sharedCoreTokens": [
+              "demographics"
+            ],
+            "tokenJaccard": 0.4
+          }
+        },
+        {
+          "isMatch": false,
+          "providerAssessment": {
+            "caveat": "Wayfinder's provider is fictional and cannot be equated to this real publisher.",
+            "domainResemblance": true,
+            "okfPublisher": "NHS Digital",
+            "wayfinderDepartment": "National Health Data Service"
+          },
+          "rankScore": 1.5103,
+          "reasons": [
+            "shared distinctive title tokens: demographics",
+            "publisher resembles the public-sector domain suggested by the fictional Wayfinder department"
+          ],
+          "record": {
+            "canonical_publisher": "nhs-digital",
+            "canonical_publisher_title": "NHS Digital",
+            "concept_id": "api-records/nhs-digital-personal-demographics-service-fhir-api.md",
+            "confidence": "declared",
+            "documentation": "https://digital.nhs.uk/developer/api-catalogue/personal-demographics-service-fhir",
+            "id": "https://digital.nhs.uk/developer/api-catalogue/personal-demographics-service-fhir",
+            "name": "nhs-digital-personal-demographics-service-fhir-api",
+            "provenance": {
+              "confidence": "declared",
+              "observed_at": "2026-07-16T00:00:00Z",
+              "source": "GOV.UK API Catalogue CSV",
+              "source_adapter": "api_gov_uk_catalogue",
+              "source_repository": "co-cddo/api-catalogue",
+              "source_row": 207,
+              "source_sha256": "e69f4f044b757ced12852c5245b161fd78a39d8b465884f49688066fb0fc4535",
+              "source_tier": "declared_api_catalogue",
+              "source_url": "https://raw.githubusercontent.com/co-cddo/api-catalogue/main/data/catalogue.csv"
+            },
+            "publisher": "nhs-digital",
+            "publisher_title": "NHS Digital",
+            "record_type": "API Product",
+            "route": "dataset/nhs-digital-personal-demographics-service-fhir-api",
+            "source_adapter": "api_gov_uk_catalogue",
+            "source_tier": "declared_api_catalogue",
+            "title": "Personal Demographics Service - FHIR API",
+            "url": "https://digital.nhs.uk/developer/api-catalogue/personal-demographics-service-fhir"
+          },
+          "similarityStrength": "moderate",
+          "titleComparison": {
+            "coreTokenJaccard": 0.25,
+            "normalisedExact": false,
+            "sequence": 0.697,
+            "sharedCoreTokens": [
+              "demographics"
+            ],
+            "tokenJaccard": 0.3333
+          }
+        }
+      ],
+      "wayfinder": {
+        "canonicalDocumentation": "https://docs.demo.gov.example/pds",
+        "canonicalEndpoint": "https://api.health-data.demo.gov.example/pds/v2",
+        "departmentId": "nhds",
+        "documentation": "https://docs.demo.gov.example/pds",
+        "endpoint": "https://api.health-data.demo.gov.example/pds/v2",
+        "id": "patient-demographics-api",
+        "name": "Patient Demographics Service",
+        "teamId": "oak-records",
+        "type": "api"
+      }
+    },
+    {
+      "decision": "no exact match",
+      "exact": {
+        "canonicalDocumentationUrl": [],
+        "canonicalEndpointUrl": [],
+        "stableId": []
+      },
+      "probableSimilarities": [
+        {
+          "isMatch": false,
+          "providerAssessment": {
+            "caveat": "Wayfinder's provider is fictional and cannot be equated to this real publisher.",
+            "domainResemblance": true,
+            "okfPublisher": "NHS Digital",
+            "wayfinderDepartment": "National Health Data Service"
+          },
+          "rankScore": 1.7593,
+          "reasons": [
+            "shared distinctive title tokens: access, control",
+            "publisher resembles the public-sector domain suggested by the fictional Wayfinder department"
+          ],
+          "record": {
+            "canonical_publisher": "nhs-digital",
+            "canonical_publisher_title": "NHS Digital",
+            "concept_id": "api-records/nhs-digital-access-control-service-hl7-v3-api.md",
+            "confidence": "declared",
+            "documentation": "https://digital.nhs.uk/developer/api-catalogue/access-control-service-hl7-v3",
+            "id": "https://digital.nhs.uk/developer/api-catalogue/access-control-service-hl7-v3",
+            "name": "nhs-digital-access-control-service-hl7-v3-api",
+            "provenance": {
+              "confidence": "declared",
+              "observed_at": "2026-07-16T00:00:00Z",
+              "source": "GOV.UK API Catalogue CSV",
+              "source_adapter": "api_gov_uk_catalogue",
+              "source_repository": "co-cddo/api-catalogue",
+              "source_row": 138,
+              "source_sha256": "e69f4f044b757ced12852c5245b161fd78a39d8b465884f49688066fb0fc4535",
+              "source_tier": "declared_api_catalogue",
+              "source_url": "https://raw.githubusercontent.com/co-cddo/api-catalogue/main/data/catalogue.csv"
+            },
+            "publisher": "nhs-digital",
+            "publisher_title": "NHS Digital",
+            "record_type": "API Product",
+            "route": "dataset/nhs-digital-access-control-service-hl7-v3-api",
+            "source_adapter": "api_gov_uk_catalogue",
+            "source_tier": "declared_api_catalogue",
+            "title": "Access Control Service HL7 V3 API",
+            "url": "https://digital.nhs.uk/developer/api-catalogue/access-control-service-hl7-v3"
+          },
+          "similarityStrength": "moderate",
+          "titleComparison": {
+            "coreTokenJaccard": 0.4,
+            "normalisedExact": false,
+            "sequence": 0.6207,
+            "sharedCoreTokens": [
+              "access",
+              "control"
+            ],
+            "tokenJaccard": 0.4286
+          }
+        }
+      ],
+      "wayfinder": {
+        "canonicalDocumentation": "https://docs.demo.gov.example/record-access",
+        "canonicalEndpoint": "https://api.health-data.demo.gov.example/access/v1",
+        "departmentId": "nhds",
+        "documentation": "https://docs.demo.gov.example/record-access",
+        "endpoint": "https://api.health-data.demo.gov.example/access/v1",
+        "id": "record-access-api",
+        "name": "Record Access Control API",
+        "teamId": "oak-records",
+        "type": "api"
+      }
+    },
+    {
+      "decision": "no exact match",
+      "exact": {
+        "canonicalDocumentationUrl": [],
+        "canonicalEndpointUrl": [],
+        "stableId": []
+      },
+      "probableSimilarities": [
+        {
+          "isMatch": false,
+          "providerAssessment": {
+            "caveat": "Wayfinder's provider is fictional and cannot be equated to this real publisher.",
+            "domainResemblance": true,
+            "okfPublisher": "NHS Digital",
+            "wayfinderDepartment": "National Health Data Service"
+          },
+          "rankScore": 2.71,
+          "reasons": [
+            "shared distinctive title tokens: electronic, prescription",
+            "high title-string similarity",
+            "publisher resembles the public-sector domain suggested by the fictional Wayfinder department"
+          ],
+          "record": {
+            "canonical_publisher": "nhs-digital",
+            "canonical_publisher_title": "NHS Digital",
+            "concept_id": "api-records/nhs-digital-electronic-prescription-service-fhir-api.md",
+            "confidence": "declared",
+            "documentation": "https://digital.nhs.uk/developer/api-catalogue/electronic-prescription-service-fhir",
+            "id": "https://digital.nhs.uk/developer/api-catalogue/electronic-prescription-service-fhir",
+            "name": "nhs-digital-electronic-prescription-service-fhir-api",
+            "provenance": {
+              "confidence": "declared",
+              "observed_at": "2026-07-16T00:00:00Z",
+              "source": "GOV.UK API Catalogue CSV",
+              "source_adapter": "api_gov_uk_catalogue",
+              "source_repository": "co-cddo/api-catalogue",
+              "source_row": 156,
+              "source_sha256": "e69f4f044b757ced12852c5245b161fd78a39d8b465884f49688066fb0fc4535",
+              "source_tier": "declared_api_catalogue",
+              "source_url": "https://raw.githubusercontent.com/co-cddo/api-catalogue/main/data/catalogue.csv"
+            },
+            "publisher": "nhs-digital",
+            "publisher_title": "NHS Digital",
+            "record_type": "API Product",
+            "route": "dataset/nhs-digital-electronic-prescription-service-fhir-api",
+            "source_adapter": "api_gov_uk_catalogue",
+            "source_tier": "declared_api_catalogue",
+            "title": "Electronic Prescription Service - FHIR API",
+            "url": "https://digital.nhs.uk/developer/api-catalogue/electronic-prescription-service-fhir"
+          },
+          "similarityStrength": "strong",
+          "titleComparison": {
+            "coreTokenJaccard": 0.6667,
+            "normalisedExact": false,
+            "sequence": 0.9333,
+            "sharedCoreTokens": [
+              "electronic",
+              "prescription"
+            ],
+            "tokenJaccard": 0.8
+          }
+        },
+        {
+          "isMatch": false,
+          "providerAssessment": {
+            "caveat": "Wayfinder's provider is fictional and cannot be equated to this real publisher.",
+            "domainResemblance": true,
+            "okfPublisher": "NHS Digital",
+            "wayfinderDepartment": "National Health Data Service"
+          },
+          "rankScore": 2.3858,
+          "reasons": [
+            "shared distinctive title tokens: electronic, prescription",
+            "high title-string similarity",
+            "publisher resembles the public-sector domain suggested by the fictional Wayfinder department"
+          ],
+          "record": {
+            "canonical_publisher": "nhs-digital",
+            "canonical_publisher_title": "NHS Digital",
+            "concept_id": "api-records/nhs-digital-electronic-prescription-service-hl7-v3-api.md",
+            "confidence": "declared",
+            "documentation": "https://digital.nhs.uk/developer/api-catalogue/electronic-prescription-service-hl7-v3",
+            "id": "https://digital.nhs.uk/developer/api-catalogue/electronic-prescription-service-hl7-v3",
+            "name": "nhs-digital-electronic-prescription-service-hl7-v3-api",
+            "provenance": {
+              "confidence": "declared",
+              "observed_at": "2026-07-16T00:00:00Z",
+              "source": "GOV.UK API Catalogue CSV",
+              "source_adapter": "api_gov_uk_catalogue",
+              "source_repository": "co-cddo/api-catalogue",
+              "source_row": 157,
+              "source_sha256": "e69f4f044b757ced12852c5245b161fd78a39d8b465884f49688066fb0fc4535",
+              "source_tier": "declared_api_catalogue",
+              "source_url": "https://raw.githubusercontent.com/co-cddo/api-catalogue/main/data/catalogue.csv"
+            },
+            "publisher": "nhs-digital",
+            "publisher_title": "NHS Digital",
+            "record_type": "API Product",
+            "route": "dataset/nhs-digital-electronic-prescription-service-hl7-v3-api",
+            "source_adapter": "api_gov_uk_catalogue",
+            "source_tier": "declared_api_catalogue",
+            "title": "Electronic Prescription Service - HL7 V3 API",
+            "url": "https://digital.nhs.uk/developer/api-catalogue/electronic-prescription-service-hl7-v3"
+          },
+          "similarityStrength": "strong",
+          "titleComparison": {
+            "coreTokenJaccard": 0.5,
+            "normalisedExact": false,
+            "sequence": 0.9091,
+            "sharedCoreTokens": [
+              "electronic",
+              "prescription"
+            ],
+            "tokenJaccard": 0.6667
+          }
+        },
+        {
+          "isMatch": false,
+          "providerAssessment": {
+            "caveat": "Wayfinder's provider is fictional and cannot be equated to this real publisher.",
+            "domainResemblance": true,
+            "okfPublisher": "NHS Digital",
+            "wayfinderDepartment": "National Health Data Service"
+          },
+          "rankScore": 2.3201,
+          "reasons": [
+            "shared distinctive title tokens: electronic, prescription",
+            "high title-string similarity",
+            "publisher resembles the public-sector domain suggested by the fictional Wayfinder department"
+          ],
+          "record": {
+            "canonical_publisher": "nhs-digital",
+            "canonical_publisher_title": "NHS Digital",
+            "concept_id": "api-records/nhs-digital-electronic-prescription-service-tracker-rest-api.md",
+            "confidence": "declared",
+            "documentation": "https://digital.nhs.uk/developer/api-catalogue/spine-electronic-prescription-service-tracker-rest",
+            "id": "https://digital.nhs.uk/developer/api-catalogue/spine-electronic-prescription-service-tracker-rest",
+            "name": "nhs-digital-electronic-prescription-service-tracker-rest-api",
+            "provenance": {
+              "confidence": "declared",
+              "observed_at": "2026-07-16T00:00:00Z",
+              "source": "GOV.UK API Catalogue CSV",
+              "source_adapter": "api_gov_uk_catalogue",
+              "source_repository": "co-cddo/api-catalogue",
+              "source_row": 158,
+              "source_sha256": "e69f4f044b757ced12852c5245b161fd78a39d8b465884f49688066fb0fc4535",
+              "source_tier": "declared_api_catalogue",
+              "source_url": "https://raw.githubusercontent.com/co-cddo/api-catalogue/main/data/catalogue.csv"
+            },
+            "publisher": "nhs-digital",
+            "publisher_title": "NHS Digital",
+            "record_type": "API Product",
+            "route": "dataset/nhs-digital-electronic-prescription-service-tracker-rest-api",
+            "source_adapter": "api_gov_uk_catalogue",
+            "source_tier": "declared_api_catalogue",
+            "title": "Electronic Prescription Service Tracker - REST API",
+            "url": "https://digital.nhs.uk/developer/api-catalogue/spine-electronic-prescription-service-tracker-rest"
+          },
+          "similarityStrength": "moderate",
+          "titleComparison": {
+            "coreTokenJaccard": 0.5,
+            "normalisedExact": false,
+            "sequence": 0.8434,
+            "sharedCoreTokens": [
+              "electronic",
+              "prescription"
+            ],
+            "tokenJaccard": 0.6667
+          }
+        }
+      ],
+      "wayfinder": {
+        "canonicalDocumentation": "https://docs.demo.gov.example/eps",
+        "canonicalEndpoint": "https://api.health-data.demo.gov.example/eps/v2",
+        "departmentId": "nhds",
+        "documentation": "https://docs.demo.gov.example/eps",
+        "endpoint": "https://api.health-data.demo.gov.example/eps/v2",
+        "id": "electronic-prescription-api",
+        "name": "Electronic Prescription Service API",
+        "teamId": "elm-prescriptions",
+        "type": "api"
+      }
+    },
+    {
+      "decision": "no exact match",
+      "exact": {
+        "canonicalDocumentationUrl": [],
+        "canonicalEndpointUrl": [],
+        "stableId": []
+      },
+      "probableSimilarities": [],
+      "wayfinder": {
+        "canonicalDocumentation": "https://docs.demo.gov.example/dispensing",
+        "canonicalEndpoint": null,
+        "departmentId": "nhds",
+        "documentation": "https://docs.demo.gov.example/dispensing",
+        "endpoint": null,
+        "id": "dispensing-service",
+        "name": "Dispensing Notification Service",
+        "teamId": "elm-prescriptions",
+        "type": "event-stream"
+      }
+    },
+    {
+      "decision": "no exact match",
+      "exact": {
+        "canonicalDocumentationUrl": [],
+        "canonicalEndpointUrl": [],
+        "stableId": []
+      },
+      "probableSimilarities": [],
+      "wayfinder": {
+        "canonicalDocumentation": "https://docs.demo.gov.example/medication-record",
+        "canonicalEndpoint": "https://api.health-data.demo.gov.example/medications/v1",
+        "departmentId": "nhds",
+        "documentation": "https://docs.demo.gov.example/medication-record",
+        "endpoint": "https://api.health-data.demo.gov.example/medications/v1",
+        "id": "medication-record-api",
+        "name": "Medication Record API",
+        "teamId": "elm-prescriptions",
+        "type": "api"
+      }
+    },
+    {
+      "decision": "no exact match",
+      "exact": {
+        "canonicalDocumentationUrl": [],
+        "canonicalEndpointUrl": [],
+        "stableId": []
+      },
+      "probableSimilarities": [],
+      "wayfinder": {
+        "canonicalDocumentation": "https://docs.demo.gov.example/fhir",
+        "canonicalEndpoint": "https://api.health-data.demo.gov.example/fhir/R4",
+        "departmentId": "nhds",
+        "documentation": "https://docs.demo.gov.example/fhir",
+        "endpoint": "https://api.health-data.demo.gov.example/fhir/R4",
+        "id": "fhir-api-platform",
+        "name": "FHIR API Platform",
+        "teamId": "ash-integration",
+        "type": "platform"
+      }
+    },
+    {
+      "decision": "no exact match",
+      "exact": {
+        "canonicalDocumentationUrl": [],
+        "canonicalEndpointUrl": [],
+        "stableId": []
+      },
+      "probableSimilarities": [],
+      "wayfinder": {
+        "canonicalDocumentation": "https://docs.demo.gov.example/message-router",
+        "canonicalEndpoint": null,
+        "departmentId": "nhds",
+        "documentation": "https://docs.demo.gov.example/message-router",
+        "endpoint": null,
+        "id": "message-router",
+        "name": "Clinical Message Router",
+        "teamId": "ash-integration",
+        "type": "platform"
+      }
+    },
+    {
+      "decision": "no exact match",
+      "exact": {
+        "canonicalDocumentationUrl": [],
+        "canonicalEndpointUrl": [],
+        "stableId": []
+      },
+      "probableSimilarities": [],
+      "wayfinder": {
+        "canonicalDocumentation": "https://docs.demo.gov.example/legacy-adapters",
+        "canonicalEndpoint": null,
+        "departmentId": "nhds",
+        "documentation": "https://docs.demo.gov.example/legacy-adapters",
+        "endpoint": null,
+        "id": "legacy-adapters",
+        "name": "Legacy System Adapters",
+        "teamId": "ash-integration",
+        "type": "library"
+      }
+    },
+    {
+      "decision": "no exact match",
+      "exact": {
+        "canonicalDocumentationUrl": [],
+        "canonicalEndpointUrl": [],
+        "stableId": []
+      },
+      "probableSimilarities": [],
+      "wayfinder": {
+        "canonicalDocumentation": "https://docs.demo.gov.example/integration-toolkit",
+        "canonicalEndpoint": null,
+        "departmentId": "nhds",
+        "documentation": "https://docs.demo.gov.example/integration-toolkit",
+        "endpoint": null,
+        "id": "integration-toolkit",
+        "name": "NHDS Integration Toolkit",
+        "teamId": "ash-integration",
+        "type": "library"
+      }
+    },
+    {
+      "decision": "no exact match",
+      "exact": {
+        "canonicalDocumentationUrl": [],
+        "canonicalEndpointUrl": [],
+        "stableId": []
+      },
+      "probableSimilarities": [],
+      "wayfinder": {
+        "canonicalDocumentation": "https://docs.demo.gov.example/population-health",
+        "canonicalEndpoint": "https://api.health-data.demo.gov.example/population/v1",
+        "departmentId": "nhds",
+        "documentation": "https://docs.demo.gov.example/population-health",
+        "endpoint": "https://api.health-data.demo.gov.example/population/v1",
+        "id": "population-health-api",
+        "name": "Population Health API",
+        "teamId": "maple-analytics",
+        "type": "api"
+      }
+    },
+    {
+      "decision": "no exact match",
+      "exact": {
+        "canonicalDocumentationUrl": [],
+        "canonicalEndpointUrl": [],
+        "stableId": []
+      },
+      "probableSimilarities": [],
+      "wayfinder": {
+        "canonicalDocumentation": "https://docs.demo.gov.example/anonymisation",
+        "canonicalEndpoint": "https://api.health-data.demo.gov.example/anon/v1",
+        "departmentId": "nhds",
+        "documentation": "https://docs.demo.gov.example/anonymisation",
+        "endpoint": "https://api.health-data.demo.gov.example/anon/v1",
+        "id": "anonymisation-service",
+        "name": "Health Data Anonymisation Service",
+        "teamId": "maple-analytics",
+        "type": "api"
+      }
+    },
+    {
+      "decision": "no exact match",
+      "exact": {
+        "canonicalDocumentationUrl": [],
+        "canonicalEndpointUrl": [],
+        "stableId": []
+      },
+      "probableSimilarities": [
+        {
+          "isMatch": false,
+          "providerAssessment": {
+            "caveat": "Wayfinder's provider is fictional and cannot be equated to this real publisher.",
+            "domainResemblance": true,
+            "okfPublisher": "NHS Digital",
+            "wayfinderDepartment": "National Health Data Service"
+          },
+          "rankScore": 1.6697,
+          "reasons": [
+            "shared distinctive title tokens: research",
+            "publisher resembles the public-sector domain suggested by the fictional Wayfinder department"
+          ],
+          "record": {
+            "canonical_publisher": "nhs-digital",
+            "canonical_publisher_title": "NHS Digital",
+            "concept_id": "api-records/nhs-digital-health-research-data-catalogue-api.md",
+            "confidence": "declared",
+            "documentation": "https://digital.nhs.uk/developer/api-catalogue/health-research-data-catalogue",
+            "id": "https://digital.nhs.uk/developer/api-catalogue/health-research-data-catalogue",
+            "name": "nhs-digital-health-research-data-catalogue-api",
+            "provenance": {
+              "confidence": "declared",
+              "observed_at": "2026-07-16T00:00:00Z",
+              "source": "GOV.UK API Catalogue CSV",
+              "source_adapter": "api_gov_uk_catalogue",
+              "source_repository": "co-cddo/api-catalogue",
+              "source_row": 180,
+              "source_sha256": "e69f4f044b757ced12852c5245b161fd78a39d8b465884f49688066fb0fc4535",
+              "source_tier": "declared_api_catalogue",
+              "source_url": "https://raw.githubusercontent.com/co-cddo/api-catalogue/main/data/catalogue.csv"
+            },
+            "publisher": "nhs-digital",
+            "publisher_title": "NHS Digital",
+            "record_type": "API Product",
+            "route": "dataset/nhs-digital-health-research-data-catalogue-api",
+            "source_adapter": "api_gov_uk_catalogue",
+            "source_tier": "declared_api_catalogue",
+            "title": "Health Research Data Catalogue API",
+            "url": "https://digital.nhs.uk/developer/api-catalogue/health-research-data-catalogue"
+          },
+          "similarityStrength": "moderate",
+          "titleComparison": {
+            "coreTokenJaccard": 0.25,
+            "normalisedExact": false,
+            "sequence": 0.6897,
+            "sharedCoreTokens": [
+              "research"
+            ],
+            "tokenJaccard": 0.5
+          }
+        }
+      ],
+      "wayfinder": {
+        "canonicalDocumentation": "https://docs.demo.gov.example/research-data",
+        "canonicalEndpoint": "https://api.health-data.demo.gov.example/research/v1",
+        "departmentId": "nhds",
+        "documentation": "https://docs.demo.gov.example/research-data",
+        "endpoint": "https://api.health-data.demo.gov.example/research/v1",
+        "id": "research-data-api",
+        "name": "Research Data Access API",
+        "teamId": "maple-analytics",
+        "type": "api"
+      }
+    },
+    {
+      "decision": "no exact match",
+      "exact": {
+        "canonicalDocumentationUrl": [],
+        "canonicalEndpointUrl": [],
+        "stableId": []
+      },
+      "probableSimilarities": [],
+      "wayfinder": {
+        "canonicalDocumentation": "https://docs.demo.gov.example/health-dashboards",
+        "canonicalEndpoint": "https://dashboards.health-data.demo.gov.example/",
+        "departmentId": "nhds",
+        "documentation": "https://docs.demo.gov.example/health-dashboards",
+        "endpoint": "https://dashboards.health-data.demo.gov.example",
+        "id": "health-dashboards",
+        "name": "Health Analytics Dashboards",
+        "teamId": "maple-analytics",
+        "type": "platform"
+      }
+    }
+  ],
+  "sourceDataQuality": {
+    "admissionDecision": "Admit as an opt-in synthetic comparison layer with rights not specified. Do not admit as real or authoritative API records: the publication is an explicitly fictional demo and its endpoint and documentation URLs are placeholders.",
+    "provenanceAndRights": {
+      "authorAttribution": {
+        "name": "Paul Buchanan-Jones",
+        "source": "Private correspondence supplied for this task; email address and message-chain text intentionally omitted."
+      },
+      "authorityFields": false,
+      "confidenceFields": false,
+      "observationFields": false,
+      "recordLevelRights": false,
+      "recordLevelSourceEvidence": false,
+      "reusableLicenceFound": false,
+      "robotsDisallowAll": true
+    },
+    "publishedCountConflicts": [
+      {
+        "subject": "service count",
+        "values": [
+          {
+            "url": "https://wayfinder.pbj.cx/",
+            "value": 85
+          },
+          {
+            "url": "https://wayfinder.pbj.cx/about",
+            "value": 75
+          },
+          {
+            "context": "capability table",
+            "url": "https://wayfinder.pbj.cx/compare",
+            "value": 79
+          }
+        ]
+      },
+      {
+        "subject": "pattern count",
+        "values": [
+          {
+            "url": "https://wayfinder.pbj.cx/patterns",
+            "value": 19
+          },
+          {
+            "url": "https://wayfinder.pbj.cx/about",
+            "value": 18
+          }
+        ]
+      },
+      {
+        "subject": "relationship integrity",
+        "value": "151 references from services/patterns point to 97 pattern identifiers not present in the 19-pattern export; policy records reference 7 absent service identifiers (9 references); 3 graph relationships target absent service identifiers."
+      }
+    ],
+    "recordCompleteness": {
+      "allClaimLive": 85,
+      "authenticationValues": {
+        "api-key": 7,
+        "jwt-bearer": 1,
+        "mtls": 31,
+        "oauth2-authorization-code": 15,
+        "oauth2-client-credentials": 44
+      },
+      "missingDocumentation": 0,
+      "missingEndpoint": 17,
+      "missingLastUpdated": 0,
+      "missingMonthlyRequests": 21,
+      "missingOrEmptyAuthentication": 9,
+      "missingUptime": 66,
+      "missingVersion": 0,
+      "placeholderDocumentation": 85,
+      "placeholderEndpoints": 68,
+      "rootPlaceholderEndpoints": 8,
+      "serviceTypes": {
+        "api": 57,
+        "event-stream": 4,
+        "library": 5,
+        "platform": 19
+      },
+      "services": 85
+    },
+    "referentialIntegrity": {
+      "counts": {
+        "missingAllPatternIdentifiers": 97,
+        "missingAllPatternReferences": 151,
+        "missingDepartmentReferences": 0,
+        "missingDependencyOrConsumerServiceReferences": 0,
+        "missingGraphRelationshipServiceReferences": 3,
+        "missingPatternToPatternIdentifiers": 13,
+        "missingPatternToPatternReferences": 14,
+        "missingPolicyToServiceIdentifiers": 7,
+        "missingPolicyToServiceReferences": 9,
+        "missingServiceToPatternIdentifiers": 97,
+        "missingServiceToPatternReferences": 137,
+        "missingTeamReferences": 0,
+        "unmirroredConsumedByPairs": 22,
+        "unmirroredDependsOnPairs": 21
+      },
+      "missingDepartmentReferences": [],
+      "missingDependencyOrConsumerServiceReferences": [],
+      "missingGraphRelationshipServiceReferences": [
+        {
+          "field": "targetId",
+          "relationshipId": "rel-510",
+          "serviceId": "neptune-graph"
+        },
+        {
+          "field": "targetId",
+          "relationshipId": "rel-511",
+          "serviceId": "opensearch-index"
+        },
+        {
+          "field": "targetId",
+          "relationshipId": "rel-521",
+          "serviceId": "github-actions"
+        }
+      ],
+      "missingPatternToPatternReferences": [
+        {
+          "patternId": "event-driven-integration",
+          "relatedPatternId": "saga-pattern"
+        },
+        {
+          "patternId": "event-driven-integration",
+          "relatedPatternId": "exactly-once-processing"
+        },
+        {
+          "patternId": "secrets-management",
+          "relatedPatternId": "credential-rotation"
+        },
+        {
+          "patternId": "audit-logging",
+          "relatedPatternId": "observability-patterns"
+        },
+        {
+          "patternId": "async-notifications",
+          "relatedPatternId": "delivery-receipts"
+        },
+        {
+          "patternId": "identity-proofing",
+          "relatedPatternId": "document-validation"
+        },
+        {
+          "patternId": "identity-proofing",
+          "relatedPatternId": "biometric-verification"
+        },
+        {
+          "patternId": "liveness-detection",
+          "relatedPatternId": "biometric-matching"
+        },
+        {
+          "patternId": "idempotency-keys",
+          "relatedPatternId": "saga-pattern"
+        },
+        {
+          "patternId": "rules-engine",
+          "relatedPatternId": "versioned-calculations"
+        },
+        {
+          "patternId": "fhir-resources",
+          "relatedPatternId": "smart-on-fhir"
+        },
+        {
+          "patternId": "fhir-resources",
+          "relatedPatternId": "adapter-pattern"
+        },
+        {
+          "patternId": "accessible-forms",
+          "relatedPatternId": "progressive-enhancement"
+        },
+        {
+          "patternId": "accessible-forms",
+          "relatedPatternId": "error-handling-ui"
+        }
+      ],
+      "missingPolicyToServiceReferences": [
+        {
+          "policyId": "net-zero-digital",
+          "serviceId": "gov-cloud-platform"
+        },
+        {
+          "policyId": "data-sharing-framework",
+          "serviceId": "consent-management-platform"
+        },
+        {
+          "policyId": "data-sharing-framework",
+          "serviceId": "citizen-data-vault"
+        },
+        {
+          "policyId": "digital-identity-programme",
+          "serviceId": "biometric-verification-api"
+        },
+        {
+          "policyId": "digital-identity-programme",
+          "serviceId": "driving-licence-service"
+        },
+        {
+          "policyId": "welfare-data-reform",
+          "serviceId": "benefit-calculation-engine"
+        },
+        {
+          "policyId": "welfare-data-reform",
+          "serviceId": "consent-management-platform"
+        },
+        {
+          "policyId": "secure-by-design",
+          "serviceId": "gov-cloud-platform"
+        },
+        {
+          "policyId": "secure-by-design",
+          "serviceId": "security-monitoring-platform"
+        }
+      ],
+      "missingServiceToPatternReferences": [
+        {
+          "patternId": "service-mesh-pattern",
+          "serviceId": "service-mesh"
+        },
+        {
+          "patternId": "twelve-factor-app",
+          "serviceId": "cloud-platform"
+        },
+        {
+          "patternId": "infrastructure-as-code",
+          "serviceId": "cloud-platform"
+        },
+        {
+          "patternId": "credential-rotation",
+          "serviceId": "secrets-manager"
+        },
+        {
+          "patternId": "progressive-enhancement",
+          "serviceId": "design-system"
+        },
+        {
+          "patternId": "mobile-first",
+          "serviceId": "design-system"
+        },
+        {
+          "patternId": "error-handling-ui",
+          "serviceId": "component-library"
+        },
+        {
+          "patternId": "user-research-patterns",
+          "serviceId": "prototype-kit"
+        },
+        {
+          "patternId": "accessibility-testing",
+          "serviceId": "accessibility-checker"
+        },
+        {
+          "patternId": "template-management",
+          "serviceId": "gov-notify"
+        },
+        {
+          "patternId": "delivery-receipts",
+          "serviceId": "gov-notify"
+        },
+        {
+          "patternId": "template-management",
+          "serviceId": "template-service"
+        },
+        {
+          "patternId": "delivery-receipts",
+          "serviceId": "delivery-receipts"
+        },
+        {
+          "patternId": "payment-flow",
+          "serviceId": "gov-pay"
+        },
+        {
+          "patternId": "pci-compliance",
+          "serviceId": "gov-pay"
+        },
+        {
+          "patternId": "batch-processing",
+          "serviceId": "reconciliation-api"
+        },
+        {
+          "patternId": "reconciliation-patterns",
+          "serviceId": "reconciliation-api"
+        },
+        {
+          "patternId": "progressive-enhancement",
+          "serviceId": "citizen-portal"
+        },
+        {
+          "patternId": "session-management",
+          "serviceId": "citizen-portal"
+        },
+        {
+          "patternId": "async-eligibility-check",
+          "serviceId": "eligibility-api"
+        },
+        {
+          "patternId": "caching-strategy",
+          "serviceId": "eligibility-api"
+        },
+        {
+          "patternId": "event-sourcing",
+          "serviceId": "case-management"
+        },
+        {
+          "patternId": "workflow-patterns",
+          "serviceId": "case-management"
+        },
+        {
+          "patternId": "saga-pattern",
+          "serviceId": "application-service"
+        },
+        {
+          "patternId": "document-upload",
+          "serviceId": "application-service"
+        },
+        {
+          "patternId": "data-mesh",
+          "serviceId": "citizen-data-platform"
+        },
+        {
+          "patternId": "event-sourcing",
+          "serviceId": "citizen-data-platform"
+        },
+        {
+          "patternId": "gdpr-compliance",
+          "serviceId": "citizen-data-platform"
+        },
+        {
+          "patternId": "versioned-calculations",
+          "serviceId": "calculation-engine"
+        },
+        {
+          "patternId": "data-aggregation",
+          "serviceId": "reporting-api"
+        },
+        {
+          "patternId": "caching-strategy",
+          "serviceId": "reporting-api"
+        },
+        {
+          "patternId": "data-validation",
+          "serviceId": "data-quality-service"
+        },
+        {
+          "patternId": "monitoring-patterns",
+          "serviceId": "data-quality-service"
+        },
+        {
+          "patternId": "twelve-factor-app",
+          "serviceId": "dcs-platform"
+        },
+        {
+          "patternId": "infrastructure-as-code",
+          "serviceId": "dcs-platform"
+        },
+        {
+          "patternId": "observability-patterns",
+          "serviceId": "monitoring-stack"
+        },
+        {
+          "patternId": "alerting-strategy",
+          "serviceId": "monitoring-stack"
+        },
+        {
+          "patternId": "continuous-deployment",
+          "serviceId": "ci-cd-service"
+        },
+        {
+          "patternId": "security-scanning",
+          "serviceId": "ci-cd-service"
+        },
+        {
+          "patternId": "saga-pattern",
+          "serviceId": "integration-hub"
+        },
+        {
+          "patternId": "partner-onboarding",
+          "serviceId": "partner-gateway"
+        },
+        {
+          "patternId": "versioned-calculations",
+          "serviceId": "tax-calculation-engine"
+        },
+        {
+          "patternId": "document-upload",
+          "serviceId": "assessment-service"
+        },
+        {
+          "patternId": "async-processing",
+          "serviceId": "assessment-service"
+        },
+        {
+          "patternId": "account-management",
+          "serviceId": "tax-account-api"
+        },
+        {
+          "patternId": "balance-calculation",
+          "serviceId": "tax-account-api"
+        },
+        {
+          "patternId": "payment-allocation-rules",
+          "serviceId": "payment-allocation"
+        },
+        {
+          "patternId": "caching-strategy",
+          "serviceId": "income-verification-api"
+        },
+        {
+          "patternId": "batch-processing",
+          "serviceId": "employer-api"
+        },
+        {
+          "patternId": "file-upload",
+          "serviceId": "employer-api"
+        },
+        {
+          "patternId": "validation-rules",
+          "serviceId": "employer-api"
+        },
+        {
+          "patternId": "delegation-patterns",
+          "serviceId": "agent-services-api"
+        },
+        {
+          "patternId": "authorisation-management",
+          "serviceId": "agent-services-api"
+        },
+        {
+          "patternId": "developer-experience",
+          "serviceId": "rts-developer-portal"
+        },
+        {
+          "patternId": "api-documentation",
+          "serviceId": "rts-developer-portal"
+        },
+        {
+          "patternId": "data-lake-architecture",
+          "serviceId": "rts-data-lake"
+        },
+        {
+          "patternId": "data-governance",
+          "serviceId": "rts-data-lake"
+        },
+        {
+          "patternId": "event-streaming",
+          "serviceId": "rti-processor"
+        },
+        {
+          "patternId": "exactly-once-processing",
+          "serviceId": "rti-processor"
+        },
+        {
+          "patternId": "data-warehousing",
+          "serviceId": "analytics-platform"
+        },
+        {
+          "patternId": "dashboard-patterns",
+          "serviceId": "analytics-platform"
+        },
+        {
+          "patternId": "data-lineage",
+          "serviceId": "data-governance-tools"
+        },
+        {
+          "patternId": "data-quality",
+          "serviceId": "data-governance-tools"
+        },
+        {
+          "patternId": "ml-scoring",
+          "serviceId": "fraud-detection-api"
+        },
+        {
+          "patternId": "anomaly-detection",
+          "serviceId": "fraud-detection-api"
+        },
+        {
+          "patternId": "ml-scoring",
+          "serviceId": "risk-scoring-service"
+        },
+        {
+          "patternId": "feature-engineering",
+          "serviceId": "risk-scoring-service"
+        },
+        {
+          "patternId": "decision-tables",
+          "serviceId": "compliance-rules-engine"
+        },
+        {
+          "patternId": "document-validation",
+          "serviceId": "identity-verification-api"
+        },
+        {
+          "patternId": "document-validation",
+          "serviceId": "document-check-service"
+        },
+        {
+          "patternId": "fraud-detection",
+          "serviceId": "document-check-service"
+        },
+        {
+          "patternId": "confidence-levels",
+          "serviceId": "id-proofing-service"
+        },
+        {
+          "patternId": "real-time-checks",
+          "serviceId": "border-control-api"
+        },
+        {
+          "patternId": "watchlist-matching",
+          "serviceId": "border-control-api"
+        },
+        {
+          "patternId": "event-streaming",
+          "serviceId": "advance-passenger-info"
+        },
+        {
+          "patternId": "pre-arrival-processing",
+          "serviceId": "advance-passenger-info"
+        },
+        {
+          "patternId": "real-time-matching",
+          "serviceId": "watchlist-service"
+        },
+        {
+          "patternId": "fuzzy-matching",
+          "serviceId": "watchlist-service"
+        },
+        {
+          "patternId": "real-time-processing",
+          "serviceId": "egate-service"
+        },
+        {
+          "patternId": "biometric-verification",
+          "serviceId": "egate-service"
+        },
+        {
+          "patternId": "document-upload",
+          "serviceId": "passport-application-api"
+        },
+        {
+          "patternId": "async-processing",
+          "serviceId": "passport-application-api"
+        },
+        {
+          "patternId": "payment-flow",
+          "serviceId": "passport-application-api"
+        },
+        {
+          "patternId": "employer-checking",
+          "serviceId": "right-to-work-api"
+        },
+        {
+          "patternId": "share-codes",
+          "serviceId": "right-to-work-api"
+        },
+        {
+          "patternId": "landlord-checking",
+          "serviceId": "right-to-rent-api"
+        },
+        {
+          "patternId": "share-codes",
+          "serviceId": "right-to-rent-api"
+        },
+        {
+          "patternId": "secure-printing",
+          "serviceId": "document-issuance"
+        },
+        {
+          "patternId": "digital-credentials",
+          "serviceId": "document-issuance"
+        },
+        {
+          "patternId": "biometric-matching",
+          "serviceId": "biometric-matching-api"
+        },
+        {
+          "patternId": "threshold-tuning",
+          "serviceId": "biometric-matching-api"
+        },
+        {
+          "patternId": "presentation-attack-detection",
+          "serviceId": "facial-recognition-service"
+        },
+        {
+          "patternId": "biometric-capture",
+          "serviceId": "biometric-enrolment"
+        },
+        {
+          "patternId": "quality-checks",
+          "serviceId": "biometric-enrolment"
+        },
+        {
+          "patternId": "event-sourcing",
+          "serviceId": "vehicle-register-api"
+        },
+        {
+          "patternId": "privacy-by-design",
+          "serviceId": "keeper-records-api"
+        },
+        {
+          "patternId": "data-retention",
+          "serviceId": "keeper-records-api"
+        },
+        {
+          "patternId": "data-aggregation",
+          "serviceId": "vehicle-history-service"
+        },
+        {
+          "patternId": "caching-strategy",
+          "serviceId": "vehicle-history-service"
+        },
+        {
+          "patternId": "batch-processing",
+          "serviceId": "trade-api"
+        },
+        {
+          "patternId": "document-upload",
+          "serviceId": "licence-application-api"
+        },
+        {
+          "patternId": "photo-validation",
+          "serviceId": "licence-application-api"
+        },
+        {
+          "patternId": "payment-flow",
+          "serviceId": "licence-application-api"
+        },
+        {
+          "patternId": "share-codes",
+          "serviceId": "entitlement-check-api"
+        },
+        {
+          "patternId": "event-sourcing",
+          "serviceId": "penalty-points-api"
+        },
+        {
+          "patternId": "court-integration",
+          "serviceId": "penalty-points-api"
+        },
+        {
+          "patternId": "sensitive-data",
+          "serviceId": "medical-fitness-api"
+        },
+        {
+          "patternId": "caching-strategy",
+          "serviceId": "vehicle-enquiry-api"
+        },
+        {
+          "patternId": "public-api",
+          "serviceId": "vehicle-enquiry-api"
+        },
+        {
+          "patternId": "event-streaming",
+          "serviceId": "insurance-industry-feed"
+        },
+        {
+          "patternId": "data-contracts",
+          "serviceId": "insurance-industry-feed"
+        },
+        {
+          "patternId": "secure-api",
+          "serviceId": "police-enquiry-api"
+        },
+        {
+          "patternId": "break-glass-access",
+          "serviceId": "summary-care-record-api"
+        },
+        {
+          "patternId": "patient-matching",
+          "serviceId": "patient-demographics-api"
+        },
+        {
+          "patternId": "data-quality",
+          "serviceId": "patient-demographics-api"
+        },
+        {
+          "patternId": "access-control",
+          "serviceId": "record-access-api"
+        },
+        {
+          "patternId": "digital-signatures",
+          "serviceId": "electronic-prescription-api"
+        },
+        {
+          "patternId": "workflow-patterns",
+          "serviceId": "electronic-prescription-api"
+        },
+        {
+          "patternId": "event-streaming",
+          "serviceId": "dispensing-service"
+        },
+        {
+          "patternId": "exactly-once-processing",
+          "serviceId": "dispensing-service"
+        },
+        {
+          "patternId": "data-aggregation",
+          "serviceId": "medication-record-api"
+        },
+        {
+          "patternId": "caching-strategy",
+          "serviceId": "medication-record-api"
+        },
+        {
+          "patternId": "smart-on-fhir",
+          "serviceId": "fhir-api-platform"
+        },
+        {
+          "patternId": "message-routing",
+          "serviceId": "message-router"
+        },
+        {
+          "patternId": "guaranteed-delivery",
+          "serviceId": "message-router"
+        },
+        {
+          "patternId": "adapter-pattern",
+          "serviceId": "legacy-adapters"
+        },
+        {
+          "patternId": "protocol-translation",
+          "serviceId": "legacy-adapters"
+        },
+        {
+          "patternId": "developer-experience",
+          "serviceId": "integration-toolkit"
+        },
+        {
+          "patternId": "api-documentation",
+          "serviceId": "integration-toolkit"
+        },
+        {
+          "patternId": "data-aggregation",
+          "serviceId": "population-health-api"
+        },
+        {
+          "patternId": "statistical-disclosure",
+          "serviceId": "population-health-api"
+        },
+        {
+          "patternId": "k-anonymity",
+          "serviceId": "anonymisation-service"
+        },
+        {
+          "patternId": "differential-privacy",
+          "serviceId": "anonymisation-service"
+        },
+        {
+          "patternId": "data-governance",
+          "serviceId": "research-data-api"
+        },
+        {
+          "patternId": "access-approval",
+          "serviceId": "research-data-api"
+        },
+        {
+          "patternId": "dashboard-patterns",
+          "serviceId": "health-dashboards"
+        },
+        {
+          "patternId": "data-visualisation",
+          "serviceId": "health-dashboards"
+        }
+      ],
+      "missingTeamReferences": [],
+      "unmirroredConsumedByPairs": [
+        {
+          "source": "advance-passenger-info",
+          "target": "watchlist-service"
+        },
+        {
+          "source": "assessment-service",
+          "target": "fraud-detection-api"
+        },
+        {
+          "source": "border-control-api",
+          "target": "biometric-matching-api"
+        },
+        {
+          "source": "case-management",
+          "target": "application-service"
+        },
+        {
+          "source": "case-management",
+          "target": "calculation-engine"
+        },
+        {
+          "source": "citizen-portal",
+          "target": "application-service"
+        },
+        {
+          "source": "eligibility-api",
+          "target": "citizen-data-platform"
+        },
+        {
+          "source": "eligibility-api",
+          "target": "data-exchange-api"
+        },
+        {
+          "source": "entitlement-check-api",
+          "target": "medical-fitness-api"
+        },
+        {
+          "source": "entitlement-check-api",
+          "target": "penalty-points-api"
+        },
+        {
+          "source": "health-info-exchange",
+          "target": "legacy-adapters"
+        },
+        {
+          "source": "health-info-exchange",
+          "target": "message-router"
+        },
+        {
+          "source": "health-info-exchange",
+          "target": "patient-demographics-api"
+        },
+        {
+          "source": "identity-verification-api",
+          "target": "facial-recognition-service"
+        },
+        {
+          "source": "identity-verification-api",
+          "target": "integration-hub"
+        },
+        {
+          "source": "income-verification-api",
+          "target": "integration-hub"
+        },
+        {
+          "source": "integration-hub",
+          "target": "identity-verification-api"
+        },
+        {
+          "source": "integration-hub",
+          "target": "income-verification-api"
+        },
+        {
+          "source": "message-router",
+          "target": "legacy-adapters"
+        },
+        {
+          "source": "passport-application-api",
+          "target": "document-issuance"
+        },
+        {
+          "source": "summary-care-record-api",
+          "target": "medication-record-api"
+        },
+        {
+          "source": "watchlist-service",
+          "target": "advance-passenger-info"
+        }
+      ],
+      "unmirroredDependsOnPairs": [
+        {
+          "source": "agent-services-api",
+          "target": "tax-account-api"
+        },
+        {
+          "source": "application-service",
+          "target": "eligibility-api"
+        },
+        {
+          "source": "case-management",
+          "target": "gov-notify"
+        },
+        {
+          "source": "ci-cd-service",
+          "target": "dcs-platform"
+        },
+        {
+          "source": "compliance-rules-engine",
+          "target": "risk-scoring-service"
+        },
+        {
+          "source": "component-library",
+          "target": "design-system"
+        },
+        {
+          "source": "data-exchange-api",
+          "target": "integration-hub"
+        },
+        {
+          "source": "data-governance-tools",
+          "target": "rts-data-lake"
+        },
+        {
+          "source": "data-quality-service",
+          "target": "citizen-data-platform"
+        },
+        {
+          "source": "delivery-receipts",
+          "target": "gov-notify"
+        },
+        {
+          "source": "facial-recognition-service",
+          "target": "biometric-matching-api"
+        },
+        {
+          "source": "id-proofing-service",
+          "target": "identity-verification-api"
+        },
+        {
+          "source": "keeper-records-api",
+          "target": "vehicle-register-api"
+        },
+        {
+          "source": "licence-application-api",
+          "target": "identity-verification-api"
+        },
+        {
+          "source": "monitoring-stack",
+          "target": "dcs-platform"
+        },
+        {
+          "source": "partner-gateway",
+          "target": "integration-hub"
+        },
+        {
+          "source": "prototype-kit",
+          "target": "design-system"
+        },
+        {
+          "source": "reconciliation-api",
+          "target": "gov-pay"
+        },
+        {
+          "source": "refund-service",
+          "target": "gov-pay"
+        },
+        {
+          "source": "rti-processor",
+          "target": "rts-data-lake"
+        },
+        {
+          "source": "vehicle-history-service",
+          "target": "vehicle-register-api"
+        }
+      ]
+    }
+  },
+  "summary": {
+    "admissibleAsRealApiRecords": 0,
+    "documentationMatchRecords": 0,
+    "endpointMatchRecords": 0,
+    "okfApiRecordsExamined": 41598,
+    "servicesWithExactDocumentationUrl": 0,
+    "servicesWithExactEndpointUrl": 0,
+    "servicesWithExactStableIdCollision": 0,
+    "servicesWithNoExactMatch": 85,
+    "servicesWithProbableTitleSimilarities": 8,
+    "stableIdCollisionRecords": 0,
+    "wayfinderServices": 85
+  }
+}

@@ -1,1 +1,1 @@
-{"hl7":[{"df":13,"token":"hl7"},{"df":13,"token":"hl7-v3"}],"hl7-":[{"df":13,"token":"hl7-v3"}],"hl7-v":[{"df":13,"token":"hl7-v3"}],"hl7-v3":[{"df":13,"token":"hl7-v3"}],"hlc":[{"df":3,"token":"hlc"}]}
+{"hl7":[{"df":15,"token":"hl7"},{"df":13,"token":"hl7-v3"},{"df":1,"token":"hl7v2"}],"hl7-":[{"df":13,"token":"hl7-v3"}],"hl7-v":[{"df":13,"token":"hl7-v3"}],"hl7-v3":[{"df":13,"token":"hl7-v3"}],"hl7v":[{"df":1,"token":"hl7v2"}],"hl7v2":[{"df":1,"token":"hl7v2"}],"hlc":[{"df":3,"token":"hlc"}]}
