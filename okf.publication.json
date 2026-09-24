@@ -1,6 +1,6 @@
 {
   "schema": "okf-repository-publication-contract.v1",
-  "modified": "2026-08-18",
+  "modified": "2026-09-24",
   "locale": "en-GB",
   "time_zone": "Europe/London",
   "repository": {
@@ -77,23 +77,151 @@
       "limitations": [
         "The checked-in preview is a frozen observation and does not establish that upstream APIs remain available or unchanged."
       ]
+    },
+    {
+      "id": "wayfinder-synthetic-demo",
+      "label": "Wayfinder synthetic demonstration catalogue",
+      "description": "The frozen public Wayfinder export, capture manifest and reconciliation used as an opt-in synthetic comparison layer.",
+      "kind": "web",
+      "paths": [
+        "sources/wayfinder/2026-09-24/*",
+        "scripts/prepare_wayfinder_snapshot.py",
+        "scripts/wayfinder_import.py",
+        "tests/test_wayfinder_import.py",
+        "docs/wayfinder-comparison-2026-09-24.md"
+      ],
+      "formats": [
+        "application/json",
+        "text/html",
+        "application/javascript"
+      ],
+      "origin": "external-public-demonstrator",
+      "authority": "synthetic",
+      "snapshot_policy": "frozen-reviewed",
+      "inventory": {
+        "method": "content-addressed-public-capture",
+        "manifest_path": "sources/wayfinder/2026-09-24/manifest.json",
+        "identity": [
+          "source-url",
+          "retrieved-at",
+          "sha256",
+          "byte-count"
+        ]
+      },
+      "rights": {
+        "status": "not-specified",
+        "evidence": [
+          "https://wayfinder.pbj.cx/",
+          "https://wayfinder.pbj.cx/about",
+          "https://wayfinder.pbj.cx/docs"
+        ],
+        "limitations": [
+          "No explicit reusable licence was found; documentation does not imply a reuse licence, government authority or live-service assurance."
+        ]
+      },
+      "sensitivity": {
+        "status": "assessed-synthetic-public-data",
+        "assessment": "The checked-in export contains fictional public demonstration records. Private attribution correspondence, contact details and message text remain offline and excluded from publication."
+      },
+      "extraction": {
+        "mode": "checked-in-frozen-snapshot",
+        "network_access": "none",
+        "command_ids": [
+          "upgrade-publication"
+        ],
+        "limitations": [
+          "Routine builds verify and import only the checked-in capture; any new public-site observation is a separately authorised acquisition operation."
+        ]
+      },
+      "invalidates": [
+        "source",
+        "semantic",
+        "runtime",
+        "documentation",
+        "release",
+        "deployment"
+      ],
+      "limitations": [
+        "Wayfinder records are fictional synthetic comparison material, rejected from real-world catalogue admission and excluded from the default material relationship runtime."
+      ]
     }
   ],
   "boundaries": {
     "authored": [
       {
         "path": "scripts/*",
-        "role": "generator",
+        "role": "generator"
+      },
+      {
+        "path": "scripts/build_uk_government_api_okf.py",
+        "role": "acquisition-generator",
         "source_family_id": "public-api-acquisition"
       },
       {
+        "path": "scripts/prepare_wayfinder_snapshot.py",
+        "role": "frozen-source-preparation",
+        "source_family_id": "wayfinder-synthetic-demo"
+      },
+      {
+        "path": "scripts/wayfinder_import.py",
+        "role": "source-adapter",
+        "source_family_id": "wayfinder-synthetic-demo"
+      },
+      {
+        "path": "sources/wayfinder/2026-09-24/*",
+        "role": "frozen-source-snapshot",
+        "source_family_id": "wayfinder-synthetic-demo"
+      },
+      {
         "path": "tests/*",
-        "role": "test",
+        "role": "test"
+      },
+      {
+        "path": "tests/fixtures/uk_government_api_okf/*",
+        "role": "source-fixture",
         "source_family_id": "public-api-acquisition"
+      },
+      {
+        "path": "tests/test_wayfinder_import.py",
+        "role": "test",
+        "source_family_id": "wayfinder-synthetic-demo"
+      },
+      {
+        "path": "context/*",
+        "role": "semantic-context"
+      },
+      {
+        "path": "profiles/bundle-wiki/v1/*",
+        "role": "semantic-profile"
+      },
+      {
+        "path": "profiles/bundle-wiki/v1.vendor-lock.json",
+        "role": "semantic-profile-lock"
+      },
+      {
+        "path": "schemas/*",
+        "role": "schema"
+      },
+      {
+        "path": "okf.semantic.json",
+        "role": "semantic-contract"
+      },
+      {
+        "path": "pyproject.toml",
+        "role": "dependency-manifest"
+      },
+      {
+        "path": "uv.lock",
+        "role": "dependency-lock"
       },
       {
         "path": "docs/*",
         "role": "documentation"
+      },
+      {
+        "path": "docs/wayfinder-comparison-2026-09-24.md",
+        "role": "source-comparison",
+        "source_family_id": "wayfinder-synthetic-demo"
       },
       {
         "path": "README.md",
@@ -183,12 +311,103 @@
         ]
       },
       {
+        "path": "bundle/data/relationships-*.json.gz",
+        "role": "relationship-runtime",
+        "plane": "runtime",
+        "required": true,
+        "build_command_ids": [
+          "acquire-publication",
+          "upgrade-publication"
+        ],
+        "check_command_ids": [
+          "check-bundle"
+        ]
+      },
+      {
+        "path": "bundle/data/relationship-runtime/*",
+        "role": "bounded-relationship-runtime",
+        "plane": "runtime",
+        "required": true,
+        "build_command_ids": [
+          "acquire-publication",
+          "upgrade-publication"
+        ],
+        "check_command_ids": [
+          "check-bundle"
+        ]
+      },
+      {
+        "path": "bundle/data/semantic/*",
+        "role": "semantic-shards",
+        "plane": "semantic",
+        "required": true,
+        "build_command_ids": [
+          "acquire-publication",
+          "upgrade-publication"
+        ],
+        "check_command_ids": [
+          "check-bundle"
+        ]
+      },
+      {
+        "path": "bundle/data/predicate-registry.json",
+        "role": "predicate-registry",
+        "plane": "semantic",
+        "required": true,
+        "build_command_ids": [
+          "acquire-publication",
+          "upgrade-publication"
+        ],
+        "check_command_ids": [
+          "check-bundle"
+        ]
+      },
+      {
+        "path": "bundle/data/sources/wayfinder/*",
+        "role": "source-provenance-copy",
+        "plane": "source",
+        "required": true,
+        "build_command_ids": [
+          "upgrade-publication"
+        ],
+        "check_command_ids": [
+          "check-bundle"
+        ]
+      },
+      {
         "path": "bundle/data/search/*",
         "role": "search-index",
         "plane": "runtime",
         "required": true,
         "build_command_ids": [
-          "acquire-publication"
+          "acquire-publication",
+          "upgrade-publication"
+        ],
+        "check_command_ids": [
+          "check-bundle"
+        ]
+      },
+      {
+        "path": "bundle/context/*",
+        "role": "semantic-context",
+        "plane": "semantic",
+        "required": true,
+        "build_command_ids": [
+          "acquire-publication",
+          "upgrade-publication"
+        ],
+        "check_command_ids": [
+          "check-bundle"
+        ]
+      },
+      {
+        "path": "bundle/schemas/*",
+        "role": "semantic-schema",
+        "plane": "semantic",
+        "required": true,
+        "build_command_ids": [
+          "acquire-publication",
+          "upgrade-publication"
         ],
         "check_command_ids": [
           "check-bundle"
@@ -201,6 +420,18 @@
         "required": true,
         "build_command_ids": [
           "acquire-publication",
+          "upgrade-publication"
+        ],
+        "check_command_ids": [
+          "check-bundle"
+        ]
+      },
+      {
+        "path": "bundle/docs/*",
+        "role": "documentation",
+        "plane": "documentation",
+        "required": true,
+        "build_command_ids": [
           "upgrade-publication"
         ],
         "check_command_ids": [
@@ -265,11 +496,21 @@
       "id": "source",
       "depends_on": [],
       "paths": [
-        "scripts/build_uk_government_api_okf.py",
-        "tests/fixtures/uk_government_api_okf/*"
+        "scripts/*",
+        "sources/wayfinder/2026-09-24/*",
+        "bundle/data/sources/wayfinder/*",
+        "tests/*",
+        "context/*",
+        "profiles/*",
+        "schemas/*",
+        "okf.semantic.json",
+        "pyproject.toml",
+        "uv.lock"
       ],
       "command_ids": [
+        "setup-environment",
         "acquire-publication",
+        "upgrade-publication",
         "test-all"
       ]
     },
@@ -283,11 +524,16 @@
         "bundle/okf-bundle.jsonld",
         "bundle/*.md",
         "bundle/api-records/*",
-        "bundle/organisations/*"
+        "bundle/organisations/*",
+        "bundle/context/*",
+        "bundle/schemas/*",
+        "bundle/data/semantic/*",
+        "bundle/data/predicate-registry.json"
       ],
       "command_ids": [
         "upgrade-publication",
-        "check-bundle"
+        "check-bundle",
+        "reconcile-explorer"
       ]
     },
     {
@@ -297,11 +543,13 @@
       ],
       "paths": [
         "bundle/okf-explorer.json",
-        "bundle/data/*"
+        "bundle/data/*",
+        "bundle/data/relationship-runtime/*"
       ],
       "command_ids": [
         "upgrade-publication",
-        "check-bundle"
+        "check-bundle",
+        "reconcile-explorer"
       ]
     },
     {
@@ -314,7 +562,8 @@
         "README.md",
         "AGENTS.md",
         "CHANGELOG.md",
-        "docs/*"
+        "docs/*",
+        "bundle/docs/*"
       ],
       "command_ids": [
         "check-contract"
@@ -355,6 +604,24 @@
   "tooling": {
     "commands": [
       {
+        "id": "setup-environment",
+        "kind": "setup",
+        "planes": [
+          "source",
+          "semantic",
+          "runtime",
+          "documentation",
+          "release",
+          "deployment"
+        ],
+        "command": "uv sync --locked",
+        "source": "AGENTS.md",
+        "review_status": "reviewed-local-guidance",
+        "network": "locked-dependencies",
+        "mutates": "environment-only",
+        "timeout_minutes": 10
+      },
+      {
         "id": "acquire-publication",
         "kind": "acquire",
         "planes": [
@@ -363,7 +630,7 @@
           "runtime",
           "deployment"
         ],
-        "command": "python3 scripts/build_uk_government_api_okf.py",
+        "command": "uv run --locked python scripts/build_uk_government_api_okf.py",
         "source": "README.md",
         "review_status": "reviewed-local-guidance",
         "network": "acquisition",
@@ -374,12 +641,13 @@
         "id": "upgrade-publication",
         "kind": "build",
         "planes": [
+          "source",
           "semantic",
           "runtime",
           "documentation",
           "deployment"
         ],
-        "command": "python3 scripts/upgrade_publication.py",
+        "command": "uv run --locked python scripts/upgrade_publication.py",
         "source": "README.md",
         "review_status": "reviewed-local-guidance",
         "network": "none",
@@ -392,7 +660,7 @@
         "planes": [
           "release"
         ],
-        "command": "python3 scripts/build_checksums.py",
+        "command": "uv run --locked python scripts/build_checksums.py",
         "source": "README.md",
         "review_status": "reviewed-local-guidance",
         "network": "none",
@@ -407,7 +675,7 @@
           "runtime",
           "deployment"
         ],
-        "command": "python3 scripts/check_bundle.py",
+        "command": "uv run --locked python scripts/check_bundle.py",
         "source": "README.md",
         "review_status": "reviewed-local-guidance",
         "network": "none",
@@ -421,8 +689,22 @@
           "release",
           "deployment"
         ],
-        "command": "python3 scripts/build_checksums.py --check",
+        "command": "uv run --locked python scripts/build_checksums.py --check",
         "source": "README.md",
+        "review_status": "reviewed-local-guidance",
+        "network": "none",
+        "mutates": "none",
+        "timeout_minutes": 10
+      },
+      {
+        "id": "reconcile-explorer",
+        "kind": "check",
+        "planes": [
+          "semantic",
+          "runtime"
+        ],
+        "command": "uv run --project okf-explorer --locked python okf-explorer/scripts/reconcile_okf_repositories.py --repo . --strict",
+        "source": ".github/workflows/ci.yml",
         "review_status": "reviewed-local-guidance",
         "network": "none",
         "mutates": "none",
@@ -436,7 +718,7 @@
           "documentation",
           "release"
         ],
-        "command": "python3 scripts/check_publication_contract.py",
+        "command": "uv run --locked python scripts/check_publication_contract.py",
         "source": "AGENTS.md",
         "review_status": "reviewed-local-guidance",
         "network": "none",
@@ -453,7 +735,7 @@
           "documentation",
           "release"
         ],
-        "command": "python3 -m unittest discover -s tests -v",
+        "command": "uv run --locked python -m unittest discover -s tests -v",
         "source": "README.md",
         "review_status": "reviewed-local-guidance",
         "network": "none",
@@ -480,8 +762,15 @@
       "scripts/*",
       "tests/*",
       "docs/*",
+      "sources/*",
+      "context/*",
+      "profiles/*",
+      "schemas/*",
       ".github/workflows/*",
+      "okf.semantic.json",
       "okf.publication.json",
+      "pyproject.toml",
+      "uv.lock",
       "bundle/*"
     ],
     "documentation_paths": [
@@ -503,6 +792,16 @@
     "impact_routing": "full-suite",
     "parallelism": "serial",
     "unknown_path_policy": "full-suite",
+    "cross_repository_checks": [
+      {
+        "id": "reconcile-explorer",
+        "repository": "https://github.com/chris-page-gov/okf-explorer",
+        "revision": "d6930bbcddaab616deec002d9e6efff6e3aae953",
+        "checkout_path": "okf-explorer",
+        "command_id": "reconcile-explorer",
+        "source_network_access": "none"
+      }
+    ],
     "browser": {
       "ordinary": {
         "policy": "not-applicable",
@@ -569,6 +868,7 @@
   },
   "limitations": [
     "The checked-in corpus remains a bounded preview; validation and deployment do not establish current completeness across upstream public APIs.",
+    "Wayfinder records are fictional synthetic comparison material with rights not specified; they are rejected from real-world catalogue admission and excluded from the default material relationship runtime.",
     "The post-deploy hook proves HTTP route and byte identity through the checksum manifest; this static bundle has no browser interaction or console assurance gate.",
     "Networked source acquisition remains a separately authorised operation and does not run in routine CI or Pages deployment."
   ]
