@@ -30,12 +30,17 @@ repository asks "what does `licence basis` mean in DCAT/OpenAPI terms?"
 
 ## Status: standards-alignable, not standards-conformant
 
-Nothing here changes today's output format. `uk-government-apis/api-records/*.md`
-and the `okf-explorer.json` shards stay Markdown/JSON. Full DCAT-AP conformance
-requires an RDF serialisation (Turtle/JSON-LD) with DCAT-AP's cardinality rules
-(for example `dcat:endpointURL` is mandatory, 1..n); full OpenAPI conformance
-requires a complete `openapi` document per API version. This repository does
-neither yet. What this crosswalk guarantees instead is that every OKF field
+The publication now includes a sharded JSON-LD graph for OKF relationship
+semantics, while `uk-government-apis/api-records/*.md` and the
+`okf-explorer.json` shards remain the human and bounded Reader planes. That
+relationship graph is not a DCAT-AP export. Full DCAT-AP conformance requires
+DCAT-shaped RDF with the profile's cardinality rules (for example
+`dcat:endpointURL` is mandatory, 1..n); full OpenAPI conformance requires a
+complete `openapi` document per API version. This repository does neither yet.
+The digest-bound material runtime is only a bounded Reader projection; the
+semantic shards and compatibility chunks retain the complete assertion graph,
+and an exhaustive Draft 2020-12 receipt validates every generated assertion.
+What this crosswalk guarantees instead is that every OKF field
 already has a named, correct target in both standards, so a future exporter
 (or a hand-written report, like the OS inventory produced from this pack) can
 translate without guessing. Treat "DCAT-alignable" and "OpenAPI-alignable" as
@@ -90,7 +95,7 @@ for an observed multi-source pack, but it leaves clear gaps:
 | OpenAPI operation fragment | OS and ONS operation-like records can be represented as operation fragments. | HTTP method, operationId, parameters, request/response schemas and error models are often missing and must not be invented. |
 | OpenAPI security schemes | `access_model` now maps to `apiKey`, `oauth2`, `none`, `metadata-only` or `unknown`. | The location/name of API keys, OAuth flow, scopes, token URLs and sender-constrained-token requirements need provider-specific contract parsing. |
 | DQV quality annotations | OKF metadata-quality dimensions are named and explained in the UI. | No DQV RDF is emitted yet, and quality percentages remain catalogue-completeness signals rather than assurance metrics. |
-| PROV provenance | Records and relationships carry source adapter, source URL, confidence and observed timestamp. | A full PROV activity graph for each adapter run is not emitted yet. |
+| PROV provenance | Rich relationship assertions carry source adapter/tier, source URL and digest, edge confidence, observation time, derivation activity, evidence and record-level licence context. | The graph describes deterministic catalogue projection activities; it does not yet model every upstream adapter run as a complete PROV activity graph. |
 
 For all API-related bundles, treat these gaps as build requirements rather than
 documentation caveats. A bundle can be `standards-alignable` at publication

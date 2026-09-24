@@ -1,0 +1,239 @@
+{
+  "admission": {
+    "assertionScope": "synthetic-fixture",
+    "authority": "synthetic",
+    "defaultLoaded": false,
+    "mode": "synthetic-fixture-opt-in",
+    "note": "The records are retained for comparison and modelling. They are not verified descriptions of live UK government services.",
+    "realApiAdmissionCount": 0,
+    "rights": "not specified"
+  },
+  "authorAttribution": {
+    "name": "Paul Buchanan-Jones",
+    "source": "Private correspondence supplied to the maintainers; contact details and message text are retained offline and excluded from publication."
+  },
+  "capture": {
+    "bytes": 197369,
+    "determinism": "Array order, object key order and values preserve the public Turbopack module exports at capture time.",
+    "format": "application/json",
+    "path": "catalogue.json",
+    "sha256": "d15d6c8bfe9490855894aeaa1b1f82a52277737c584a2bc9944a9a906d267969"
+  },
+  "capturedAt": "2026-09-24T20:22:41.964Z",
+  "consistencyFindings": [
+    {
+      "subject": "service count",
+      "values": [
+        {
+          "url": "https://wayfinder.pbj.cx/",
+          "value": 85
+        },
+        {
+          "url": "https://wayfinder.pbj.cx/about",
+          "value": 75
+        },
+        {
+          "context": "capability table",
+          "url": "https://wayfinder.pbj.cx/compare",
+          "value": 79
+        }
+      ]
+    },
+    {
+      "subject": "pattern count",
+      "values": [
+        {
+          "url": "https://wayfinder.pbj.cx/patterns",
+          "value": 19
+        },
+        {
+          "url": "https://wayfinder.pbj.cx/about",
+          "value": 18
+        }
+      ]
+    },
+    {
+      "subject": "relationship integrity",
+      "value": "151 references from services/patterns point to 97 pattern identifiers not present in the 19-pattern export; policy records reference 7 absent service identifiers (9 references); 3 graph relationships target absent service identifiers."
+    }
+  ],
+  "counts": {
+    "agents": 5,
+    "dataSharingAgreements": 6,
+    "departments": 6,
+    "patterns": 19,
+    "people": 24,
+    "policies": 5,
+    "relationships": 138,
+    "services": 85,
+    "teams": 23,
+    "totalRecords": 311
+  },
+  "extraction": {
+    "discoveryNote": "Chunk names are build-specific. Future runs should rediscover script URLs from the rendered catalogue, graph and person pages, then retain retrieval metadata and hashes.",
+    "method": "Fetched the two content-addressed Next.js/Turbopack bundles, evaluated only their static module registration wrappers in an isolated Node.js vm, resolved the data-module imports locally, and serialised every exported record array.",
+    "sourceMapsFound": false,
+    "supportedCatalogueApiFound": false,
+    "supportedDownloadFound": false
+  },
+  "manifestVersion": "1.0",
+  "observedImplementation": {
+    "declaredDemoStorage": "The architecture page says service catalogue data is held in SQLite and people profiles are fetched from a localhost Solid Pod server.",
+    "publicDataLocation": "Static client bundles and server-rendered Next.js payloads.",
+    "solidPodCheck": "The advertised public pod-proxy route returned HTTP 502 for the published Flint Rivers localhost demo WebID on 24 September 2026.",
+    "sourceRepositoryCheck": "All five sourceRepository URLs embedded in agent records returned HTTP 404 on 24 September 2026."
+  },
+  "provenanceAssessment": {
+    "authorityFields": false,
+    "confidenceFields": false,
+    "notes": "Service documentation and endpoint values use demo.gov.example placeholders. The live catalogue therefore cannot satisfy a full-provenance admission requirement for real API records.",
+    "observationFields": false,
+    "recordLevelRights": false,
+    "recordLevelSourceEvidence": false
+  },
+  "publicationBoundary": {
+    "connectedToRealGovernmentSystems": false,
+    "evidence": [
+      {
+        "note": "Homepage states that the departments, services and people shown are fictional.",
+        "url": "https://wayfinder.pbj.cx/"
+      },
+      {
+        "note": "About page states that the architecture, records, statistics and impact claims are illustrative and fictional, and that no real government systems or data are connected.",
+        "url": "https://wayfinder.pbj.cx/about"
+      },
+      {
+        "note": "Documentation page states that documentation links in the demo are placeholders.",
+        "url": "https://wayfinder.pbj.cx/docs"
+      }
+    ],
+    "officialGovernmentService": false,
+    "syntheticDemo": true
+  },
+  "rights": {
+    "documentationDecision": "Document the exported records as an explicitly fictional synthetic comparison source. Keep record-level rights as not specified and do not imply a reuse licence, government authority or live-service assurance.",
+    "finding": "No explicit reusable licence or rights statement was located on the public site. The footer's licence link points to a page fragment.",
+    "reusableLicenceFound": false,
+    "status": "not specified"
+  },
+  "robots": {
+    "disallowAll": true,
+    "explicitlyBlockedAgents": [
+      "GPTBot",
+      "ChatGPT-User",
+      "Google-Extended",
+      "CCBot",
+      "anthropic-ai",
+      "Claude-Web",
+      "cohere-ai",
+      "PerplexityBot",
+      "Bytespider"
+    ],
+    "finding": "The publication asks all crawlers, including named AI crawlers, not to crawl and publishes no sitemap.",
+    "url": "https://wayfinder.pbj.cx/robots.txt"
+  },
+  "sources": {
+    "about": {
+      "bytes": 48336,
+      "headers": {
+        "cache-control": "s-maxage=31536000",
+        "cf-cache-status": "DYNAMIC",
+        "content-type": "text/html; charset=utf-8",
+        "date": "Thu, 24 Sep 2026 20:22:42 GMT",
+        "server": "cloudflare",
+        "x-nextjs-cache": "HIT",
+        "x-nextjs-prerender": "1, 1",
+        "x-robots-tag": "noindex, nofollow, noarchive, nosnippet, noimageindex"
+      },
+      "retrievedAt": "2026-09-24T20:22:41.964Z",
+      "sha256": "4c38abea61f689657019bf05ef8d29579a672a3a8a87b75b8e8e390cd5f76fd2",
+      "status": 200,
+      "url": "https://wayfinder.pbj.cx/about"
+    },
+    "catalogueBundle": {
+      "bytes": 116804,
+      "headers": {
+        "cache-control": "public, max-age=31536000, immutable",
+        "cf-cache-status": "HIT",
+        "content-type": "application/javascript; charset=UTF-8",
+        "date": "Thu, 24 Sep 2026 20:22:42 GMT",
+        "etag": "W/\"1c844-19d9692dd7c\"",
+        "last-modified": "Thu, 16 Apr 2026 13:55:00 GMT",
+        "server": "cloudflare",
+        "x-robots-tag": "noindex, nofollow, noarchive, nosnippet, noimageindex"
+      },
+      "retrievedAt": "2026-09-24T20:22:41.964Z",
+      "sha256": "e2cc1df581798b87d65563424011f4f9b2123069b0e0753cb34a9615986a052c",
+      "status": 200,
+      "url": "https://wayfinder.pbj.cx/_next/static/chunks/358f0ba2d25ab7b4.js"
+    },
+    "docs": {
+      "bytes": 28390,
+      "headers": {
+        "cache-control": "s-maxage=31536000",
+        "cf-cache-status": "DYNAMIC",
+        "content-type": "text/html; charset=utf-8",
+        "date": "Thu, 24 Sep 2026 20:22:42 GMT",
+        "server": "cloudflare",
+        "x-nextjs-cache": "HIT",
+        "x-nextjs-prerender": "1, 1",
+        "x-robots-tag": "noindex, nofollow, noarchive, nosnippet, noimageindex"
+      },
+      "retrievedAt": "2026-09-24T20:22:41.964Z",
+      "sha256": "e396d2a1482f016fb1e4d6d1ae0500ec5738de91871ee072a9d9f9674f86ca12",
+      "status": 200,
+      "url": "https://wayfinder.pbj.cx/docs"
+    },
+    "homepage": {
+      "bytes": 28685,
+      "headers": {
+        "cache-control": "s-maxage=31536000",
+        "cf-cache-status": "DYNAMIC",
+        "content-type": "text/html; charset=utf-8",
+        "date": "Thu, 24 Sep 2026 20:22:42 GMT",
+        "server": "cloudflare",
+        "x-nextjs-cache": "HIT",
+        "x-nextjs-prerender": "1, 1",
+        "x-robots-tag": "noindex, nofollow, noarchive, nosnippet, noimageindex"
+      },
+      "retrievedAt": "2026-09-24T20:22:41.964Z",
+      "sha256": "6891a4868fc82e3b9b11335bb329692f29c912c3bb3d14a07e63990d6fdc64e6",
+      "status": 200,
+      "url": "https://wayfinder.pbj.cx/"
+    },
+    "robots": {
+      "bytes": 509,
+      "headers": {
+        "cache-control": "public, max-age=14400",
+        "cf-cache-status": "REVALIDATED",
+        "content-type": "text/plain; charset=UTF-8",
+        "date": "Thu, 24 Sep 2026 20:22:42 GMT",
+        "etag": "W/\"1fd-19b9dbaae72\"",
+        "last-modified": "Thu, 08 Jan 2026 13:10:15 GMT",
+        "server": "cloudflare",
+        "x-robots-tag": "noindex, nofollow, noarchive, nosnippet, noimageindex"
+      },
+      "retrievedAt": "2026-09-24T20:22:41.964Z",
+      "sha256": "d49a8ffac0db203696cca71d678a67a7035d13b0f6379a0f4b164c7b75ea4fd7",
+      "status": 200,
+      "url": "https://wayfinder.pbj.cx/robots.txt"
+    },
+    "supportingBundle": {
+      "bytes": 29147,
+      "headers": {
+        "cache-control": "public, max-age=31536000, immutable",
+        "cf-cache-status": "HIT",
+        "content-type": "application/javascript; charset=UTF-8",
+        "date": "Thu, 24 Sep 2026 20:22:42 GMT",
+        "etag": "W/\"71db-19d9692dd8c\"",
+        "last-modified": "Thu, 16 Apr 2026 13:55:00 GMT",
+        "server": "cloudflare",
+        "x-robots-tag": "noindex, nofollow, noarchive, nosnippet, noimageindex"
+      },
+      "retrievedAt": "2026-09-24T20:22:41.964Z",
+      "sha256": "9ef9f05a772f71311063b091be0ff8d88cb3d86151ef256940799e2df149e25f",
+      "status": 200,
+      "url": "https://wayfinder.pbj.cx/_next/static/chunks/6c8c6cf06741410f.js"
+    }
+  }
+}

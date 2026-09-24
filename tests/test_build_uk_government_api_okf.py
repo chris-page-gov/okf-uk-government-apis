@@ -1,10 +1,13 @@
 from __future__ import annotations
 
+import copy
 import importlib.util
+import gzip
 import json
 from pathlib import Path
 import sys
 import unittest
+from unittest.mock import patch
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -163,6 +166,59 @@ class UkGovernmentApiOkfGeneratorTest(unittest.TestCase):
     def test_safe_url_strips_whitespace(self):
         self.assertEqual(builder_module.safe_url("  https://example.gov.uk/api  "), "https://example.gov.uk/api")
 
+    def test_ckan_provenance_url_is_canonical_and_idempotent(self):
+        query = builder_module.ckan_api_query()
+        raw_url = f"{builder_module.DEFAULT_CKAN_API_URL}?fq={query}"
+        expected_url = (
+            f"{builder_module.DEFAULT_CKAN_API_URL}?fq="
+            "res_format%3A%28%22WMS%22%20OR%20%22WFS%22%20OR%20"
+            "%22WMTS%22%20OR%20%22WCS%22%20OR%20%22OGC%20API%20-%20"
+            "Features%22%20OR%20%22OGC%20WFS%22%20OR%20%22OGC%20WMS%22%20"
+            "OR%20%22ogc%20wfs%22%20OR%20%22ogc%20wms%22%20OR%20%22ArcGIS%20"
+            "GeoServices%20REST%20API%22%20OR%20%22arcgis%20geoservices%20rest%20"
+            "api%22%20OR%20%22Esri%20REST%22%20OR%20%22ESRI%20REST%20API%22%20"
+            "OR%20%22ESRI%20Rest%20API%22%20OR%20%22esri%20rest%20api%22%20OR%20"
+            "%22SPARQL%22%20OR%20%22API%22%20OR%20%22api%22%29"
+        )
+
+        canonical_url = builder_module.canonical_http_url(raw_url)
+
+        self.assertEqual(canonical_url, expected_url)
+        self.assertEqual(builder_module.canonical_http_url(canonical_url), canonical_url)
+        self.assertFalse(builder_module.is_canonical_safe_http_url(raw_url))
+        self.assertTrue(builder_module.is_canonical_safe_http_url(canonical_url))
+        self.assertEqual(
+            builder_module.canonical_http_url("https://example.gov.uk/user's/source"),
+            "https://example.gov.uk/user%27s/source",
+        )
+
+    def test_live_ckan_loader_returns_canonical_provenance(self):
+        response = {"result": {"count": 1, "results": [{"name": "example"}]}}
+        with patch.object(builder_module, "request_json", return_value=response) as request:
+            source_url, packages = builder_module.load_ckan_packages(rows_per_page=1000)
+
+        self.assertEqual(packages, [{"name": "example"}])
+        self.assertTrue(builder_module.is_canonical_safe_http_url(source_url))
+        self.assertNotRegex(source_url, r'[\s"]')
+        self.assertIn("fq=res_format%3A%28%22WMS%22", source_url)
+        requested_url = request.call_args.args[0]
+        self.assertNotRegex(requested_url, r'[\s"]')
+
+    def test_canonical_http_url_rejects_unsafe_authorities(self):
+        for value in (
+            "javascript:alert(1)",
+            "https:///source",
+            "https://user:secret@example.gov.uk/source",
+            "https://example.gov.uk/path\\segment",
+            "https://example.gov.uk/path?value=%ZZ",
+            "https://example.gov.uk:0/source",
+            "https://example.gov.uk:65536/source",
+        ):
+            with self.subTest(value=value):
+                with self.assertRaises(ValueError):
+                    builder_module.canonical_http_url(value)
+                self.assertFalse(builder_module.is_canonical_safe_http_url(value))
+
     def test_plain_text_strips_entity_encoded_script_tags(self):
         result = builder_module.plain_text("&lt;script&gt;x&lt;/script&gt;")
 
@@ -297,7 +353,229 @@ class UkGovernmentApiOkfGeneratorTest(unittest.TestCase):
             self.assertIn(row["evidence_type"], {"harvested_structure", "contract_signal", "inferred_metadata_match"})
             self.assertIn(row["confidence"], {"high", "medium"})
             self.assertTrue(row["observed_at"])
+            self.assertTrue(set(builder_module.RICH_RELATIONSHIP_FIELDS) <= set(row))
+            self.assertTrue(row["id"].startswith(builder_module.ASSERTION_BASE))
+            self.assertTrue(row["source_iri"].startswith(builder_module.IDENTIFIER_BASE))
+            self.assertTrue(row["target_iri"].startswith(builder_module.IDENTIFIER_BASE))
+            self.assertTrue(builder_module.safe_runtime_route(row["source"]))
+            self.assertTrue(builder_module.safe_runtime_route(row["target"]))
+            self.assertTrue(row["predicate"].startswith(builder_module.PREDICATE_BASE))
+            self.assertEqual(row["label"], row["kind"])
+            self.assertEqual(
+                row["inverse_label"],
+                builder_module.RELATIONSHIP_INVERSE_LABELS[row["kind"]],
+            )
+            self.assertEqual(row["assertion_scope"], "real-world")
+            self.assertEqual(row["scope_detail"], "metadata-only-catalogue-view")
+            self.assertEqual(row["authority"]["class"], "derived")
+            self.assertTrue(row["evidence"][0]["source_adapter"])
+            self.assertIn("source_licence", row["evidence"][0])
+            self.assertTrue(row["rights"]["assertion"])
+            validation_errors = []
+            check_module.validate_relationship(row, validation_errors, row["id"])
+            self.assertEqual(validation_errors, [])
         self.assertEqual(len(observed), 1)
+
+        protocol_edges = [row for row in relationships if row["kind"] == "uses protocol"]
+        self.assertTrue(protocol_edges)
+        for row in protocol_edges:
+            self.assertEqual(row["target"], builder_module.protocol_route(row["target_label"]))
+            legacy_route = f"protocol/{row['target_label']}"
+            if legacy_route != row["target"]:
+                self.assertIn(legacy_route, row["target_aliases"])
+        semantic_nodes = builder_module.route_entity_nodes(
+            corpus["records"],
+            corpus["resources"],
+            corpus["publishers"],
+            relationships,
+        )
+        arcgis = next(node for node in semantic_nodes if node["route"] == "protocol/arcgis-rest")
+        self.assertEqual(arcgis["title"], "ArcGIS REST")
+        self.assertIn("protocol/ArcGIS REST", arcgis["aliases"])
+
+        inferred = [row for row in relationships if row["assertion_status"] == "inferred"]
+        self.assertTrue(inferred)
+        for row in inferred:
+            self.assertTrue(row["rule"].startswith(builder_module.PUBLIC_BASE))
+            self.assertTrue(row["supporting_assertions"])
+            self.assertEqual(row["confidence_score"], 0.65)
+
+    def test_frozen_relationship_compilation_canonicalizes_urls_without_changing_identity(self):
+        raw_url = (
+            "https://ckan.publishing.service.gov.uk/api/3/action/package_search"
+            '?fq=res_format:("WMS" OR "OGC API - Features")'
+        )
+        canonical_url = builder_module.canonical_http_url(raw_url)
+        relationship = {
+            "source": "dataset/example",
+            "target": "publisher/example-department",
+            "kind": "published by",
+            "evidence_type": "harvested_structure",
+            "confidence": "high",
+            "observed_at": "2026-07-16T00:00:00Z",
+        }
+
+        def compile_with(source_url):
+            record = {
+                "route": "dataset/example",
+                "source_adapter": "data_gov_uk_ckan",
+                "source_tier": "official-catalogue",
+                "confidence": "observed",
+                "license_id": builder_module.OGL_V3_ID,
+                "license_title": builder_module.OGL_V3_TITLE,
+                "license_basis": "source-declared",
+                "license_confidence": 1.0,
+                "license_source_id": builder_module.OGL_V3_URL,
+                "provenance": {
+                    "source_url": source_url,
+                    "source_adapter": "data_gov_uk_ckan",
+                    "source_tier": "official-catalogue",
+                    "confidence": "observed",
+                    "observed_at": "2026-07-16T00:00:00Z",
+                },
+            }
+            return builder_module.compile_relationship_assertions(
+                [relationship], [record], [], []
+            )[0]
+
+        from_raw = compile_with(raw_url)
+        from_canonical = compile_with(canonical_url)
+
+        self.assertEqual(from_raw, from_canonical)
+        self.assertEqual(from_raw["authority"]["source"], canonical_url)
+        self.assertEqual(from_raw["evidence"][0]["url"], canonical_url)
+        self.assertEqual(from_raw["rights"]["source"], builder_module.OGL_V3_URL)
+        self.assertTrue(builder_module.is_canonical_safe_http_url(canonical_url))
+        expected_digest = from_canonical["evidence"][0]["source_value_sha256"]
+        self.assertEqual(from_raw["evidence"][0]["source_value_sha256"], expected_digest)
+
+        with self.assertRaisesRegex(ValueError, "must not contain credentials"):
+            compile_with("https://user:secret@example.gov.uk/source")
+
+    def test_relationship_checker_rejects_each_unsafe_renderable_url_field(self):
+        corpus = self.build_fixture_corpus()
+        valid = corpus["relationships"][0]
+        cases = (
+            ("authority source", lambda row: row["authority"].update(source="https://example.gov.uk/?q=a b")),
+            ("evidence[0] url", lambda row: row["evidence"][0].update(url="https://example.gov.uk/?q=a b")),
+            ("evidence[0] resource", lambda row: row["evidence"][0].update(resource="javascript:alert(1)")),
+            ("rights source", lambda row: row["rights"].update(source="https://user:secret@example.gov.uk/terms")),
+        )
+
+        for expected_error, mutate in cases:
+            with self.subTest(field=expected_error):
+                invalid = copy.deepcopy(valid)
+                mutate(invalid)
+                errors = []
+                check_module.validate_relationship(invalid, errors, invalid["id"])
+                self.assertTrue(
+                    any(expected_error in error and "canonical safe HTTP(S) URL" in error for error in errors),
+                    errors,
+                )
+
+    def test_complete_published_relationship_population_has_safe_canonical_urls(self):
+        bundle = ROOT / "bundle"
+        manifest = json.loads((bundle / "data/manifest.json").read_text(encoding="utf-8"))
+        relationship_count = 0
+        checked_url_count = 0
+        unsafe_count = 0
+        unsafe_samples = []
+        for relative in manifest["chunks"]["relationships"]:
+            payload = gzip.decompress((bundle / relative).read_bytes())
+            for row in json.loads(payload):
+                relationship_count += 1
+                values = [
+                    ("authority.source", (row.get("authority") or {}).get("source")),
+                    ("rights.source", (row.get("rights") or {}).get("source")),
+                ]
+                for evidence_index, evidence in enumerate(row.get("evidence") or []):
+                    values.append((f"evidence[{evidence_index}].url", evidence.get("url")))
+                    if "resource" in evidence:
+                        values.append((f"evidence[{evidence_index}].resource", evidence.get("resource")))
+                for field, value in values:
+                    checked_url_count += 1
+                    if not builder_module.is_canonical_safe_http_url(value):
+                        unsafe_count += 1
+                        if len(unsafe_samples) < 10:
+                            unsafe_samples.append((row.get("id"), field, value))
+        self.assertEqual(relationship_count, manifest["counts"]["relationships"])
+        self.assertGreaterEqual(checked_url_count, relationship_count * 3)
+        self.assertEqual(
+            unsafe_count,
+            0,
+            f"{unsafe_count} unsafe URL occurrences; samples: {unsafe_samples}",
+        )
+
+    def test_protocol_route_canonicalization_is_idempotent_and_collision_closed(self):
+        legacy = [
+            {
+                "source": "dataset/example",
+                "target": "protocol/ArcGIS REST",
+                "kind": "uses protocol",
+            }
+        ]
+        canonical = builder_module.canonicalize_derived_relationship_routes(legacy)
+        self.assertEqual(canonical[0]["target"], "protocol/arcgis-rest")
+        self.assertEqual(canonical[0]["target_label"], "ArcGIS REST")
+        self.assertEqual(canonical[0]["target_aliases"], ["protocol/ArcGIS REST"])
+        self.assertEqual(
+            builder_module.canonicalize_derived_relationship_routes(canonical), canonical
+        )
+
+        with self.assertRaisesRegex(ValueError, "protocol route collision"):
+            builder_module.canonicalize_derived_relationship_routes(
+                [
+                    {"source": "dataset/a", "target": "protocol/A/B", "kind": "uses protocol"},
+                    {"source": "dataset/b", "target": "protocol/A B", "kind": "uses protocol"},
+                ]
+            )
+
+    def test_semantic_shards_reconcile_direct_and_reified_relationships(self):
+        corpus = self.build_fixture_corpus()
+        files = builder_module.output_files(corpus)
+        descriptor = json.loads(files[Path("okf-bundle.jsonld")])
+        manifest = json.loads(files[Path("data/semantic/manifest.json")])
+
+        self.assertNotIn("@graph", descriptor)
+        self.assertEqual(
+            files[Path("schemas/okf-relationship-assertion.v2.schema.json")],
+            builder_module.SEMANTIC_ASSERTION_SCHEMA_PATH.read_text(encoding="utf-8"),
+        )
+        self.assertEqual(
+            manifest["counts"]["direct_relationships"], len(corpus["relationships"])
+        )
+        self.assertEqual(
+            manifest["counts"]["reified_assertions"], len(corpus["relationships"])
+        )
+        expected_direct = {
+            (row["source_iri"], row["predicate"], row["target_iri"])
+            for row in corpus["relationships"]
+        }
+        expected_assertions = {
+            row["id"]: check_module.projection_digest(row)
+            for row in corpus["relationships"]
+        }
+        seen_direct = set()
+        seen_assertions = set()
+        for entry in manifest["shards"]:
+            compressed = files[Path(entry["path"])]
+            self.assertIsInstance(compressed, bytes)
+            self.assertLess(len(compressed), check_module.MAX_GITHUB_FILE_BYTES)
+            document = json.loads(gzip.decompress(compressed))
+            if entry["kind"] == "entity-direct-triples":
+                for node in document["@graph"]:
+                    for predicate in {row["predicate"] for row in corpus["relationships"]}:
+                        for target in node.get(predicate, []):
+                            seen_direct.add((node["@id"], predicate, target["@id"]))
+            else:
+                for node in document["@graph"]:
+                    self.assertEqual(
+                        check_module.projection_digest(node, semantic=True),
+                        expected_assertions[node["@id"]],
+                    )
+                    seen_assertions.add(node["@id"])
+        self.assertEqual(seen_direct, expected_direct)
+        self.assertEqual(seen_assertions, set(expected_assertions))
 
     def test_relationship_adjacency_is_route_scoped_and_portable(self):
         corpus = self.build_fixture_corpus()
@@ -309,6 +587,12 @@ class UkGovernmentApiOkfGeneratorTest(unittest.TestCase):
         self.assertEqual(manifest["algorithm"], "fnv1a32-prefix-2")
         self.assertEqual(manifest["relationships"], len(corpus["relationships"]))
         self.assertIn(Path("data/adjacency/manifest.json"), files)
+        relationship_path = Path(corpus["manifest"]["chunks"]["relationships"][0])
+        self.assertTrue(relationship_path.name.endswith(".json.gz"))
+        self.assertEqual(
+            json.loads(gzip.decompress(files[relationship_path]))[0],
+            corpus["relationships"][0],
+        )
         for relationship in corpus["relationships"]:
             for route in {relationship["source"], relationship["target"]}:
                 bucket = builder_module.relationship_bucket(route)
