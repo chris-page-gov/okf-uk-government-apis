@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased — standards references
+
+- Link the central current and historical OKF standards register and public bundle catalogue.
+
+
 ## Unreleased — 24 September 2026
 
 - Added the OKF publication-method v1 repository contract, local structural
