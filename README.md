@@ -135,3 +135,7 @@ After deployment, `scripts/verify_deployment.py` fetches the public
 `checksums.json`, landing page, Explorer descriptor and record-count manifest
 and compares them byte for byte with the validated checkout. This is a bounded
 HTTP identity gate, not a real-browser interaction or console test.
+
+## OKF standards and bundle discovery
+
+The [central standards register](https://github.com/chris-page-gov/okf-explorer/blob/main/docs/okf-standards.md) records current and historical OKF specifications, version-specific pins and the public bundle catalogue. Use the [machine-readable register](https://raw.githubusercontent.com/chris-page-gov/okf-explorer/main/registry/okf-standards.json) to resolve the version implemented by this repository.
