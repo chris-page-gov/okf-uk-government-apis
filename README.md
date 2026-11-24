@@ -109,7 +109,8 @@ Regenerate the core 0.3 and metadata projections from the checked-in frozen
 16 July 2026 publication, then update its integrity manifest:
 
 ```sh
-uv sync --locked
+uv python install 3.12.11
+uv sync --locked --python 3.12.11
 uv run --locked python scripts/upgrade_publication.py
 uv run --locked python scripts/build_checksums.py
 ```

@@ -800,6 +800,8 @@
         "uv.lock"
       ],
       "command_ids": [
+        "install-pinned-uv",
+        "install-pinned-python",
         "setup-environment",
         "acquire-publication",
         "upgrade-publication",
@@ -905,6 +907,42 @@
   "tooling": {
     "commands": [
       {
+        "id": "install-pinned-uv",
+        "kind": "setup",
+        "planes": [
+          "source",
+          "semantic",
+          "runtime",
+          "documentation",
+          "release",
+          "deployment"
+        ],
+        "command": "bash scripts/install_pinned_uv.sh",
+        "source": "AGENTS.md",
+        "review_status": "reviewed-local-guidance",
+        "network": "hash-verified-tool-bootstrap",
+        "mutates": "environment-only",
+        "timeout_minutes": 10
+      },
+      {
+        "id": "install-pinned-python",
+        "kind": "setup",
+        "planes": [
+          "source",
+          "semantic",
+          "runtime",
+          "documentation",
+          "release",
+          "deployment"
+        ],
+        "command": "uv python install 3.12.11",
+        "source": "AGENTS.md",
+        "review_status": "reviewed-local-guidance",
+        "network": "exact-version-runtime-install",
+        "mutates": "environment-only",
+        "timeout_minutes": 10
+      },
+      {
         "id": "setup-environment",
         "kind": "setup",
         "planes": [
@@ -915,7 +953,7 @@
           "release",
           "deployment"
         ],
-        "command": "uv sync --locked",
+        "command": "uv sync --locked --python 3.12.11",
         "source": "AGENTS.md",
         "review_status": "reviewed-local-guidance",
         "network": "locked-dependencies",

@@ -13,6 +13,9 @@
   Wayfinder boundary.
 - Pinned the active Python bootstrap to uv 0.13.4, which removes the affected
   bundled certificate root, without changing Python or dependency versions.
+- Install governed CPython 3.12.11 through the hash-pinned uv bootstrap in CI and
+  Pages, avoiding the unavailable runner image cache while preserving the exact
+  Python version and locked dependency set.
 - Added a source-linked notification catalogue walkthrough. It distinguishes
   similarly named snapshot records, source-reported licence metadata and the
   synthetic Wayfinder negative control; it makes no live availability claim.

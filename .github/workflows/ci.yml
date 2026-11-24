@@ -28,12 +28,12 @@ jobs:
           ref: cce6e68d95c2946bb425effbaab48fbf04281a09
           path: okf-explorer
           persist-credentials: false
-      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
-        with:
-          python-version: "3.12.11"
       - name: Install the attested uv 0.13.4 bootstrap
         run: bash scripts/install_pinned_uv.sh
-      - run: uv sync --locked
+      - name: Install governed CPython 3.12.11 with uv
+        run: uv python install 3.12.11
+      - name: Sync the locked Python environment
+        run: uv sync --locked --python 3.12.11
       - run: uv run --locked python -m unittest discover -s tests -v
       - run: uv run --locked python scripts/check_bundle.py
       - run: uv run --locked python scripts/build_checksums.py --check
