@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased — bounded Pages artifact recovery
+
+- Give the Pages artifact a unique run-and-attempt name and retry deployment
+  once after ten seconds. Retain the first failure in the workflow log, fail
+  if the retry fails, and require exact deployed-byte verification before
+  reporting success. No bundle generation or acquisition is added.
+
 ## Unreleased — public browser assets
 
 - Declare an explicit icon on the landing page and both walkthroughs, avoiding
