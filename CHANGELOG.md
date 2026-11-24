@@ -16,6 +16,8 @@
 - Install governed CPython 3.12.11 through the hash-pinned uv bootstrap in CI and
   Pages, avoiding the unavailable runner image cache while preserving the exact
   Python version and locked dependency set.
+- Report the downloaded archive digest and runtime version before checking
+  them, so a rejected bootstrap pin has an inspectable diagnosis.
 - Added a source-linked notification catalogue walkthrough. It distinguishes
   similarly named snapshot records, source-reported licence metadata and the
   synthetic Wayfinder negative control; it makes no live availability claim.

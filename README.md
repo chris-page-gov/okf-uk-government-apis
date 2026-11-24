@@ -108,6 +108,9 @@ field mapping, discrepancies and provenance boundary.
 Regenerate the core 0.3 and metadata projections from the checked-in frozen
 16 July 2026 publication, then update its integrity manifest:
 
+CI checks the downloaded uv archive digest and exact runtime version, retaining
+both values in its log if the pinned bootstrap is rejected.
+
 ```sh
 uv python install 3.12.11
 uv sync --locked --python 3.12.11
