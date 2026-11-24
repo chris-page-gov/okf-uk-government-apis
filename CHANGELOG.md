@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased — public browser assets
+
+- Declare an explicit icon on the landing page and both walkthroughs, avoiding
+  the browser's automatic request for the missing GitHub owner favicon.
+- Use `en-GB` on the landing page and add a presentation-only build command so
+  this correction preserves the frozen source, graph and descriptor bytes.
+
 ## 0.5.0 — 2026-11-24 — OKF core 0.3 migration
 
 - Migrated the frozen 16 July 2026 catalogue to the reviewed OKF core 0.3
