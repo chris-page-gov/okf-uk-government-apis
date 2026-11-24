@@ -165,6 +165,13 @@ or reacquiring it. A manual deployment runs the complete non-mutating
 validation first. Networked source acquisition remains a separate,
 explicitly authorised refresh operation.
 
+Pages uses a unique artifact name for each workflow run and attempt. If the
+deployment action fails, it waits ten seconds and retries once against that
+same uploaded artifact. A failed retry fails the job. The final deployed-byte
+identity check remains required. This bounds recovery from the observed
+artifact-service discovery failure and avoids duplicate-name collisions on
+workflow reruns.
+
 For a change limited to the landing page and the two walkthroughs, run
 `uv run --locked python scripts/upgrade_publication.py --presentation-only`,
 then regenerate checksums. This path preserves the frozen source, graph and

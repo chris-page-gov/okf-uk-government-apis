@@ -95,10 +95,22 @@ jobs:
       - uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6.0.0
       - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
         with:
+          name: github-pages-${{ github.run_id }}-${{ github.run_attempt }}
           path: bundle
       - id: deployment
+        continue-on-error: true
         uses: actions/deploy-pages@cd2ce8fcbc39b97be8ca5fce6e763baed58fa128 # v5.0.0
+        with:
+          artifact_name: github-pages-${{ github.run_id }}-${{ github.run_attempt }}
+      - name: Wait before the single deployment retry
+        if: steps.deployment.outcome == 'failure'
+        run: sleep 10
+      - id: deployment-retry
+        if: steps.deployment.outcome == 'failure'
+        uses: actions/deploy-pages@cd2ce8fcbc39b97be8ca5fce6e763baed58fa128 # v5.0.0
+        with:
+          artifact_name: github-pages-${{ github.run_id }}-${{ github.run_attempt }}
       - name: Verify deployed routes and identity
         env:
-          OKF_DEPLOYMENT_URL: ${{ steps.deployment.outputs.page_url }}
+          OKF_DEPLOYMENT_URL: ${{ steps.deployment-retry.outputs.page_url || steps.deployment.outputs.page_url }}
         run: uv run --locked python scripts/verify_deployment.py
