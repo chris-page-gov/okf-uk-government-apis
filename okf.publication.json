@@ -867,7 +867,8 @@
       ],
       "command_ids": [
         "check-contract",
-        "walkthrough-browser-acceptance"
+        "walkthrough-browser-acceptance",
+        "build-presentation"
       ]
     },
     {
@@ -900,7 +901,8 @@
         "check-bundle",
         "check-checksums",
         "verify-pages",
-        "walkthrough-browser-acceptance"
+        "walkthrough-browser-acceptance",
+        "build-presentation"
       ]
     }
   ],
@@ -1167,6 +1169,20 @@
         "network": "local-http-only",
         "mutates": "runner-temporary-receipt-and-screenshots",
         "timeout_minutes": 15
+      },
+      {
+        "id": "build-presentation",
+        "kind": "build",
+        "planes": [
+          "documentation",
+          "deployment"
+        ],
+        "command": "uv run --locked python scripts/upgrade_publication.py --presentation-only",
+        "source": "README.md",
+        "review_status": "reviewed-local-guidance",
+        "network": "none",
+        "mutates": "generated-only",
+        "timeout_minutes": 5
       }
     ]
   },

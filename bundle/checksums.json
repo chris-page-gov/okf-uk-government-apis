@@ -12865,8 +12865,8 @@
       "sha256": "de79ed9a680890623494a85bd16927e20b43bdd43dbbf3e708c2956675f88e64"
     },
     "core-walkthrough.html": {
-      "bytes": 5458,
-      "sha256": "b3f484b90eab9900047e639b39412f8101d9202de9ddc7885a0b9fc05a25d448"
+      "bytes": 5490,
+      "sha256": "7746cd2b8c9a946c0b74ff3ee5d8d29c53795508a9cd1206c582d72eda1d2330"
     },
     "data/adjacency/00.json.gz": {
       "bytes": 189559,
@@ -24893,8 +24893,8 @@
       "sha256": "44d6e0290875102b43fad1b90c34df0fd4b1100525114e948e24fc5960e2af68"
     },
     "index.html": {
-      "bytes": 1654,
-      "sha256": "f5b8bd39523ae5e0565ef5a3a310dd276c3c792b1e09aa5bd89afd3968b7e62f"
+      "bytes": 1688,
+      "sha256": "83bf8ee1b9095cac2c8867f235e3a98eb29fc6eec24603474a9eedd2a7c07bca"
     },
     "index.md": {
       "bytes": 2014,
@@ -24905,8 +24905,8 @@
       "sha256": "458b4bbb8b2a24e15fe396918251be5089b9947b67cb90c14ed265dfc98a5d48"
     },
     "notification-catalogue-walkthrough.html": {
-      "bytes": 8146,
-      "sha256": "355630f5573af054d0fdfd0d53a805713d18dc8ea9964f5835c424108d9a917c"
+      "bytes": 8178,
+      "sha256": "ce597b23df3da442f92d00b0847ee95c22b6e5dbae876be6ecdc8ed2c0fa3d90"
     },
     "notification-reader-journeys.json": {
       "bytes": 3320,

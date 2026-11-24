@@ -766,6 +766,32 @@ def publish_wayfinder_source(descriptor: dict, manifest: dict) -> None:
     }
 
 
+def build_landing_page(manifest: dict) -> None:
+    counts = manifest["counts"]
+    explorer_url = (
+        "https://chris-page-gov.github.io/okf-explorer/?bundle="
+        "https%3A%2F%2Fchris-page-gov.github.io%2Fokf-uk-government-apis%2Fokf-explorer.json"
+    )
+    index_html = (
+        '<!doctype html><html lang="en-GB"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width">'
+        '<link rel="icon" href="data:,"><title>UK Government APIs OKF</title><style>body{font:18px/1.55 system-ui;max-width:900px;margin:4rem auto;'
+        'padding:0 1.5rem}a{color:#1d70b8}</style></head><body><h1>UK Government APIs OKF Bundle Wiki</h1>'
+        f'<p>{counts["datasets"]:,} API/data records and {counts["relationships"]:,} provenance-bearing relationships.</p>'
+        f'<p><a href="{html.escape(explorer_url, quote=True)}">Open in OKF Explorer</a></p><ul>'
+        '<li><a href="okf-bundle.yamlld">YAML-LD</a></li><li><a href="okf-bundle.jsonld">JSON-LD</a></li>'
+        '<li><a href="okf-explorer.json">Explorer descriptor</a></li><li><a href="data/manifest.json">Data manifest</a></li>'
+        '<li><a href="okf-core-explorer.json">OKF core Markdown projection</a></li>'
+        '<li><a href="notification-catalogue-walkthrough.html">Notify metadata walkthrough</a></li>'
+        '<li><a href="core-walkthrough.html">OKF core source walkthrough</a></li>'
+        '<li><a href="data/semantic/manifest.json">Semantic graph manifest</a></li><li><a href="data/semantic/validation-report.json">Semantic validation receipt</a></li>'
+        '<li><a href="data/relationship-runtime/manifest.json">Material relationship runtime</a></li><li><a href="data/predicate-registry.json">Predicate registry</a></li>'
+        '<li><a href="data/adjacency/manifest.json">Relationship adjacency</a></li><li><a href="data/sources/wayfinder/manifest.json">Wayfinder source provenance</a></li>'
+        '<li><a href="docs/wayfinder-comparison-2026-09-24.md">Wayfinder comparison</a></li><li><a href="checksums.json">Checksums</a></li>'
+        '</ul></body></html>\n'
+    )
+    (BUNDLE / "index.html").write_text(index_html, encoding="utf-8")
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
         description=(
@@ -773,7 +799,13 @@ def main(argv: list[str] | None = None) -> int:
             "frozen catalogue without network access."
         )
     )
-    parser.parse_args(argv)
+    parser.add_argument("--presentation-only", action="store_true", help="Rebuild only the landing page and two source-linked walkthroughs.")
+    args = parser.parse_args(argv)
+    if args.presentation_only:
+        build_landing_page(load(BUNDLE / "data/manifest.json"))
+        build_notification_walkthrough.build()
+        build_core_walkthrough.build()
+        return 0
     descriptor_path = BUNDLE / "okf-explorer.json"
     manifest_path = BUNDLE / "data/manifest.json"
     descriptor = load(descriptor_path)
@@ -1041,29 +1073,7 @@ def main(argv: list[str] | None = None) -> int:
     for journey_name in ("core-reader-journeys.json", "notification-reader-journeys.json"):
         journey_source = ROOT / "walkthroughs" / journey_name
         (BUNDLE / journey_name).write_bytes(journey_source.read_bytes())
-    counts = manifest["counts"]
-    explorer_url = (
-        "https://chris-page-gov.github.io/okf-explorer/?bundle="
-        "https%3A%2F%2Fchris-page-gov.github.io%2Fokf-uk-government-apis%2Fokf-explorer.json"
-    )
-    index_html = (
-        '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width">'
-        '<title>UK Government APIs OKF</title><style>body{font:18px/1.55 system-ui;max-width:900px;margin:4rem auto;'
-        'padding:0 1.5rem}a{color:#1d70b8}</style></head><body><h1>UK Government APIs OKF Bundle Wiki</h1>'
-        f'<p>{counts["datasets"]:,} API/data records and {counts["relationships"]:,} provenance-bearing relationships.</p>'
-        f'<p><a href="{html.escape(explorer_url, quote=True)}">Open in OKF Explorer</a></p><ul>'
-        '<li><a href="okf-bundle.yamlld">YAML-LD</a></li><li><a href="okf-bundle.jsonld">JSON-LD</a></li>'
-        '<li><a href="okf-explorer.json">Explorer descriptor</a></li><li><a href="data/manifest.json">Data manifest</a></li>'
-        '<li><a href="okf-core-explorer.json">OKF core Markdown projection</a></li>'
-        '<li><a href="notification-catalogue-walkthrough.html">Notify metadata walkthrough</a></li>'
-        '<li><a href="core-walkthrough.html">OKF core source walkthrough</a></li>'
-        '<li><a href="data/semantic/manifest.json">Semantic graph manifest</a></li><li><a href="data/semantic/validation-report.json">Semantic validation receipt</a></li>'
-        '<li><a href="data/relationship-runtime/manifest.json">Material relationship runtime</a></li><li><a href="data/predicate-registry.json">Predicate registry</a></li>'
-        '<li><a href="data/adjacency/manifest.json">Relationship adjacency</a></li><li><a href="data/sources/wayfinder/manifest.json">Wayfinder source provenance</a></li>'
-        '<li><a href="docs/wayfinder-comparison-2026-09-24.md">Wayfinder comparison</a></li><li><a href="checksums.json">Checksums</a></li>'
-        '</ul></body></html>\n'
-    )
-    (BUNDLE / "index.html").write_text(index_html, encoding="utf-8")
+    build_landing_page(manifest)
     print(
         f"upgraded {len(relationships):,} rich relationships across "
         f"{len(buckets)} adjacency buckets and "

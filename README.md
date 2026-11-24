@@ -165,6 +165,12 @@ or reacquiring it. A manual deployment runs the complete non-mutating
 validation first. Networked source acquisition remains a separate,
 explicitly authorised refresh operation.
 
+For a change limited to the landing page and the two walkthroughs, run
+`uv run --locked python scripts/upgrade_publication.py --presentation-only`,
+then regenerate checksums. This path preserves the frozen source, graph and
+descriptor bytes. The pages declare `en-GB` and an explicit icon so a public
+browser does not request the GitHub owner's missing favicon.
+
 After deployment, `scripts/verify_deployment.py` fetches the public
 `checksums.json`, landing page, both Explorer descriptors, both journey
 manifests and record-count manifest and compares them byte for byte with the
