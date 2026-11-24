@@ -329,14 +329,20 @@ relationships:
 
 ### Implemented semantic projection
 
-The publication implements this as an additive Bundle Wiki YAML-LD profile,
-without expanding the deliberately small OKF 0.2 core. Every generated edge
+The publication implements this as the producer-specific API metadata
+extension graph alongside an OKF core 0.3 Markdown layer. Every generated edge
 has a stable assertion IRI, absolute source/target/predicate IRIs, local
 Explorer source/target routes, preferred and inverse labels, assertion status
 and scope, authority, derivation activity, observation time, evidence and
 rights. Source adapter, source tier, source confidence, relationship confidence
 and record-level licence context remain separate fields; confidence never
 upgrades authority.
+
+The portable `bundle/okf-core-explorer.json` projection exposes all 3,464
+typed Markdown concepts, including exact source bytes, frontmatter and paths.
+Only authored Markdown links form its core reference edges. The much larger
+catalogue graph remains a separate extension; extension metadata does not
+become a core concept merely because it has an Explorer route.
 
 `okf-bundle.yamlld` is a bounded, human-readable graph descriptor. Its
 `data/semantic/manifest.json` points to digest-bound gzip JSON-LD shards:

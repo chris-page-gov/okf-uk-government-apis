@@ -20,6 +20,12 @@ class CiTopologyTest(unittest.TestCase):
         self.assertIn('tags: ["v*"]', self.ci)
         self.assertIn("cancel-in-progress: true", self.ci)
         self.assertRegex(self.ci, r"timeout-minutes: \d+")
+        self.assertIn("scripts/verify_walkthrough_browser.mjs", self.ci)
+        self.assertIn("api-walkthrough-browser.json", self.ci)
+        self.assertLess(
+            self.ci.index("scripts/verify_walkthrough_browser.mjs"),
+            self.ci.index("Retain exact Reader acceptance receipts"),
+        )
 
     def test_pages_waits_for_complete_main_validation_without_rebuild(self) -> None:
         self.assertIn("workflow_run:", self.pages)
@@ -28,6 +34,11 @@ class CiTopologyTest(unittest.TestCase):
         self.assertIn("github.ref == 'refs/heads/main'", self.pages)
         self.assertNotIn("scripts/build_uk_government_api_okf.py", self.pages)
         self.assertNotIn("scripts/upgrade_publication.py", self.pages)
+        self.assertIn("scripts/verify_walkthrough_browser.mjs", self.pages)
+        self.assertLess(
+            self.pages.index("scripts/verify_walkthrough_browser.mjs"),
+            self.pages.index("actions/configure-pages@"),
+        )
         self.assertLess(
             self.pages.index("actions/deploy-pages@"),
             self.pages.index("scripts/verify_deployment.py"),

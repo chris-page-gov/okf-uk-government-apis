@@ -45,6 +45,7 @@ REPOSITORY_LICENCE_URL = (
     "https://github.com/chris-page-gov/okf-uk-government-apis/blob/main/LICENSE.md"
 )
 SEMANTIC_CONTEXT_PATH = ROOT / "context" / "okf-bundle-v1.jsonld"
+SEMANTIC_CONTEXT_V2_PATH = ROOT / "context" / "okf-bundle-v2.jsonld"
 SEMANTIC_ASSERTION_SCHEMA_PATH = (
     ROOT / "schemas" / "okf-relationship-assertion.v2.schema.json"
 )
@@ -1211,11 +1212,13 @@ def source_provenance(
     return provenance
 
 
-def load_semantic_context() -> dict[str, Any]:
+def load_semantic_context(*, core_roles: bool = False) -> dict[str, Any]:
     value = json.loads(SEMANTIC_CONTEXT_PATH.read_text(encoding="utf-8"))
     context = value.get("@context")
     if not isinstance(context, dict):
         raise ValueError(f"{SEMANTIC_CONTEXT_PATH} must contain an @context object")
+    if core_roles:
+        context = {**context, "core_role": "okf:coreRole"}
     return context
 
 
@@ -1646,6 +1649,17 @@ def route_entity_nodes(
     relationships: list[dict[str, Any]],
 ) -> list[dict[str, Any]]:
     source_index = relationship_source_index(records, resources, publishers)
+    concept_routes = {
+        str(item["route"])
+        for item in records
+        if item.get("route")
+        and item.get("concept_id")
+        and item.get("record_type") in MARKDOWN_RECORD_TYPES
+    } | {
+        str(item["route"])
+        for item in publishers
+        if item.get("route") and item.get("concept_id")
+    }
     derived_target_metadata: dict[str, dict[str, Any]] = {}
     for edge in relationships:
         route = str(edge.get("target") or "")
@@ -1700,6 +1714,7 @@ def route_entity_nodes(
                 or route_value.replace("_", " ").replace("-", " ")
             ),
             "assertion_status": "normalized",
+            "core_role": "concept" if route in concept_routes else "extension",
         }
         description = item.get("notes") or item.get("description")
         if description:
@@ -1770,7 +1785,7 @@ def semantic_publication_files(
     relationships: list[dict[str, Any]],
 ) -> tuple[dict[Path, str | bytes], dict[str, Any]]:
     """Create bounded semantic graph shards and their root descriptors."""
-    context = load_semantic_context()
+    context = load_semantic_context(core_roles=True)
     entities = route_entity_nodes(records, resources, publishers, relationships)
     files: dict[Path, str | bytes] = {}
     shard_entries: list[dict[str, Any]] = []
@@ -1832,7 +1847,7 @@ def semantic_publication_files(
         "@id": f"{PUBLIC_BASE}data/semantic/manifest.json",
         "bundle": f"{PUBLIC_BASE}okf-bundle.yamlld",
         "generated_at": descriptor["generated_at"],
-        "context": "context/okf-bundle-v1.jsonld",
+        "context": "context/okf-bundle-v2.jsonld",
         "assertion_schema": "schemas/okf-relationship-assertion.v2.schema.json",
         "identity_policy": "absolute-semantic-iri-plus-validated-local-route",
         "direct_triple_policy": "generated-from-one-assertion-source-across-pinned-shards",
@@ -1851,6 +1866,9 @@ def semantic_publication_files(
         predicate_registry(relationships)
     )
     files[Path("context/okf-bundle-v1.jsonld")] = render_json(
+        {"@context": load_semantic_context()}
+    )
+    files[Path("context/okf-bundle-v2.jsonld")] = render_json(
         {"@context": context}
     )
     files[Path("schemas/okf-relationship-assertion.v2.schema.json")] = (
@@ -1860,7 +1878,7 @@ def semantic_publication_files(
         "@context": context,
         "@id": f"{PUBLIC_BASE}semantic/uk-government-api-corpus",
         "@type": "okf:Bundle",
-        "okf_version": "0.2",
+        "okf_version": "0.3",
         "title": descriptor["title"],
         "description": (
             "Bounded YAML-LD descriptor for the complete sharded semantic graph. "
@@ -3255,7 +3273,7 @@ def markdown_output_files(corpus: dict[str, Any]) -> dict[Path, str]:
     files[Path("index.md")] = "\n".join(
         [
             "---",
-            'okf_version: "0.2"',
+            'okf_version: "0.3"',
             "---",
             "",
             "# UK Government APIs OKF",
@@ -3289,6 +3307,9 @@ def markdown_output_files(corpus: dict[str, Any]) -> dict[Path, str]:
             "- [Semantic graph manifest](data/semantic/manifest.json)",
             "- [Predicate registry](data/predicate-registry.json)",
             "- [Explorer descriptor](okf-explorer.json)",
+            "- [OKF core Reader projection](okf-core-explorer.json)",
+            "- [Source-linked Notify walkthrough](notification-catalogue-walkthrough.html)",
+            "- [Source-linked core walkthrough](core-walkthrough.html)",
             "- [Specification notes](docs/UK-Government-API-OKF.md)",
             "- [Standards crosswalk](docs/okf-standards-crosswalk.md)",
             "",
@@ -3841,13 +3862,14 @@ def build_corpus(
     }
 
     search = build_search(records)
+    search["manifest"]["snapshot"] = generated_at
     record_chunks = chunk_paths("apis", records)
     resource_chunks = chunk_paths("resources", resources)
     publisher_chunks = chunk_paths("providers", publishers)
     relationship_chunks = relationship_chunk_paths(relationships)
     relationship_adjacency, relationship_adjacency_buckets = build_relationship_adjacency(relationships)
     manifest = {
-        "okf_version": "0.2",
+        "okf_version": "0.3",
         "title": "UK Government APIs static corpus",
         "generated_at": generated_at,
         "snapshot": generated_at,
@@ -3883,17 +3905,17 @@ def build_corpus(
         },
     }
     descriptor = {
-        "@context": "https://chris-page-gov.github.io/okf-explorer/profile/bundle-wiki/v1/context.jsonld",
+        "@context": "https://chris-page-gov.github.io/okf-explorer/profile/bundle-wiki/v2/context.jsonld",
         "@id": "https://chris-page-gov.github.io/okf-uk-government-apis/okf-explorer.json",
         "schema": "okf-explorer-large-corpus.v1",
         "kind": "okf-large-corpus",
-        "okf_version": "0.2",
+        "okf_version": "0.3",
         "core_conformance": "Markdown concept layer",
         "title": "UK Government APIs OKF",
         "description": "Large-corpus OKF exemplar generated from GOV.UK API Catalogue, data.gov.uk, Ordnance Survey, ONS and Department for Education GIAS public sources, with API-domain facets, typed relationships, search shards, and operational metadata.",
-        "version": "0.4.0",
+        "version": "0.5.0",
         "status": "preview",
-        "profile": "https://chris-page-gov.github.io/okf-explorer/profile/bundle-wiki/v1/",
+        "profile": "https://chris-page-gov.github.io/okf-explorer/profile/bundle-wiki/v2/",
         "publisher": "https://github.com/chris-page-gov",
         "license": OGL_V3_URL,
         "semantic_descriptor": "https://chris-page-gov.github.io/okf-uk-government-apis/okf-bundle.yamlld",
@@ -3907,7 +3929,7 @@ def build_corpus(
             "search_manifest": "data/search/manifest.json",
             "relationship_adjacency": "data/adjacency/manifest.json",
             "semantic_graph": "data/semantic/manifest.json",
-            "semantic_context": "context/okf-bundle-v1.jsonld",
+            "semantic_context": "context/okf-bundle-v2.jsonld",
             "semantic_assertion_schema": "schemas/okf-relationship-assertion.v2.schema.json",
             "predicate_registry": "data/predicate-registry.json",
             "markdown_index": "index.md",

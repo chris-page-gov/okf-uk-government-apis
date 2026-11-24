@@ -1,12 +1,12 @@
 {
   "okf_core": {
-    "specification": "https://github.com/GoogleCloudPlatform/knowledge-catalog/blob/main/okf/SPEC.md",
+    "specification": "https://github.com/open-knowledge-format/open-knowledge-format/blob/527e81aff55992be21507e97004286789126f88c/SPEC.md",
     "status": "conformant",
-    "version": "0.2"
+    "version": "0.3"
   },
   "reader": {
     "consumer": "https://chris-page-gov.github.io/okf-explorer/",
-    "delivery": "federation-control-plane-plus-bounded-rich-relationship-runtime",
+    "delivery": "json-large-corpus-chunks",
     "preserves": [
       "direction",
       "semantic-identities",
@@ -55,68 +55,50 @@
     "role": "large-corpus-producer",
     "root_index": "bundle/index.md"
   },
-  "schema": "okf-repository-semantic-contract.v1",
+  "schema": "okf-repository-semantic-contract.v2",
   "semantic_layer": {
     "authoritative_inputs": [
-      "scripts/",
-      "sources/wayfinder/2026-09-24/",
       "context/",
-      "profiles/bundle-wiki/v1/",
       "profiles/bundle-wiki/v1.vendor-lock.json",
+      "profiles/bundle-wiki/v1/",
+      "profiles/bundle-wiki/v2.vendor-lock.json",
+      "profiles/bundle-wiki/v2/",
+      "profiles/uk-government-apis/v1.md",
       "pyproject.toml",
       "schemas/",
+      "scripts/",
+      "scripts/build_notification_walkthrough.py",
+      "sources/wayfinder/2026-09-24/",
       "tests/fixtures/",
-      "uv.lock"
+      "uv.lock",
+      "walkthroughs/"
     ],
     "context_policy": "pinned-local-contexts-no-browser-remote-expansion",
     "identity_policy": "absolute-semantic-iri-plus-validated-local-route",
     "limitations": [
       "The semantic graph is a metadata-only catalogue snapshot, not live service state or an assurance register; publication of changed bytes remains subject to the repository's existing review and release gates.",
       "The complete assertion graph remains in semantic shards and compatibility chunks. The default rich Reader runtime is a governed material subset selected to remain within aggregate row, compressed-byte and retained-text ceilings; excluded bulk facet and reciprocal compatibility edges remain available outside that default projection.",
-      "Wayfinder records are fictional synthetic comparison material with record-level rights not specified. Their relationships are rejected from real-world catalogue admission and are not default-loaded through the bounded material runtime."
+      "Wayfinder records are fictional synthetic comparison material with record-level rights not specified. Their relationships are rejected from real-world catalogue admission and are not default-loaded through the bounded material runtime.",
+      "The OKF core Reader projection exposes all 3,464 typed Markdown concepts with exact source paths, frontmatter, body bytes and SHA-256, plus 6,422 authored Markdown reference edges. The metadata graph remains a separate extension graph and preserves its existing 278,156 relationship assertions."
     ],
     "outputs": [
       {
         "generated": true,
-        "path": "bundle/okf-bundle.yamlld",
+        "path": "bundle/context/okf-bundle-v1.jsonld",
         "required": true,
-        "role": "semantic-yaml-ld"
+        "role": "semantic-context"
       },
       {
         "generated": true,
-        "path": "bundle/okf-bundle.jsonld",
+        "path": "bundle/context/okf-bundle-v2.jsonld",
         "required": true,
-        "role": "semantic-json-ld"
+        "role": "semantic-context"
       },
       {
         "generated": true,
-        "path": "bundle/okf-explorer.json",
+        "path": "bundle/data/predicate-registry.json",
         "required": true,
-        "role": "explorer-runtime"
-      },
-      {
-        "generated": true,
-        "path": "bundle/data/relationships-*.json.gz",
-        "required": true,
-        "role": "relationship-runtime"
-      },
-      {
-        "generated": true,
-        "path": "bundle/data/semantic/manifest.json",
-        "required": true,
-        "role": "semantic-manifest"
-      },
-      {
-        "generated": true,
-        "path": "bundle/data/semantic/*.jsonld.gz",
-        "required": true,
-        "role": "semantic-json-ld-shards"
-      },
-      {
-        "generated": true,
-        "path": "bundle/data/semantic/validation-report.json",
-        "required": true,
-        "role": "semantic-validation"
+        "role": "predicate-registry"
       },
       {
         "generated": true,
@@ -132,21 +114,63 @@
       },
       {
         "generated": true,
-        "path": "bundle/data/relationship-runtime/route-locator/manifest.json",
-        "required": true,
-        "role": "relationship-route-locator"
-      },
-      {
-        "generated": true,
         "path": "bundle/data/relationship-runtime/route-locator/*.json.gz",
         "required": true,
         "role": "relationship-route-locator"
       },
       {
         "generated": true,
-        "path": "bundle/context/okf-bundle-v1.jsonld",
+        "path": "bundle/data/relationship-runtime/route-locator/manifest.json",
         "required": true,
-        "role": "semantic-context"
+        "role": "relationship-route-locator"
+      },
+      {
+        "generated": true,
+        "path": "bundle/data/relationships-*.json.gz",
+        "required": true,
+        "role": "relationship-runtime"
+      },
+      {
+        "generated": true,
+        "path": "bundle/data/semantic/*.jsonld.gz",
+        "required": true,
+        "role": "semantic-json-ld-shards"
+      },
+      {
+        "generated": true,
+        "path": "bundle/data/semantic/manifest.json",
+        "required": true,
+        "role": "semantic-manifest"
+      },
+      {
+        "generated": true,
+        "path": "bundle/data/semantic/validation-report.json",
+        "required": true,
+        "role": "semantic-validation"
+      },
+      {
+        "generated": true,
+        "path": "bundle/okf-bundle.jsonld",
+        "required": true,
+        "role": "semantic-json-ld"
+      },
+      {
+        "generated": true,
+        "path": "bundle/okf-bundle.yamlld",
+        "required": true,
+        "role": "semantic-yaml-ld"
+      },
+      {
+        "generated": true,
+        "path": "bundle/okf-core-explorer.json",
+        "required": true,
+        "role": "explorer-runtime"
+      },
+      {
+        "generated": true,
+        "path": "bundle/okf-explorer.json",
+        "required": true,
+        "role": "explorer-runtime"
       },
       {
         "generated": true,
@@ -159,15 +183,9 @@
         "path": "bundle/schemas/relationship-*.schema.json",
         "required": true,
         "role": "relationship-runtime-schema"
-      },
-      {
-        "generated": true,
-        "path": "bundle/data/predicate-registry.json",
-        "required": true,
-        "role": "predicate-registry"
       }
     ],
-    "profile": "https://chris-page-gov.github.io/okf-explorer/profile/bundle-wiki/v1/",
+    "profile": "https://chris-page-gov.github.io/okf-explorer/profile/bundle-wiki/v2/",
     "state": "generated-yaml-ld-sharded-graph"
   },
   "tooling": {

@@ -1,5 +1,5 @@
 ---
-okf_version: "0.2"
+okf_version: "0.3"
 ---
 
 # UK Government APIs OKF
@@ -33,5 +33,8 @@ Every relationship is compiled into a rich runtime assertion and matching semant
 - [Semantic graph manifest](data/semantic/manifest.json)
 - [Predicate registry](data/predicate-registry.json)
 - [Explorer descriptor](okf-explorer.json)
+- [OKF core Reader projection](okf-core-explorer.json)
+- [Source-linked Notify walkthrough](notification-catalogue-walkthrough.html)
+- [Source-linked core walkthrough](core-walkthrough.html)
 - [Specification notes](docs/UK-Government-API-OKF.md)
 - [Standards crosswalk](docs/okf-standards-crosswalk.md)

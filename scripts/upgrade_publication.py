@@ -7,10 +7,14 @@ import argparse
 import gzip
 import html
 import json
+import posixpath
 from collections import Counter, defaultdict
 from pathlib import Path
+from urllib.parse import unquote, urlsplit
 
 import build_uk_government_api_okf as helpers
+import build_notification_walkthrough
+import build_core_walkthrough
 import wayfinder_import
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -47,6 +51,161 @@ def documentation_concept(source: Path, generated_at: str) -> str:
         ]
     )
     return frontmatter + source.read_text(encoding="utf-8").lstrip("\n")
+
+
+def core_explorer_projection(
+    *,
+    records: list[dict],
+    publishers: list[dict],
+    descriptor: dict,
+    markdown_files: dict[Path, str],
+) -> dict:
+    """Expose the complete authored typed Markdown layer to Reader clients."""
+    import hashlib
+    import re
+
+    generated_at = str(descriptor["generated_at"])
+    nodes: dict[str, dict] = {}
+    for record in records:
+        if record.get("record_type") not in helpers.MARKDOWN_RECORD_TYPES:
+            continue
+        path = Path(record["concept_id"]).as_posix()
+        tags = list(record.get("tags", [])[:12])
+        provenance = record.get("provenance", {})
+        source_url = provenance.get("source_url") or record.get("documentation") or record.get("url")
+        frontmatter = {
+            "type": str(record.get("record_type") or ""),
+            "title": str(record.get("title") or ""),
+            "description": str(record.get("notes") or ""),
+            "resource": str(record.get("url") or ""),
+            "tags": [str(tag) for tag in tags],
+            "generated": {"by": "process:uk-government-api-okf-builder", "at": generated_at},
+            "status": helpers.concept_status(record),
+            "confidence": str(record.get("confidence") or ""),
+            "source_adapter": str(record.get("source_adapter") or ""),
+        }
+        last_modified = helpers.source_last_modified(record)
+        if source_url:
+            source = {"id": record.get("source_adapter") or "catalogue-source", "resource": source_url}
+            if provenance.get("source"):
+                source["title"] = provenance["source"]
+            if last_modified:
+                source["last_modified"] = last_modified
+            frontmatter["sources"] = [source]
+        nodes[path] = {"frontmatter": frontmatter, "title": frontmatter["title"]}
+    for publisher in publishers:
+        path = Path(publisher["concept_id"]).as_posix()
+        frontmatter = {
+            "type": "Organisation",
+            "title": str(publisher.get("title") or ""),
+            "description": str(publisher.get("description") or ""),
+            "generated": {"by": "process:uk-government-api-okf-builder", "at": generated_at},
+            "status": "draft",
+            "sources": [{
+                "id": "provider-aggregation",
+                "resource": "all generated UK Government API corpus records with publisher " + str(publisher.get("name")),
+                "title": "Generated provider aggregation",
+            }],
+        }
+        nodes[path] = {"frontmatter": frontmatter, "title": frontmatter["title"]}
+    docs_root = ROOT / "docs"
+    for source in sorted(docs_root.glob("*.md")):
+        path = f"docs/{source.name}"
+        title = source.stem.replace("-", " ").replace("_", " ")
+        relative = source.relative_to(ROOT).as_posix()
+        frontmatter = {
+            "type": "Reference",
+            "title": title,
+            "generated": {"by": "process:uk-government-api-okf-builder", "at": generated_at},
+            "status": "draft",
+            "sources": [{
+                "id": "repository-source",
+                "resource": f"https://github.com/chris-page-gov/okf-uk-government-apis/blob/main/{relative}",
+                "title": source.name,
+            }],
+        }
+        nodes[path] = {"frontmatter": frontmatter, "title": title}
+
+    typed_paths = sorted(nodes)
+    if len(typed_paths) != 3464:
+        raise ValueError(f"expected 3,464 typed source concepts, found {len(typed_paths)}")
+    for path in typed_paths:
+        markdown = markdown_files[Path(path)]
+        marker = markdown.find("\n---\n", 4)
+        if not markdown.startswith("---\n") or marker < 0:
+            raise ValueError(f"typed Markdown has invalid generated frontmatter: {path}")
+        body = markdown[marker + 5:].strip("\n")
+        meta = nodes[path]["frontmatter"]
+        raw = markdown.encode("utf-8")
+        link_map = {}
+        for label, target in re.findall(r"\[([^\]]+)\]\(([^)]+)\)", body):
+            parsed = urlsplit(target)
+            if parsed.scheme or parsed.netloc or not parsed.path:
+                continue
+            route = posixpath.normpath(
+                posixpath.join(posixpath.dirname(path), unquote(parsed.path))
+            )
+            if route in nodes and route != path:
+                link_map[target] = route
+        reference_map = {}
+        for line in body.splitlines():
+            definition = re.match(
+                r"^ {0,3}\[([^\]]+)\]:[ \t]*(?:<([^>]+)>|(\S+))(?:[ \t]+(?:\"[^\"]*\"|'[^']*'|\([^)]*\)))?[ \t]*$",
+                line,
+            )
+            if definition:
+                label = " ".join(definition.group(1).casefold().split())
+                target = definition.group(2) or definition.group(3)
+                reference_map[label] = target
+        node = {
+            **meta,
+            "id": path,
+            "section": path.split("/", 1)[0],
+            "source_path": path,
+            "source_bytes": len(raw),
+            "source_sha256": hashlib.sha256(raw).hexdigest(),
+            "body": body,
+            "markdown_links": link_map,
+            "markdown_references": reference_map,
+            "asset_links": {},
+        }
+        nodes[path] = node
+    index_path = Path("index.md")
+    index_markdown = markdown_files[index_path]
+    index_body = index_markdown.split("\n---\n", 1)[1]
+    edges = [
+        {"source": path, "target": target, "kind": "references", "source_fields": ["markdown"]}
+        for path in typed_paths
+        for target in sorted(set(nodes[path].get("markdown_links", {}).values()))
+    ]
+    navigation_concepts = []
+    for _label, target in re.findall(r"\[([^\]]+)\]\(([^)]+)\)", index_body):
+        parsed = urlsplit(target)
+        if parsed.scheme or parsed.netloc or not parsed.path:
+            continue
+        route = posixpath.normpath(posixpath.join("", unquote(parsed.path)))
+        if route in nodes:
+            navigation_concepts.append(route)
+    return {
+        "schema": "okf-explorer-bundle.v0",
+        "kind": "okf-bundle",
+        "bundle_id": "https://chris-page-gov.github.io/okf-uk-government-apis/okf-core-explorer.json",
+        "version": descriptor["version"],
+        "okf_version": "0.3",
+        "snapshot": descriptor["snapshot"],
+        "meta": {
+            "title": "UK Government APIs OKF core Markdown projection",
+            "description": "Portable Reader projection of all authored typed Markdown concepts; separate from the large metadata extension graph.",
+            "frontmatter": {"okf_version": "0.3"},
+            "navigation": [{"path": "index.md", "body": index_body.strip("\n"), "concepts": sorted(set(navigation_concepts))}],
+        },
+        "nodes": nodes,
+        "edges": edges,
+        "entrypoints": {
+            "core_walkthrough": "core-walkthrough.html",
+            "core_reader_journeys": "core-reader-journeys.json",
+        },
+    }
 
 
 def is_wayfinder_relationship(row: dict) -> bool:
@@ -149,6 +308,16 @@ def add_wayfinder_to_frozen_corpus(
     publishers = rebuild_publishers(
         builder.records, builder.resources, existing_publishers
     )
+    for record in builder.records:
+        record["core_role"] = (
+            "concept"
+            if record.get("record_type") in helpers.MARKDOWN_RECORD_TYPES
+            else "extension"
+        )
+    for resource in builder.resources:
+        resource["core_role"] = "extension"
+    for publisher in publishers:
+        publisher["core_role"] = "concept"
     compiled = helpers.compile_relationship_assertions(
         builder.relationships, builder.records, builder.resources, publishers
     )
@@ -484,6 +653,8 @@ def rebuild_static_views(
     analysis["hierarchies"] = [hierarchy]
 
     search = helpers.build_search(records)
+    search["manifest"]["snapshot"] = str(descriptor.get("snapshot") or descriptor["generated_at"])
+    search["manifest"]["snapshot"] = str(descriptor.get("snapshot") or descriptor["generated_at"])
     record_chunks = helpers.chunk_paths("apis", records)
     resource_chunks = helpers.chunk_paths("resources", resources)
     publisher_chunks = helpers.chunk_paths("providers", publishers)
@@ -658,22 +829,29 @@ def main(argv: list[str] | None = None) -> int:
         if target not in expected_adjacency:
             target.unlink()
     descriptor.update({
-        "@context": "https://chris-page-gov.github.io/okf-explorer/profile/bundle-wiki/v1/context.jsonld",
+        "@context": "https://chris-page-gov.github.io/okf-explorer/profile/bundle-wiki/v2/context.jsonld",
         "@id": "https://chris-page-gov.github.io/okf-uk-government-apis/okf-explorer.json",
-        "version": "0.4.0",
+        "version": "0.5.0",
         "status": "preview",
-        "profile": "https://chris-page-gov.github.io/okf-explorer/profile/bundle-wiki/v1/",
+        "profile": "https://chris-page-gov.github.io/okf-explorer/profile/bundle-wiki/v2/",
         "publisher": "https://github.com/chris-page-gov",
         "license": "https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/",
         "semantic_descriptor": "https://chris-page-gov.github.io/okf-uk-government-apis/okf-bundle.yamlld",
-        "okf_version": "0.2",
+        "okf_version": "0.3",
         "core_conformance": "Markdown concept layer",
     })
     descriptor["entrypoints"].update({
         "viewer": "https://chris-page-gov.github.io/okf-explorer/",
         "relationship_adjacency": "data/adjacency/manifest.json",
         "semantic_graph": "data/semantic/manifest.json",
-        "semantic_context": "context/okf-bundle-v1.jsonld",
+        "semantic_context": "context/okf-bundle-v2.jsonld",
+        "core_markdown": "okf-core-explorer.json",
+        "notification_walkthrough": "notification-catalogue-walkthrough.html",
+        "notification_walkthrough_evidence": "notification-walkthrough-evidence.json",
+        "core_walkthrough": "core-walkthrough.html",
+        "core_walkthrough_evidence": "core-walkthrough-evidence.json",
+        "core_reader_journeys": "core-reader-journeys.json",
+        "notification_reader_journeys": "notification-reader-journeys.json",
         "semantic_assertion_schema": "schemas/okf-relationship-assertion.v2.schema.json",
         "predicate_registry": "data/predicate-registry.json",
         "notes": "docs/UK-Government-API-OKF.md",
@@ -733,7 +911,7 @@ def main(argv: list[str] | None = None) -> int:
     manifest["indexes"]["semantic_graph"] = "data/semantic/manifest.json"
     manifest["indexes"]["predicate_registry"] = "data/predicate-registry.json"
     manifest["performance"]["route_relationship_hydration"] = "hash-sharded adjacency"
-    manifest["okf_version"] = "0.2"
+    manifest["okf_version"] = "0.3"
     analysis_path = BUNDLE / manifest["indexes"]["analysis"]
     analysis = views["analysis"]
     analysis["standards_alignment"]["crosswalk"] = "docs/okf-standards-crosswalk.md"
@@ -837,10 +1015,32 @@ def main(argv: list[str] | None = None) -> int:
     markdown_files = helpers.markdown_output_files(
         {"records": records, "publishers": publishers, "descriptor": descriptor}
     )
+    for source in sorted((ROOT / "docs").glob("*.md")):
+        markdown_files[Path("docs") / source.name] = documentation_concept(
+            source, str(descriptor["generated_at"])
+        )
     for relative, content in markdown_files.items():
         target = BUNDLE / relative
         target.parent.mkdir(parents=True, exist_ok=True)
         target.write_text(content, encoding="utf-8")
+    core_projection = core_explorer_projection(
+        records=records,
+        publishers=publishers,
+        descriptor=descriptor,
+        markdown_files=markdown_files,
+    )
+    core_projection["entrypoints"] = {
+        "core_walkthrough": "core-walkthrough.html",
+        "core_reader_journeys": "core-reader-journeys.json",
+    }
+    (BUNDLE / "okf-core-explorer.json").write_text(
+        helpers.render_json(core_projection), encoding="utf-8"
+    )
+    build_notification_walkthrough.build()
+    build_core_walkthrough.build()
+    for journey_name in ("core-reader-journeys.json", "notification-reader-journeys.json"):
+        journey_source = ROOT / "walkthroughs" / journey_name
+        (BUNDLE / journey_name).write_bytes(journey_source.read_bytes())
     counts = manifest["counts"]
     explorer_url = (
         "https://chris-page-gov.github.io/okf-explorer/?bundle="
@@ -854,6 +1054,9 @@ def main(argv: list[str] | None = None) -> int:
         f'<p><a href="{html.escape(explorer_url, quote=True)}">Open in OKF Explorer</a></p><ul>'
         '<li><a href="okf-bundle.yamlld">YAML-LD</a></li><li><a href="okf-bundle.jsonld">JSON-LD</a></li>'
         '<li><a href="okf-explorer.json">Explorer descriptor</a></li><li><a href="data/manifest.json">Data manifest</a></li>'
+        '<li><a href="okf-core-explorer.json">OKF core Markdown projection</a></li>'
+        '<li><a href="notification-catalogue-walkthrough.html">Notify metadata walkthrough</a></li>'
+        '<li><a href="core-walkthrough.html">OKF core source walkthrough</a></li>'
         '<li><a href="data/semantic/manifest.json">Semantic graph manifest</a></li><li><a href="data/semantic/validation-report.json">Semantic validation receipt</a></li>'
         '<li><a href="data/relationship-runtime/manifest.json">Material relationship runtime</a></li><li><a href="data/predicate-registry.json">Predicate registry</a></li>'
         '<li><a href="data/adjacency/manifest.json">Relationship adjacency</a></li><li><a href="data/sources/wayfinder/manifest.json">Wayfinder source provenance</a></li>'

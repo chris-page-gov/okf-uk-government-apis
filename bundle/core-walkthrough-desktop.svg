@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1120 510" role="img" aria-labelledby="title desc">
+<title id="title">Follow the authored Notify provider link</title>
+<desc id="desc">A typed GOV.UK Notify source concept points to a Government Digital Service concept through an authored Markdown link. The link does not prove present availability or rights.</desc>
+<defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L6,3 z" fill="#52667a"/></marker></defs>
+<rect width="100%" height="100%" rx="24" fill="#f4f7fb"/>
+<text x="28" y="48" font-family="system-ui,sans-serif" font-size="25" font-weight="700" fill="#172b4d">A source link is not a live-service check</text>
+<text x="28" y="82" font-family="system-ui,sans-serif" font-size="15" fill="#334e68">OKF core 0.3 · frozen catalogue snapshot: 16 July 2026 · authored Markdown only</text>
+<rect x="40" y="142" width="455" height="205" rx="16" fill="#ffffff" stroke="#3264a8" stroke-width="3"/>
+<text x="60" y="184" font-family="system-ui,sans-serif" font-size="20" font-weight="700" fill="#172b4d">GOV.UK Notify</text>
+<text x="60" y="218" font-family="system-ui,sans-serif" font-size="15" fill="#334e68">API Product concept</text>
+<text x="60" y="258" font-family="system-ui,sans-serif" font-size="13" fill="#334e68">api-records/government-digital-service-gov-uk-notify.md</text>
+<text x="60" y="297" font-family="system-ui,sans-serif" font-size="14" font-weight="700" fill="#842029">Access unknown · licence not specified</text>
+<rect x="625" y="142" width="455" height="205" rx="16" fill="#ffffff" stroke="#3264a8" stroke-width="3"/>
+<text x="645" y="184" font-family="system-ui,sans-serif" font-size="20" font-weight="700" fill="#172b4d">Government Digital Service</text>
+<text x="645" y="218" font-family="system-ui,sans-serif" font-size="15" fill="#334e68">Organisation concept</text>
+<text x="645" y="258" font-family="system-ui,sans-serif" font-size="13" fill="#334e68">organisations/government-digital-service.md</text>
+<text x="645" y="297" font-family="system-ui,sans-serif" font-size="14" font-weight="700" fill="#842029">Authored Markdown link target</text>
+<path d="M500 244 L610 244" stroke="#52667a" stroke-width="3" marker-end="url(#arrow)"/>
+<text x="28" y="422" font-family="system-ui,sans-serif" font-size="16" font-weight="700" fill="#842029">No endpoint health check · no access or licence upgrade · no equivalence claim</text>
+<text x="28" y="456" font-family="system-ui,sans-serif" font-size="14" fill="#334e68">The boxes are typed Markdown concepts; the arrow is the exact authored source link.</text>
+</svg>

@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 390 950" role="img" aria-labelledby="title desc">
+<title id="title">Three distinct Notify catalogue records</title>
+<desc id="desc">Compare two GOV.UK API Catalogue records and one Wayfinder synthetic record. A connecting line marks comparison only, not equivalence.</desc>
+<defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L6,3 z" fill="#52667a"/></marker></defs>
+<rect width="100%" height="100%" rx="24" fill="#f4f7fb"/>
+<text x="22" y="39" font-family="system-ui,sans-serif" font-size="21" font-weight="700" fill="#172b4d">A name match is not an</text>
+<text x="22" y="64" font-family="system-ui,sans-serif" font-size="21" font-weight="700" fill="#172b4d">identity match</text>
+<text x="22" y="92" font-family="system-ui,sans-serif" font-size="13" fill="#334e68">Catalogue snapshot: 16 July 2026</text>
+<text x="22" y="111" font-family="system-ui,sans-serif" font-size="13" fill="#334e68">Synthetic capture: 24 September 2026</text>
+<rect x="20" y="150" width="350" height="210" rx="16" fill="#ffffff" stroke="#3264a8" stroke-width="3"/>
+<text x="38" y="184" font-family="system-ui,sans-serif" font-size="18" font-weight="700" fill="#172b4d">GOV.UK Notify</text>
+<text x="38" y="222" font-family="system-ui,sans-serif" font-size="14" fill="#334e68">Government Digital Service</text>
+<text x="38" y="245" font-family="system-ui,sans-serif" font-size="14" fill="#334e68">Endpoint recorded</text>
+<text x="38" y="268" font-family="system-ui,sans-serif" font-size="14" fill="#334e68">Access unknown · licence</text>
+<text x="38" y="291" font-family="system-ui,sans-serif" font-size="14" fill="#334e68">not specified</text>
+<text x="38" y="345" font-family="system-ui,sans-serif" font-size="12" font-weight="700" fill="#3264a8">CATALOGUE RECORD</text>
+<rect x="20" y="400" width="350" height="210" rx="16" fill="#ffffff" stroke="#3264a8" stroke-width="3"/>
+<text x="38" y="434" font-family="system-ui,sans-serif" font-size="18" font-weight="700" fill="#172b4d">GOVUK Notify</text>
+<text x="38" y="472" font-family="system-ui,sans-serif" font-size="14" fill="#334e68">Department for Work and</text>
+<text x="38" y="495" font-family="system-ui,sans-serif" font-size="14" fill="#334e68">Pensions</text>
+<text x="38" y="518" font-family="system-ui,sans-serif" font-size="14" fill="#334e68">No endpoint in this record</text>
+<text x="38" y="541" font-family="system-ui,sans-serif" font-size="14" fill="#334e68">Access unknown</text>
+<text x="38" y="564" font-family="system-ui,sans-serif" font-size="14" fill="#334e68">ISC declared for this record only</text>
+<text x="38" y="595" font-family="system-ui,sans-serif" font-size="12" font-weight="700" fill="#3264a8">CATALOGUE RECORD</text>
+<rect x="20" y="650" width="350" height="210" rx="16" fill="#fff8e6" stroke="#a76b00" stroke-width="3"/>
+<text x="38" y="684" font-family="system-ui,sans-serif" font-size="18" font-weight="700" fill="#172b4d">Government Notify</text>
+<text x="38" y="722" font-family="system-ui,sans-serif" font-size="14" fill="#334e68">Wayfinder fictional catalogue</text>
+<text x="38" y="745" font-family="system-ui,sans-serif" font-size="14" fill="#334e68">.example endpoint · synthetic</text>
+<text x="38" y="768" font-family="system-ui,sans-serif" font-size="14" fill="#334e68">Rights not specified</text>
+<text x="38" y="791" font-family="system-ui,sans-serif" font-size="14" fill="#334e68">Excluded from live admission</text>
+<text x="38" y="845" font-family="system-ui,sans-serif" font-size="12" font-weight="700" fill="#a76b00">NEGATIVE CONTROL</text>
+<path d="M195,365 L195,390" stroke="#52667a" stroke-width="3" marker-end="url(#arrow)"/>
+<path d="M195,615 L195,640" stroke="#52667a" stroke-width="3" marker-end="url(#arrow)"/>
+<text x="22" y="900" font-family="system-ui,sans-serif" font-size="14" font-weight="700" fill="#842029">Do not transfer licence, endpoint or</text>
+<text x="22" y="921" font-family="system-ui,sans-serif" font-size="14" font-weight="700" fill="#842029">live-service claims between records.</text>
+</svg>

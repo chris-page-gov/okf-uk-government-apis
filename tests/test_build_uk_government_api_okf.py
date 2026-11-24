@@ -7,6 +7,7 @@ import json
 from pathlib import Path
 import sys
 import unittest
+from urllib.parse import quote
 from unittest.mock import patch
 
 
@@ -64,6 +65,7 @@ class UkGovernmentApiOkfGeneratorTest(unittest.TestCase):
         self.assertGreaterEqual(counts["operations"], 2)
         self.assertGreaterEqual(counts["schemas"], 2)
         self.assertEqual(counts["api_products"], counts["declared_api_products"] + counts["provider_native_api_products"])
+        self.assertEqual(corpus["descriptor"]["snapshot"], corpus["search"]["manifest"]["snapshot"])
 
     def test_ckan_api_like_resources_are_endpoint_records_not_api_products(self):
         corpus = self.build_fixture_corpus()
@@ -392,6 +394,18 @@ class UkGovernmentApiOkfGeneratorTest(unittest.TestCase):
         arcgis = next(node for node in semantic_nodes if node["route"] == "protocol/arcgis-rest")
         self.assertEqual(arcgis["title"], "ArcGIS REST")
         self.assertIn("protocol/ArcGIS REST", arcgis["aliases"])
+        node_by_route = {node["route"]: node for node in semantic_nodes}
+        typed_record = next(
+            record for record in corpus["records"]
+            if record.get("record_type") in builder_module.MARKDOWN_RECORD_TYPES
+        )
+        extension_record = next(
+            record for record in corpus["records"]
+            if record.get("record_type") not in builder_module.MARKDOWN_RECORD_TYPES
+        )
+        self.assertEqual(node_by_route[typed_record["route"]]["core_role"], "concept")
+        self.assertEqual(node_by_route[extension_record["route"]]["core_role"], "extension")
+        self.assertEqual(builder_module.load_semantic_context(core_roles=True)["core_role"], "okf:coreRole")
 
         inferred = [row for row in relationships if row["assertion_status"] == "inferred"]
         self.assertTrue(inferred)
@@ -668,14 +682,14 @@ class UkGovernmentApiOkfGeneratorTest(unittest.TestCase):
             record_markdown,
         )
 
-    def test_v02_markdown_separates_publication_time_from_source_time(self):
+    def test_v03_markdown_separates_publication_time_from_source_time(self):
         corpus = self.build_fixture_corpus()
         files = builder_module.output_files(corpus)
         record = files[Path("api-records/example-department-example-payments-api.md")]
 
-        self.assertEqual("0.2", corpus["descriptor"]["okf_version"])
-        self.assertEqual("0.2", corpus["manifest"]["okf_version"])
-        self.assertTrue(files[Path("index.md")].startswith('---\nokf_version: "0.2"\n---'))
+        self.assertEqual("0.3", corpus["descriptor"]["okf_version"])
+        self.assertEqual("0.3", corpus["manifest"]["okf_version"])
+        self.assertTrue(files[Path("index.md")].startswith('---\nokf_version: "0.3"\n---'))
         self.assertIn(
             "[Specification notes](docs/UK-Government-API-OKF.md)",
             files[Path("index.md")],
@@ -703,6 +717,52 @@ class UkGovernmentApiOkfGeneratorTest(unittest.TestCase):
         self.assertFalse(check_module.valid_datetime('"2026-07-25"'))
         self.assertTrue(check_module.valid_date('"2026-07-25"'))
         self.assertFalse(check_module.valid_date('"2026-02-30"'))
+
+    def test_core_and_metadata_walkthroughs_bind_separate_reader_descriptors(self):
+        metadata = check_module.load(ROOT / "bundle/okf-explorer.json")
+        metadata_errors = []
+        check_module.check_notification_walkthrough(metadata_errors, metadata)
+        self.assertEqual([], metadata_errors)
+
+        core_errors = []
+        check_module.check_core_walkthrough(core_errors)
+        self.assertEqual([], core_errors)
+
+        metadata_evidence = check_module.load(ROOT / "bundle/notification-walkthrough-evidence.json")
+        core_evidence = check_module.load(ROOT / "bundle/core-walkthrough-evidence.json")
+        self.assertIn("metadata_graph_path", metadata_evidence)
+        self.assertNotIn("core_source_projection", metadata_evidence)
+        self.assertEqual(
+            metadata["@id"],
+            metadata_evidence["metadata_extension_descriptor"]["bundle_id"],
+        )
+        self.assertIn(
+            "bundle=" + quote(metadata["@id"], safe=""),
+            metadata_evidence["reader_url"],
+        )
+        self.assertIn(
+            "#dataset/government-digital-service-gov-uk-notify",
+            metadata_evidence["reader_url"],
+        )
+        core_mobile = (ROOT / "bundle/core-walkthrough-mobile.svg").read_text(encoding="utf-8")
+        self.assertIn("A source link is not a", core_mobile)
+        self.assertIn("live-service check", core_mobile)
+        self.assertIn("No equivalence claim", core_mobile)
+        self.assertIn("service-gov-uk-notify.md", core_mobile)
+        metadata_mobile = (ROOT / "bundle/notification-walkthrough-mobile.svg").read_text(encoding="utf-8")
+        self.assertIn("A name match is not an", metadata_mobile)
+        self.assertIn("identity match", metadata_mobile)
+        self.assertIn("ISC declared for this record only", metadata_mobile)
+        self.assertIn("live-service claims between records.", metadata_mobile)
+        self.assertEqual(
+            "https://chris-page-gov.github.io/okf-uk-government-apis/okf-core-explorer.json",
+            core_evidence["bundle_id"],
+        )
+        self.assertIn(
+            "bundle=" + quote(core_evidence["bundle_id"], safe=""),
+            core_evidence["reader_url"],
+        )
+        self.assertIn("#api-records/government-digital-service-gov-uk-notify.md", core_evidence["reader_url"])
 
 
 if __name__ == "__main__":
