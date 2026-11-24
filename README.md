@@ -112,6 +112,8 @@ CI checks the downloaded uv archive digest and exact runtime version, retaining
 both values in its log if the pinned bootstrap is rejected.
 The version check uses the Linux archive's exact output format, which differs
 from the macOS build; the full archive SHA-256 remains the integrity pin.
+Reader commands resolve the producer's bundle and journey paths before
+`pnpm --dir` selects the separate consumer checkout.
 
 ```sh
 uv python install 3.12.11

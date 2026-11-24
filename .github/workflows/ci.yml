@@ -58,12 +58,12 @@ jobs:
       - name: Replay the core descriptor journeys
         run: >-
           pnpm --dir okf-explorer/apps/okf-explorer acceptance:bundle --
-          --bundle-root bundle --journeys bundle/core-reader-journeys.json
+          --bundle-root "$PWD/bundle" --journeys "$PWD/bundle/core-reader-journeys.json"
           --output "$RUNNER_TEMP/core-reader.json" --port 4282
       - name: Replay the metadata descriptor journeys
         run: >-
           pnpm --dir okf-explorer/apps/okf-explorer acceptance:bundle --
-          --bundle-root bundle --journeys bundle/notification-reader-journeys.json
+          --bundle-root "$PWD/bundle" --journeys "$PWD/bundle/notification-reader-journeys.json"
           --output "$RUNNER_TEMP/metadata-reader.json" --port 4283
       - name: Click both walkthrough links at desktop and mobile sizes
         run: timeout 15m node scripts/verify_walkthrough_browser.mjs "$RUNNER_TEMP/api-walkthrough-browser.json"

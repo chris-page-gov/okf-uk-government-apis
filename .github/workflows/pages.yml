@@ -81,13 +81,13 @@ jobs:
         name: Replay core descriptor journeys
         run: >-
           pnpm --dir okf-explorer/apps/okf-explorer acceptance:bundle --
-          --bundle-root bundle --journeys bundle/core-reader-journeys.json
+          --bundle-root "$PWD/bundle" --journeys "$PWD/bundle/core-reader-journeys.json"
           --output "$RUNNER_TEMP/core-reader.json" --port 4282
       - if: github.event_name == 'workflow_dispatch'
         name: Replay metadata descriptor journeys
         run: >-
           pnpm --dir okf-explorer/apps/okf-explorer acceptance:bundle --
-          --bundle-root bundle --journeys bundle/notification-reader-journeys.json
+          --bundle-root "$PWD/bundle" --journeys "$PWD/bundle/notification-reader-journeys.json"
           --output "$RUNNER_TEMP/metadata-reader.json" --port 4283
       - if: github.event_name == 'workflow_dispatch'
         name: Click both walkthrough links at desktop and mobile sizes

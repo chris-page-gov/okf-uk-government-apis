@@ -1130,7 +1130,7 @@
           "runtime",
           "deployment"
         ],
-        "command": "pnpm --dir okf-explorer/apps/okf-explorer acceptance:bundle -- --bundle-root bundle --journeys bundle/core-reader-journeys.json --output $RUNNER_TEMP/core-reader.json --port 4282",
+        "command": "pnpm --dir okf-explorer/apps/okf-explorer acceptance:bundle -- --bundle-root \"$PWD/bundle\" --journeys \"$PWD/bundle/core-reader-journeys.json\" --output $RUNNER_TEMP/core-reader.json --port 4282",
         "source": ".github/workflows/ci.yml",
         "review_status": "reviewed-local-guidance",
         "network": "none",
@@ -1145,7 +1145,7 @@
           "runtime",
           "deployment"
         ],
-        "command": "pnpm --dir okf-explorer/apps/okf-explorer acceptance:bundle -- --bundle-root bundle --journeys bundle/notification-reader-journeys.json --output $RUNNER_TEMP/metadata-reader.json --port 4283",
+        "command": "pnpm --dir okf-explorer/apps/okf-explorer acceptance:bundle -- --bundle-root \"$PWD/bundle\" --journeys \"$PWD/bundle/notification-reader-journeys.json\" --output $RUNNER_TEMP/metadata-reader.json --port 4283",
         "source": ".github/workflows/ci.yml",
         "review_status": "reviewed-local-guidance",
         "network": "none",

@@ -20,6 +20,8 @@
   them, so a rejected bootstrap pin has an inspectable diagnosis.
 - Check the exact Linux version string emitted by the verified archive; it
   omits the commit/date fields included in the macOS build.
+- Resolve producer bundle and journey paths before selecting the consumer
+  directory in CI, retaining the complete core and metadata Reader gates.
 - Added a source-linked notification catalogue walkthrough. It distinguishes
   similarly named snapshot records, source-reported licence metadata and the
   synthetic Wayfinder negative control; it makes no live availability claim.
