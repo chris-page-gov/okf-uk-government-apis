@@ -23,5 +23,5 @@ tar -xzf "$archive" --directory "$install_dir" --strip-components=1
 actual_version="$("$install_dir/uv" --version)"
 printf '%s\n' "$actual_version"
 test "$actual_version" = \
-  "uv $version (7456b60bc 2026-10-20 x86_64-unknown-linux-gnu)"
+  "uv $version (x86_64-unknown-linux-gnu)"
 printf '%s\n' "$install_dir" >> "$GITHUB_PATH"

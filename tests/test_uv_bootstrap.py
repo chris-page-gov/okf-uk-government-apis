@@ -34,7 +34,7 @@ class UvBootstrapTest(unittest.TestCase):
         self.assertIn("sha256sum --check", self.bootstrap)
         self.assertIn('version="0.13.4"', self.bootstrap)
         self.assertIn(
-            '"uv $version (7456b60bc 2026-10-20 x86_64-unknown-linux-gnu)"',
+            '"uv $version (x86_64-unknown-linux-gnu)"',
             self.bootstrap,
         )
 
