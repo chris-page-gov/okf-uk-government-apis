@@ -19,7 +19,18 @@ MAX_RESPONSE_BYTES = 16_000_000
 IDENTITY_ROUTES = (
     "index.html",
     "okf-explorer.json",
+    "okf-core-explorer.json",
     "data/manifest.json",
+    "core-reader-journeys.json",
+    "notification-reader-journeys.json",
+    "core-walkthrough.html",
+    "notification-catalogue-walkthrough.html",
+    "core-walkthrough-evidence.json",
+    "notification-walkthrough-evidence.json",
+    "core-walkthrough-desktop.svg",
+    "core-walkthrough-mobile.svg",
+    "notification-walkthrough-desktop.svg",
+    "notification-walkthrough-mobile.svg",
 )
 
 

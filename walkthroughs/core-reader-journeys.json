@@ -1,0 +1,42 @@
+{
+  "schema": "okf-explorer-journeys.v1",
+  "bundle_descriptor": "okf-core-explorer.json",
+  "expected_identity": {
+    "schema": "okf-explorer-bundle.v0",
+    "id": "https://chris-page-gov.github.io/okf-uk-government-apis/okf-core-explorer.json",
+    "version": "0.5.0",
+    "snapshot": "2026-07-16T00:00:00Z"
+  },
+  "journeys": [
+    {
+      "id": "core-notify-source-qualifiers",
+      "actions": [
+        {"type": "goto", "hash": "#api-records/government-digital-service-gov-uk-notify.md", "params": {"view": "reader"}},
+        {"type": "wait_for", "selector": ".right-panel h2:has-text(\"GOV.UK Notify\")"}
+      ],
+      "assertions": [
+        {"type": "text", "selector": ".right-panel", "includes": "Access model: unknown"},
+        {"type": "text", "selector": ".right-panel", "includes": "Licence: Not specified"},
+        {"type": "text", "selector": ".right-panel", "includes": "Government Digital Service"},
+        {"type": "console_clean"}
+      ]
+    },
+    {
+      "id": "core-authored-provider-reference",
+      "actions": [
+        {
+          "type": "goto",
+          "hash": "#api-records/government-digital-service-gov-uk-notify.md",
+          "params": {"view": "graph"}
+        },
+        {"type": "wait_for", "selector": "svg.graph [data-route=\"organisations/government-digital-service.md\"]"},
+        {"type": "click", "selector": "svg.graph [data-route=\"organisations/government-digital-service.md\"]"},
+        {"type": "wait_for", "selector": ".right-panel h2:has-text(\"Government Digital Service\")"}
+      ],
+      "assertions": [
+        {"type": "text", "selector": ".right-panel", "includes": "Organisation"},
+        {"type": "console_clean"}
+      ]
+    }
+  ]
+}

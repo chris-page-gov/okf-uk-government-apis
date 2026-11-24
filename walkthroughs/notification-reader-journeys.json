@@ -1,0 +1,67 @@
+{
+  "schema": "okf-explorer-journeys.v1",
+  "bundle_descriptor": "okf-explorer.json",
+  "expected_identity": {
+    "schema": "okf-explorer-large-corpus.v1",
+    "id": "https://chris-page-gov.github.io/okf-uk-government-apis/okf-explorer.json",
+    "version": "0.5.0",
+    "snapshot": "2026-07-16T00:00:00Z"
+  },
+  "journeys": [
+    {
+      "id": "notify-metadata-record-and-licence-boundary",
+      "actions": [
+        {"type": "goto", "hash": "#dataset/government-digital-service-gov-uk-notify", "params": {"q": "GOV.UK Notify", "view": "reader"}},
+        {"type": "wait_for", "selector": ".right-panel h2:has-text(\"GOV.UK Notify\")"}
+      ],
+      "assertions": [
+        {"type": "text", "selector": ".right-panel", "includes": "Access model"},
+        {"type": "text", "selector": ".right-panel", "includes": "unknown"},
+        {"type": "text", "selector": ".right-panel", "includes": "Not specified (metadata gap)"},
+        {"type": "text", "selector": ".right-panel", "includes": "documentation-only"},
+        {"type": "console_clean"}
+      ]
+    },
+    {
+      "id": "notify-similar-name-is-separate-record",
+      "actions": [
+        {"type": "goto", "params": {"view": "reader"}},
+        {"type": "wait_for", "selector": ".search-input"},
+        {"type": "fill", "selector": ".search-input", "value": "GOVUK Notify"},
+        {"type": "wait_for", "selector": ".result-open:has(h2:text-is(\"GOVUK Notify\"))"},
+        {"type": "click", "selector": ".result-open:has(h2:text-is(\"GOVUK Notify\"))"},
+        {"type": "wait_for", "selector": ".right-panel h2:has-text(\"GOVUK Notify\")"}
+      ],
+      "assertions": [
+        {"type": "text", "selector": ".right-panel", "includes": "department-for-work-and-pensions"},
+        {"type": "text", "selector": ".right-panel", "includes": "isc"},
+        {"type": "not_text", "selector": ".right-panel", "includes": "GOV.UK Notify"},
+        {"type": "console_clean"}
+      ]
+    },
+    {
+      "id": "notify-metadata-published-by-graph-edge",
+      "actions": [
+        {
+          "type": "goto",
+          "hash": "#dataset/government-digital-service-gov-uk-notify",
+          "params": {"q": "GOV.UK Notify", "view": "graph", "graph.workspace": "1"}
+        },
+        {"type": "wait_for", "selector": "svg.graph [data-route=\"publisher/government-digital-service\"] circle"},
+        {"type": "click", "selector": "svg.graph [data-route=\"publisher/government-digital-service\"] circle"},
+        {"type": "click", "selector": "button:has-text(\"Exit expanded graph\")"},
+        {"type": "wait_for", "selector": ".right-panel dd[data-detail-field=\"matched-records\"]"}
+      ],
+      "assertions": [
+        {"type": "url_hash", "equals": "#publisher/government-digital-service"},
+        {"type": "text", "selector": ".right-panel", "includes": "government-digital-service"},
+        {"type": "text", "selector": ".right-panel", "includes": "Kind"},
+        {"type": "text", "selector": ".right-panel", "includes": "publisher"},
+        {"type": "text", "selector": ".right-panel", "includes": "9 in whole corpus"},
+        {"type": "text", "selector": ".right-panel", "includes": "GOV.UK Notify"},
+        {"type": "requested", "includes": "/bundle/data/relationship-runtime/manifest.json"},
+        {"type": "console_clean"}
+      ]
+    }
+  ]
+}

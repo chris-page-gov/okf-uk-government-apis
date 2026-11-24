@@ -13,7 +13,8 @@
 - Before committing, run the complete non-mutating contract:
 
 ```sh
-uv sync --locked
+uv python install 3.12.11
+uv sync --locked --python 3.12.11
 uv run --locked python -m unittest discover -s tests -v
 uv run --locked python scripts/check_bundle.py
 uv run --locked python scripts/build_checksums.py --check

@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1120 510" role="img" aria-labelledby="title desc">
+<title id="title">Three distinct Notify catalogue records</title>
+<desc id="desc">Compare two GOV.UK API Catalogue records and one Wayfinder synthetic record. A connecting line marks comparison only, not equivalence.</desc>
+<defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L6,3 z" fill="#52667a"/></marker></defs>
+<rect width="100%" height="100%" rx="24" fill="#f4f7fb"/>
+<text x="28" y="48" font-family="system-ui,sans-serif" font-size="26" font-weight="700" fill="#172b4d">A name match is not an identity match</text>
+<text x="28" y="80" font-family="system-ui,sans-serif" font-size="15" fill="#334e68">Real-world catalogue snapshot: 16 July 2026 · synthetic overlay capture: 24 September 2026</text>
+<rect x="35" y="125" width="325" height="210" rx="16" fill="#ffffff" stroke="#3264a8" stroke-width="3"/>
+<text x="53" y="160" font-family="system-ui,sans-serif" font-size="19" font-weight="700" fill="#172b4d">GOV.UK Notify</text>
+<text x="53" y="200" font-family="system-ui,sans-serif" font-size="14" fill="#334e68">Government Digital Service</text>
+<text x="53" y="234" font-family="system-ui,sans-serif" font-size="14" fill="#334e68">Endpoint recorded</text>
+<text x="53" y="268" font-family="system-ui,sans-serif" font-size="14" fill="#334e68">Access unknown · licence not specified</text>
+<text x="53" y="317" font-family="system-ui,sans-serif" font-size="12" font-weight="700" fill="#3264a8">CATALOGUE RECORD</text>
+<rect x="398" y="125" width="325" height="210" rx="16" fill="#ffffff" stroke="#3264a8" stroke-width="3"/>
+<text x="416" y="160" font-family="system-ui,sans-serif" font-size="19" font-weight="700" fill="#172b4d">GOVUK Notify</text>
+<text x="416" y="200" font-family="system-ui,sans-serif" font-size="14" fill="#334e68">Department for Work and Pensions</text>
+<text x="416" y="234" font-family="system-ui,sans-serif" font-size="14" fill="#334e68">No endpoint in this record</text>
+<text x="416" y="268" font-family="system-ui,sans-serif" font-size="14" fill="#334e68">ISC declared for this record only</text>
+<text x="416" y="317" font-family="system-ui,sans-serif" font-size="12" font-weight="700" fill="#3264a8">CATALOGUE RECORD</text>
+<rect x="761" y="125" width="325" height="210" rx="16" fill="#fff8e6" stroke="#a76b00" stroke-width="3"/>
+<text x="779" y="160" font-family="system-ui,sans-serif" font-size="19" font-weight="700" fill="#172b4d">Government Notify</text>
+<text x="779" y="200" font-family="system-ui,sans-serif" font-size="14" fill="#334e68">Wayfinder fictional catalogue</text>
+<text x="779" y="234" font-family="system-ui,sans-serif" font-size="14" fill="#334e68">.example endpoint · synthetic</text>
+<text x="779" y="268" font-family="system-ui,sans-serif" font-size="14" fill="#334e68">Rights not specified · excluded from live admission</text>
+<text x="779" y="317" font-family="system-ui,sans-serif" font-size="12" font-weight="700" fill="#a76b00">NEGATIVE CONTROL</text>
+<path d="M362,230 L390,230" stroke="#52667a" stroke-width="3" marker-end="url(#arrow)"/>
+<path d="M725,230 L753,230" stroke="#52667a" stroke-width="3" marker-end="url(#arrow)"/>
+<text x="28" y="465" font-family="system-ui,sans-serif" font-size="14" font-weight="700" fill="#842029">Do not transfer licence, endpoint or live-service claims between records.</text>
+</svg>

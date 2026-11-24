@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 390 790" role="img" aria-labelledby="title desc">
+<title id="title">Follow the authored Notify provider link</title>
+<desc id="desc">A typed GOV.UK Notify source concept points to a Government Digital Service concept through an authored Markdown link. The link does not prove present availability or rights.</desc>
+<defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L0,6 L6,3 z" fill="#52667a"/></marker></defs>
+<rect width="100%" height="100%" rx="24" fill="#f4f7fb"/>
+<text x="22" y="39" font-family="system-ui,sans-serif" font-size="20" font-weight="700" fill="#172b4d">A source link is not a</text>
+<text x="22" y="63" font-family="system-ui,sans-serif" font-size="20" font-weight="700" fill="#172b4d">live-service check</text>
+<text x="22" y="91" font-family="system-ui,sans-serif" font-size="13" fill="#334e68">OKF core 0.3 · snapshot: 16 July 2026</text>
+<text x="22" y="111" font-family="system-ui,sans-serif" font-size="13" fill="#334e68">Authored Markdown only</text>
+<rect x="24" y="140" width="342" height="220" rx="16" fill="#ffffff" stroke="#3264a8" stroke-width="3"/>
+<text x="42" y="174" font-family="system-ui,sans-serif" font-size="18" font-weight="700" fill="#172b4d">GOV.UK Notify</text>
+<text x="42" y="221" font-family="system-ui,sans-serif" font-size="14" fill="#334e68">API Product concept</text>
+<text x="42" y="260" font-family="system-ui,sans-serif" font-size="12" fill="#334e68">api-records/government-digital-</text>
+<text x="42" y="278" font-family="system-ui,sans-serif" font-size="12" fill="#334e68">service-gov-uk-notify.md</text>
+<text x="42" y="314" font-family="system-ui,sans-serif" font-size="13" font-weight="700" fill="#842029">Access unknown · licence</text>
+<text x="42" y="332" font-family="system-ui,sans-serif" font-size="13" font-weight="700" fill="#842029">not specified</text>
+<rect x="24" y="410" width="342" height="220" rx="16" fill="#ffffff" stroke="#3264a8" stroke-width="3"/>
+<text x="42" y="444" font-family="system-ui,sans-serif" font-size="18" font-weight="700" fill="#172b4d">Government Digital</text>
+<text x="42" y="466" font-family="system-ui,sans-serif" font-size="18" font-weight="700" fill="#172b4d">Service</text>
+<text x="42" y="491" font-family="system-ui,sans-serif" font-size="14" fill="#334e68">Organisation concept</text>
+<text x="42" y="530" font-family="system-ui,sans-serif" font-size="12" fill="#334e68">organisations/government-digital-</text>
+<text x="42" y="548" font-family="system-ui,sans-serif" font-size="12" fill="#334e68">service.md</text>
+<text x="42" y="584" font-family="system-ui,sans-serif" font-size="13" font-weight="700" fill="#842029">Authored Markdown link</text>
+<text x="42" y="602" font-family="system-ui,sans-serif" font-size="13" font-weight="700" fill="#842029">target</text>
+<path d="M195 366 L195 392" stroke="#52667a" stroke-width="3" marker-end="url(#arrow)"/>
+<text x="22" y="685" font-family="system-ui,sans-serif" font-size="14" font-weight="700" fill="#842029">No endpoint check · no access or licence upgrade</text>
+<text x="22" y="705" font-family="system-ui,sans-serif" font-size="14" font-weight="700" fill="#842029">No equivalence claim</text>
+<text x="22" y="736" font-family="system-ui,sans-serif" font-size="12" fill="#334e68">The arrow is the exact authored source link;</text>
+<text x="22" y="753" font-family="system-ui,sans-serif" font-size="12" fill="#334e68">no metadata-extension relationship is used.</text>
+</svg>

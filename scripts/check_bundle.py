@@ -5,14 +5,17 @@ from __future__ import annotations
 
 import gzip
 import hashlib
+import html
 import io
 import json
 import re
 import sys
+import xml.etree.ElementTree as ET
 from collections import Counter, defaultdict
 from datetime import date, datetime
 from pathlib import Path
 from typing import Any
+from urllib.parse import quote
 
 SCRIPT_ROOT = Path(__file__).resolve().parent
 if str(SCRIPT_ROOT) not in sys.path:
@@ -20,6 +23,7 @@ if str(SCRIPT_ROOT) not in sys.path:
 
 import build_uk_government_api_okf as helpers
 import wayfinder_import
+import upgrade_publication as upgrade
 
 ROOT = Path(__file__).resolve().parents[1]
 BUNDLE = ROOT / "bundle"
@@ -933,9 +937,9 @@ def check_markdown(errors: list[str], generated_at: str) -> int:
         relative = path.relative_to(BUNDLE)
         text = path.read_text(encoding="utf-8")
         if relative == Path("index.md"):
-            expected = '---\nokf_version: "0.2"\n---\n'
+            expected = '---\nokf_version: "0.3"\n---\n'
             if not text.startswith(expected):
-                errors.append("root index.md does not declare only OKF v0.2 frontmatter")
+                errors.append("root index.md does not declare only OKF v0.3 frontmatter")
             continue
         if path.name in {"index.md", "log.md"}:
             if text.startswith("---\n"):
@@ -992,6 +996,229 @@ def check_markdown(errors: list[str], generated_at: str) -> int:
     return concepts
 
 
+def check_notification_walkthrough(errors: list[str], descriptor: dict[str, Any]) -> None:
+    """Bind the worked answer, diagrams and source links to exact bundle bytes."""
+    evidence_path = BUNDLE / "notification-walkthrough-evidence.json"
+    html_path = BUNDLE / "notification-catalogue-walkthrough.html"
+    journeys_path = BUNDLE / "notification-reader-journeys.json"
+    try:
+        evidence = load(evidence_path)
+        document = html_path.read_text(encoding="utf-8")
+        spec = json.loads((ROOT / "walkthroughs/notification-catalogue.json").read_text(encoding="utf-8"))
+        journeys = json.loads(journeys_path.read_text(encoding="utf-8"))
+    except (OSError, ValueError, json.JSONDecodeError) as error:
+        errors.append(f"notification walkthrough inputs cannot be read: {error}")
+        return
+    if evidence.get("id") != spec.get("id") or evidence.get("question") != spec.get("question"):
+        errors.append("notification walkthrough identity or question differs from its authored source")
+    metadata_id = "https://chris-page-gov.github.io/okf-uk-government-apis/okf-explorer.json"
+    if evidence.get("bundle_id") != metadata_id:
+        errors.append("notification walkthrough is not bound to the metadata extension descriptor")
+    if evidence.get("version") != descriptor.get("version") or evidence.get("snapshot") != descriptor.get("snapshot"):
+        errors.append("notification walkthrough version/snapshot differs from the metadata descriptor")
+    source_rows = evidence.get("sources", [])
+    if {row.get("path") for row in source_rows} != {row.get("path") for row in spec.get("sources", [])}:
+        errors.append("notification walkthrough source list differs from its authored source map")
+    for row in source_rows:
+        path = BUNDLE / str(row.get("path") or "")
+        if not path.is_file():
+            errors.append(f"notification walkthrough source is missing: {row.get('path')}")
+            continue
+        content = path.read_bytes()
+        if row.get("bytes") != len(content) or row.get("sha256") != hashlib.sha256(content).hexdigest():
+            errors.append(f"notification walkthrough source digest differs: {row.get('path')}")
+        if f'href="{row.get("path")}"' not in document:
+            errors.append(f"notification walkthrough does not link to source: {row.get('path')}")
+        if row.get("sha256") not in document:
+            errors.append(f"notification walkthrough does not display source digest: {row.get('path')}")
+    metadata_path = evidence.get("metadata_graph_path", {})
+    traversal = spec.get("traversal", {})
+    expected_path = {
+        "id": traversal.get("assertion_id"),
+        "source_route": traversal.get("source_route"),
+        "target_route": traversal.get("target_route"),
+        "predicate": traversal.get("predicate"),
+        "label": "published by",
+        "assertion_status": "normalized",
+        "assertion_scope": "real-world",
+    }
+    if metadata_path != expected_path:
+        errors.append("notification walkthrough metadata graph path differs from its authored assertion identity")
+    if evidence.get("traversal") != traversal:
+        errors.append("notification walkthrough traversal differs from its authored source specification")
+    assertion_matches = []
+    for path in sorted((BUNDLE / "data/semantic").glob("assertions-*.jsonld.gz")):
+        graph = load(path)
+        assertion_matches.extend(
+            row for row in graph.get("@graph", [])
+            if row.get("@id") == traversal.get("assertion_id")
+        )
+    if len(assertion_matches) != 1:
+        errors.append("notification walkthrough metadata assertion is not present exactly once in semantic shards")
+    else:
+        row = assertion_matches[0]
+        predicate = row.get("predicate")
+        predicate_iri = predicate.get("@id") if isinstance(predicate, dict) else predicate
+        if (
+            row.get("source_route") != traversal.get("source_route")
+            or row.get("target_route") != traversal.get("target_route")
+            or predicate_iri != traversal.get("predicate")
+            or row.get("label") != "published by"
+            or row.get("assertion_status") != "normalized"
+            or row.get("assertion_scope") != "real-world"
+        ):
+            errors.append("notification walkthrough metadata graph assertion differs from its declared route")
+    metadata_descriptor_bytes = (BUNDLE / "okf-explorer.json").read_bytes()
+    metadata_descriptor = evidence.get("metadata_extension_descriptor", {})
+    if (
+        metadata_descriptor.get("path") != "okf-explorer.json"
+        or metadata_descriptor.get("bundle_id") != metadata_id
+        or metadata_descriptor.get("version") != descriptor.get("version")
+        or metadata_descriptor.get("snapshot") != descriptor.get("snapshot")
+        or metadata_descriptor.get("sha256") != hashlib.sha256(metadata_descriptor_bytes).hexdigest()
+    ):
+        errors.append("notification walkthrough metadata descriptor digest or identity is invalid")
+    expected_reader_url = (
+        "https://chris-page-gov.github.io/okf-explorer/explore/?bundle="
+        + quote(metadata_id, safe="")
+        + "&q=" + quote(str(traversal.get("search_query") or ""), safe="")
+        + "&view=reader"
+        + "#" + str(traversal.get("source_route") or "")
+    )
+    if evidence.get("reader_url") != expected_reader_url or html.escape(expected_reader_url, quote=True) not in document:
+        errors.append("notification walkthrough Reader link does not bind its metadata descriptor and exact record route")
+    if evidence.get("reader_boundary") != spec.get("reader_boundary") or spec.get("reader_boundary") not in document:
+        errors.append("notification walkthrough does not disclose the pinned Reader publisher-label limitation")
+    if journeys_path.read_bytes() != (ROOT / "walkthroughs/notification-reader-journeys.json").read_bytes():
+        errors.append("metadata Reader journeys differ from their authored acceptance manifest")
+    if (
+        journeys.get("schema") != "okf-explorer-journeys.v1"
+        or journeys.get("bundle_descriptor") != "okf-explorer.json"
+        or journeys.get("expected_identity", {}).get("id") != metadata_id
+        or journeys.get("expected_identity", {}).get("version") != descriptor.get("version")
+        or journeys.get("expected_identity", {}).get("snapshot") != descriptor.get("snapshot")
+        or len(journeys.get("journeys", [])) < 3
+    ):
+        errors.append("metadata Reader journeys do not bind the exact metadata descriptor and graph acceptance scope")
+    for name in ("notification-walkthrough-desktop.svg", "notification-walkthrough-mobile.svg"):
+        path = BUNDLE / name
+        try:
+            ET.parse(path)
+        except (ET.ParseError, OSError) as error:
+            errors.append(f"notification walkthrough diagram is invalid: {name}: {error}")
+    if evidence.get("claims", {}).get("live_availability_checked") is not False:
+        errors.append("notification walkthrough overstates live availability checks")
+    if evidence.get("claims", {}).get("wayfinder_admitted_as_real_service") is not False:
+        errors.append("notification walkthrough admits Wayfinder as a real service")
+    if not spec.get("negative_controls") or not all(
+        html.escape(item) in document for item in spec["negative_controls"]
+    ):
+        errors.append("notification walkthrough omits an authored negative control")
+
+
+def check_core_walkthrough(errors: list[str]) -> None:
+    """Bind the core-only question, source bytes and Reader route to the portable core."""
+    evidence_path = BUNDLE / "core-walkthrough-evidence.json"
+    html_path = BUNDLE / "core-walkthrough.html"
+    core_path = BUNDLE / "okf-core-explorer.json"
+    journeys_path = BUNDLE / "core-reader-journeys.json"
+    try:
+        evidence = load(evidence_path)
+        document = html_path.read_text(encoding="utf-8")
+        spec = json.loads((ROOT / "walkthroughs/core-catalogue.json").read_text(encoding="utf-8"))
+        core_bytes = core_path.read_bytes()
+        core = json.loads(core_bytes)
+        journeys = json.loads(journeys_path.read_text(encoding="utf-8"))
+    except (OSError, ValueError, json.JSONDecodeError) as error:
+        errors.append(f"core walkthrough inputs cannot be read: {error}")
+        return
+    core_id = "https://chris-page-gov.github.io/okf-uk-government-apis/okf-core-explorer.json"
+    if evidence.get("id") != spec.get("id") or evidence.get("question") != spec.get("question"):
+        errors.append("core walkthrough identity or question differs from its authored source")
+    if evidence.get("bundle_id") != core_id or core.get("bundle_id") != core_id:
+        errors.append("core walkthrough is not bound to its own core descriptor")
+    if evidence.get("version") != core.get("version") or evidence.get("snapshot") != core.get("snapshot"):
+        errors.append("core walkthrough version or snapshot differs from the core descriptor")
+    descriptor_evidence = evidence.get("core_projection", {})
+    if (
+        descriptor_evidence.get("path") != "okf-core-explorer.json"
+        or descriptor_evidence.get("sha256") != hashlib.sha256(core_bytes).hexdigest()
+        or descriptor_evidence.get("concept_count") != len(core.get("nodes", {}))
+        or descriptor_evidence.get("edge_count") != len(core.get("edges", []))
+    ):
+        errors.append("core walkthrough does not bind the exact source projection and graph counts")
+    source_rows = evidence.get("sources", [])
+    if {row.get("path") for row in source_rows} != {row.get("path") for row in spec.get("sources", [])}:
+        errors.append("core walkthrough source list differs from its authored source map")
+    nodes = core.get("nodes", {})
+    for row in source_rows:
+        relative = str(row.get("path") or "")
+        path = BUNDLE / relative
+        if not path.is_file() or relative not in nodes:
+            errors.append(f"core walkthrough source is absent from the typed core projection: {relative}")
+            continue
+        data = path.read_bytes()
+        if row.get("bytes") != len(data) or row.get("sha256") != hashlib.sha256(data).hexdigest():
+            errors.append(f"core walkthrough source digest differs: {relative}")
+        if row.get("sha256") not in document or f'href="{relative}"' not in document:
+            errors.append(f"core walkthrough does not display and link its source identity: {relative}")
+    traversal = spec.get("traversal", {})
+    if evidence.get("traversal") != {**traversal, "edge": {
+        "source": traversal.get("source_path"),
+        "target": traversal.get("target_path"),
+        "kind": traversal.get("kind"),
+        "source_fields": traversal.get("source_fields"),
+    }}:
+        errors.append("core walkthrough traversal differs from its authored relationship")
+    source_node = nodes.get(traversal.get("source_path"), {})
+    if source_node.get("markdown_links", {}).get(traversal.get("source_link")) != traversal.get("target_path"):
+        errors.append("core walkthrough provider link is not present in the source Markdown projection")
+    edges = [
+        edge for edge in core.get("edges", [])
+        if edge.get("source") == traversal.get("source_path")
+        and edge.get("target") == traversal.get("target_path")
+        and edge.get("kind") == traversal.get("kind")
+        and edge.get("source_fields") == traversal.get("source_fields")
+    ]
+    if len(edges) != 1:
+        errors.append("core walkthrough path is not exactly one authored graph edge")
+    expected_reader_url = (
+        "https://chris-page-gov.github.io/okf-explorer/explore/?bundle="
+        + quote(core_id, safe="")
+        + "&q=" + quote(str(spec.get("search_query") or ""), safe="")
+        + "&view=reader"
+        + "#" + str(traversal.get("source_path") or "")
+    )
+    if evidence.get("reader_url") != expected_reader_url or html.escape(expected_reader_url, quote=True) not in document:
+        errors.append("core walkthrough Reader link does not bind the core descriptor and exact concept route")
+    if journeys_path.read_bytes() != (ROOT / "walkthroughs/core-reader-journeys.json").read_bytes():
+        errors.append("core Reader journeys differ from their authored acceptance manifest")
+    if (
+        journeys.get("schema") != "okf-explorer-journeys.v1"
+        or journeys.get("bundle_descriptor") != "okf-core-explorer.json"
+        or journeys.get("expected_identity", {}).get("id") != core_id
+        or journeys.get("expected_identity", {}).get("version") != core.get("version")
+        or journeys.get("expected_identity", {}).get("snapshot") != core.get("snapshot")
+        or len(journeys.get("journeys", [])) < 2
+    ):
+        errors.append("core Reader journeys do not bind the exact core descriptor and source graph acceptance scope")
+    claims = evidence.get("claims", {})
+    if any(claims.get(key) is not False for key in (
+        "metadata_extension_graph_used", "live_availability_checked", "live_api_called",
+        "licence_permission_inferred", "identity_equivalence_inferred",
+    )):
+        errors.append("core walkthrough overstates the core-only answer scope")
+    for name in ("core-walkthrough-desktop.svg", "core-walkthrough-mobile.svg"):
+        try:
+            ET.parse(BUNDLE / name)
+        except (ET.ParseError, OSError) as error:
+            errors.append(f"core walkthrough diagram is invalid: {name}: {error}")
+    if not spec.get("negative_controls") or not all(
+        html.escape(item) in document for item in spec["negative_controls"]
+    ):
+        errors.append("core walkthrough omits an authored negative control")
+
+
 def main() -> int:
     descriptor = load(BUNDLE / "okf-explorer.json")
     manifest = load(BUNDLE / "data/manifest.json")
@@ -1004,6 +1231,18 @@ def main() -> int:
         "data/predicate-registry.json",
         "data/semantic/manifest.json",
         "context/okf-bundle-v1.jsonld",
+        "context/okf-bundle-v2.jsonld",
+        "okf-core-explorer.json",
+        "notification-catalogue-walkthrough.html",
+        "notification-walkthrough-desktop.svg",
+        "notification-walkthrough-mobile.svg",
+        "notification-walkthrough-evidence.json",
+        "notification-reader-journeys.json",
+        "core-walkthrough.html",
+        "core-walkthrough-desktop.svg",
+        "core-walkthrough-mobile.svg",
+        "core-walkthrough-evidence.json",
+        "core-reader-journeys.json",
         "schemas/okf-relationship-assertion.v2.schema.json",
         "schemas/relationship-runtime-manifest.schema.json",
         "schemas/relationship-runtime-row.schema.json",
@@ -1015,10 +1254,16 @@ def main() -> int:
         if not (BUNDLE / required).is_file():
             errors.append(f"missing {required}")
 
-    if descriptor.get("okf_version") != "0.2":
-        errors.append("Explorer descriptor does not declare okf_version 0.2")
-    if manifest.get("okf_version") != "0.2":
-        errors.append("data manifest does not declare okf_version 0.2")
+    if descriptor.get("okf_version") != "0.3":
+        errors.append("Explorer descriptor does not declare okf_version 0.3")
+    if manifest.get("okf_version") != "0.3":
+        errors.append("data manifest does not declare okf_version 0.3")
+    if descriptor.get("version") != "0.5.0":
+        errors.append("Explorer descriptor does not declare producer version 0.5.0")
+    if descriptor.get("profile") != "https://chris-page-gov.github.io/okf-explorer/profile/bundle-wiki/v2/":
+        errors.append("Explorer descriptor does not declare the reviewed Bundle Wiki v2 profile")
+    check_notification_walkthrough(errors, descriptor)
+    check_core_walkthrough(errors)
     for name, entrypoint in descriptor.get("entrypoints", {}).items():
         entrypoint_path = (
             entrypoint.get("path") if isinstance(entrypoint, dict) else entrypoint
@@ -1046,8 +1291,8 @@ def main() -> int:
     for semantic_name, semantic in zip(
         ("okf-bundle.yamlld", "okf-bundle.jsonld"), semantic_descriptors
     ):
-        if semantic.get("okf_version") != "0.2":
-            errors.append(f"{semantic_name} does not declare okf_version 0.2")
+        if semantic.get("okf_version") != "0.3":
+            errors.append(f"{semantic_name} does not declare okf_version 0.3")
         if "@graph" in semantic:
             errors.append(f"{semantic_name} must remain a bounded graph descriptor, not a monolith")
     if semantic_descriptors[0] != semantic_descriptors[1]:
@@ -1055,7 +1300,95 @@ def main() -> int:
     if json.loads((BUNDLE / "context/okf-bundle-v1.jsonld").read_text()) != json.loads(
         helpers.SEMANTIC_CONTEXT_PATH.read_text()
     ):
-        errors.append("published semantic context differs from its pinned source")
+        errors.append("published frozen v1 semantic context differs from its pinned source")
+    search_manifest = load(BUNDLE / manifest["indexes"]["search"])
+    if search_manifest.get("snapshot") != descriptor.get("snapshot"):
+        errors.append("static search manifest is not bound to the frozen descriptor snapshot")
+    v2_context = json.loads((BUNDLE / "context/okf-bundle-v2.jsonld").read_text())
+    if v2_context.get("@context", {}).get("core_role") != "okf:coreRole":
+        errors.append("v2 semantic context does not map core_role")
+    if descriptor.get("entrypoints", {}).get("core_markdown") != "okf-core-explorer.json":
+        errors.append("core Markdown projection is not an Explorer entrypoint")
+    core = load(BUNDLE / "okf-core-explorer.json")
+    if core.get("bundle_id") != "https://chris-page-gov.github.io/okf-uk-government-apis/okf-core-explorer.json":
+        errors.append("portable core projection identity mismatch")
+    if core.get("version") != descriptor.get("version") or core.get("snapshot") != descriptor.get("snapshot"):
+        errors.append("portable core projection version/snapshot differs from the metadata bundle")
+    if core.get("entrypoints", {}).get("core_walkthrough") != "core-walkthrough.html":
+        errors.append("core walkthrough is not an entrypoint of its own core projection")
+    if core.get("entrypoints", {}).get("core_reader_journeys") != "core-reader-journeys.json":
+        errors.append("core Reader journeys are not an entrypoint of their own core projection")
+    if "core_source_projection" in load(BUNDLE / "notification-walkthrough-evidence.json"):
+        errors.append("metadata walkthrough improperly claims to bind the separate core projection")
+    core_bytes = (BUNDLE / "okf-core-explorer.json").read_bytes()
+    if descriptor.get("entrypoints", {}).get("core_walkthrough") != "core-walkthrough.html":
+        errors.append("core walkthrough is not an entrypoint of the metadata bundle")
+    core_nodes = core.get("nodes", {})
+    if len(core_nodes) != 3464:
+        errors.append(f"portable core projection has {len(core_nodes)} concepts, expected 3,464")
+    markdown_sources = {
+        path.relative_to(BUNDLE).as_posix(): path
+        for path in BUNDLE.rglob("*.md")
+        if path.relative_to(BUNDLE).as_posix() not in {"index.md", "log.md"}
+        and path.read_text(encoding="utf-8").startswith("---\n")
+    }
+    if set(core_nodes) != set(markdown_sources):
+        errors.append("portable core projection source-path set differs from typed Markdown")
+    for relative, source_path in markdown_sources.items():
+        source_bytes = source_path.read_bytes()
+        row = core_nodes.get(relative, {})
+        if row.get("source_path") != relative or row.get("source_bytes") != len(source_bytes) or row.get("source_sha256") != hashlib.sha256(source_bytes).hexdigest():
+            errors.append(f"portable core projection source identity differs: {relative}")
+        text = source_bytes.decode("utf-8")
+        try:
+            _frontmatter, body = text[4:].split("\n---\n", 1)
+        except ValueError:
+            errors.append(f"typed Markdown frontmatter is malformed: {relative}")
+            continue
+        expected_body = body.lstrip("\n")
+        if row.get("body") != expected_body.strip("\n"):
+            errors.append(f"portable core projection body differs from source: {relative}")
+    for edge in core.get("edges", []):
+        if (
+            edge.get("kind") != "references"
+            or edge.get("source") not in core_nodes
+            or edge.get("target") not in core_nodes
+            or edge.get("source_fields") != ["markdown"]
+        ):
+            errors.append("portable core projection contains an invalid Markdown reference")
+    concept_routes: set[str] = set()
+    try:
+        core_records = [row for relative in manifest["chunks"]["datasets"] for row in load(BUNDLE / relative)]
+        core_publishers = [row for relative in manifest["chunks"]["publishers"] for row in load(BUNDLE / relative)]
+        core_resources = [row for relative in manifest["chunks"]["resources"] for row in load(BUNDLE / relative)]
+        concept_routes = {
+            row["route"] for row in core_records
+            if row.get("record_type") in helpers.MARKDOWN_RECORD_TYPES and row.get("concept_id")
+        } | {row["route"] for row in core_publishers if row.get("concept_id")}
+        for row in core_records:
+            expected_role = "concept" if row.get("record_type") in helpers.MARKDOWN_RECORD_TYPES else "extension"
+            if row.get("core_role") != expected_role:
+                errors.append(f"metadata record has incorrect core_role: {row.get('route')}")
+        for row in core_publishers:
+            if row.get("core_role") != "concept":
+                errors.append(f"organisation record has incorrect core_role: {row.get('route')}")
+        for row in core_resources:
+            if row.get("core_role") != "extension":
+                errors.append(f"resource metadata has incorrect core_role: {row.get('route')}")
+        markdown_files = {
+            path.relative_to(BUNDLE): path.read_text(encoding="utf-8")
+            for path in BUNDLE.rglob("*.md")
+        }
+        expected_core = upgrade.core_explorer_projection(
+            records=core_records,
+            publishers=core_publishers,
+            descriptor=descriptor,
+            markdown_files=markdown_files,
+        )
+        if core != expected_core:
+            errors.append("portable core projection differs from its deterministic source-derived projection")
+    except (KeyError, OSError, TypeError, ValueError) as error:
+        errors.append(f"portable core projection could not be deterministically rebuilt: {error}")
     if json.loads(
         (BUNDLE / "schemas/okf-relationship-assertion.v2.schema.json").read_text()
     ) != json.loads(helpers.SEMANTIC_ASSERTION_SCHEMA_PATH.read_text()):
@@ -1254,6 +1587,9 @@ def main() -> int:
                 route = str(node.get("route") or "")
                 if helpers.semantic_iri(route) != source_iri:
                     errors.append(f"semantic entity route/IRI mismatch: {source_iri}")
+                expected_role = "concept" if route in concept_routes else "extension"
+                if node.get("core_role") != expected_role:
+                    errors.append(f"semantic entity has incorrect core_role: {route}")
                 entity_routes[route] = source_iri
                 for predicate in runtime_predicate_counts:
                     values = node.get(predicate, [])
@@ -1367,7 +1703,7 @@ def main() -> int:
         f"{relationships:,} relationships, "
         f"{adjacency['routes']:,} adjacency routes, "
         f"{semantic_counts['shards']:,} bounded semantic shards, "
-        f"{concept_count:,} OKF v0.2 concepts"
+        f"{concept_count:,} OKF v0.3 concepts"
     )
     return 0
 

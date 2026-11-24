@@ -1,5 +1,46 @@
 # Changelog
 
+## 0.5.0 — 2026-11-24 — OKF core 0.3 migration
+
+- Migrated the frozen 16 July 2026 catalogue to the reviewed OKF core 0.3
+  contract and Bundle Wiki v2 repository profile while preserving the frozen
+  v1 schemas and semantic assertion identities.
+- Added a complete Reader projection for all 3,464 typed Markdown concepts,
+  separate from the metadata extension graph, with source paths, full bodies,
+  frontmatter and SHA-256 digests.
+- Labelled typed concepts and metadata-only extensions explicitly, retaining
+  the 278,156 existing metadata assertions and the rejected synthetic
+  Wayfinder boundary.
+- Pinned the active Python bootstrap to uv 0.13.4, which removes the affected
+  bundled certificate root, without changing Python or dependency versions.
+- Install governed CPython 3.12.11 through the hash-pinned uv bootstrap in CI and
+  Pages, avoiding the unavailable runner image cache while preserving the exact
+  Python version and locked dependency set.
+- Report the downloaded archive digest and runtime version before checking
+  them, so a rejected bootstrap pin has an inspectable diagnosis.
+- Check the exact Linux version string emitted by the verified archive; it
+  omits the commit/date fields included in the macOS build.
+- Resolve producer bundle and journey paths before selecting the consumer
+  directory in CI, retaining the complete core and metadata Reader gates.
+- Added a source-linked notification catalogue walkthrough. It distinguishes
+  similarly named snapshot records, source-reported licence metadata and the
+  synthetic Wayfinder negative control; it makes no live availability claim.
+- Added a distinct source-linked core walkthrough with its own core descriptor,
+  authored Markdown relationship, source digests, diagrams and negative
+  controls. It does not use the metadata extension graph or claim live service,
+  access or licence status.
+- Added separate core and metadata Reader journey manifests and made the pinned
+  Chromium journeys a required CI gate. Added a second browser gate that clicks
+  both guide links at desktop and mobile sizes, checks accessibility and source
+  controls, and fetches every checksum-listed bundle asset over local HTTP.
+  Deployment verification binds both descriptors, both manifests and both
+  walkthroughs to the exact candidate.
+- Added a pinned Explorer Reader source-import parity gate for all typed Markdown
+  frontmatter, bodies, links, source hashes and directed core edges.
+- Added a frozen baseline check proving the 140 legacy relationship chunks and
+  source graph identity files are byte-identical to the 16 July source commit,
+  retaining all 278,156 assertion identities before and after migration.
+
 ## Unreleased — standards references
 
 - Link the central current and historical OKF standards register and public bundle catalogue.

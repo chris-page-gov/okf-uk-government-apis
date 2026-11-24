@@ -1,0 +1,75 @@
+{
+  "schema": "okf-core-walkthrough-evidence.v1",
+  "id": "uk-government-apis-core-source-limits",
+  "bundle_id": "https://chris-page-gov.github.io/okf-uk-government-apis/okf-core-explorer.json",
+  "version": "0.5.0",
+  "snapshot": "2026-07-16T00:00:00Z",
+  "question": "Can an OKF core 0.3 reader establish that the GOV.UK Notify endpoint is currently reachable and licensed for my integration? Trace the authored provider link, dated source row and access and licence fields, then identify what still needs checking.",
+  "scope": "This answer uses only the frozen typed Markdown core and its authored links. It does not use the separate metadata extension graph or call an API.",
+  "answer": [
+    "The GOV.UK Notify Markdown concept names Government Digital Service as provider and records an endpoint and documentation URL. Its source row is dated 24 August 2020; the catalogue snapshot used by this bundle is dated 16 July 2026.",
+    "The same source record says access is unknown, contract status is documentation-only and the licence is not specified. The authored link to the Government Digital Service organisation is a source relationship, not proof of current service ownership, endpoint reachability or licence permission.",
+    "The core therefore supports a traceable reading of these frozen Markdown statements. Before integration, check current service documentation and availability, establish the intended use and obtain applicable rights evidence."
+  ],
+  "decision": "Do not treat a recorded endpoint as a live health check, unknown access as open access, or a missing licence declaration as permission. Keep the source-specific statements qualified and verify them before use.",
+  "core_projection": {
+    "path": "okf-core-explorer.json",
+    "sha256": "414212c16b796d42dbbf13d5a8d877d431d668ca4908cd4143f4db26fd5c0758",
+    "concept_count": 3464,
+    "edge_count": 6422
+  },
+  "sources": [
+    {
+      "path": "api-records/government-digital-service-gov-uk-notify.md",
+      "label": "GOV.UK Notify API product concept",
+      "role": "primary frozen source record",
+      "bytes": 3117,
+      "sha256": "103413698cdb3de94a2082f9112aab1affdb6aab008ba74ab14a1a9cfdda99d9"
+    },
+    {
+      "path": "organisations/government-digital-service.md",
+      "label": "Government Digital Service organisation concept",
+      "role": "authored provider-link target",
+      "bytes": 608,
+      "sha256": "49610e21f20e54258e6be3c7a8183fe0569aaed5aa52585887c2e7479261f85d"
+    },
+    {
+      "path": "docs/UK-Government-API-OKF.md",
+      "label": "UK Government APIs OKF source and relationship notes",
+      "role": "snapshot and catalogue boundary",
+      "bytes": 57758,
+      "sha256": "82306c514d04f3d26a356894a1364a302d135fe365783af756dcd85d40898cfd"
+    }
+  ],
+  "traversal": {
+    "source_path": "api-records/government-digital-service-gov-uk-notify.md",
+    "target_path": "organisations/government-digital-service.md",
+    "kind": "references",
+    "source_fields": [
+      "markdown"
+    ],
+    "source_link": "../organisations/government-digital-service.md",
+    "edge": {
+      "kind": "references",
+      "source": "api-records/government-digital-service-gov-uk-notify.md",
+      "source_fields": [
+        "markdown"
+      ],
+      "target": "organisations/government-digital-service.md"
+    }
+  },
+  "negative_controls": [
+    "A recorded endpoint is not evidence that it is currently reachable.",
+    "Unknown access does not mean anonymous or open access.",
+    "A licence not specified for this GDS record cannot be replaced with the repository licence or another provider's licence.",
+    "The authored Markdown provider link does not assert dataset equivalence or current operational ownership."
+  ],
+  "reader_url": "https://chris-page-gov.github.io/okf-explorer/explore/?bundle=https%3A%2F%2Fchris-page-gov.github.io%2Fokf-uk-government-apis%2Fokf-core-explorer.json&q=GOV.UK%20Notify&view=reader#api-records/government-digital-service-gov-uk-notify.md",
+  "claims": {
+    "metadata_extension_graph_used": false,
+    "live_availability_checked": false,
+    "live_api_called": false,
+    "licence_permission_inferred": false,
+    "identity_equivalence_inferred": false
+  }
+}

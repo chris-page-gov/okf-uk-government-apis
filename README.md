@@ -9,8 +9,10 @@ endpoints, data products, operations, schemas and contracts. Source tier,
 adapter, confidence, credentials policy, licence basis and DCAT/OpenAPI
 alignment remain record-level.
 
-The publication is an OKF v0.2 bundle. `bundle/index.md` declares
-`okf_version: "0.2"`; each non-reserved Markdown concept has a `type`,
+The publication is an OKF core 0.3 bundle with the producer-specific
+[UK Government APIs profile](profiles/uk-government-apis/v1.md). Its common
+repository contract uses the versioned [Bundle Wiki v2 profile](profiles/bundle-wiki/v2/).
+`bundle/index.md` declares `okf_version: "0.3"`; each non-reserved Markdown concept has a `type`,
 structured `sources`, and `generated.by`/`generated.at`. The publication is
 still a preview, so generated concepts are `draft` unless a source explicitly
 shows that a record is deprecated. No `verified` claim is emitted without
@@ -20,8 +22,11 @@ evidence.
 separate as `sources[].last_modified` and in the producer-specific JSON
 extensions.
 
-Machine entry points are under `bundle/`: `okf-bundle.yamlld`,
-`okf-bundle.jsonld`, `okf-explorer.json`, `data/manifest.json`, static search,
+Machine entry points are under `bundle`: `okf-core-explorer.json` exposes all
+3,464 typed Markdown concepts with exact source paths, full body/frontmatter
+and source digests. Its core edges come only from authored Markdown links.
+The separate `okf-explorer.json`, `okf-bundle.yamlld`,
+`okf-bundle.jsonld`, `data/manifest.json`, static search,
 and route-scoped relationship adjacency. The YAML-LD and JSON-LD roots are
 bounded graph descriptors rather than monolithic corpus files. Their
 `data/semantic/manifest.json` identifies digest-bound gzip JSON-LD shards:
@@ -57,6 +62,24 @@ This remains a metadata-only catalogue snapshot. The semantic graph does not
 assert that an endpoint is live, accessible or assured, and it never stores or
 executes credentials.
 
+The [Notify metadata walkthrough](bundle/notification-catalogue-walkthrough.html)
+compares two similarly named GOV.UK API Catalogue entries with the synthetic
+Wayfinder negative control. It follows the authored provider link, cites exact
+source digests and explains why snapshot licence or endpoint fields must not be
+transferred between records. The separate [OKF core walkthrough](bundle/core-walkthrough.html)
+uses typed Markdown sources and their authored provider link only; it does not
+use the metadata extension graph.
+
+Each guide has its own visible Reader link and replayable journey manifest.
+`walkthroughs/notification-reader-journeys.json` exercises the metadata
+descriptor; `walkthroughs/core-reader-journeys.json` exercises the separate
+typed-source descriptor. CI runs both descriptor manifests against the exact
+checked-in bundle and pinned Explorer Reader, including graph traversal and
+negative controls. It also opens each authored guide at desktop and mobile
+sizes, checks source digests and negative controls, clicks the visible Reader
+link and verifies the declared descriptor and source route. The same
+guide-to-Reader check runs before a manually triggered Pages deployment.
+
 ## Wayfinder comparison layer
 
 The catalogue includes 85 service records from the explicitly fictional
@@ -82,17 +105,26 @@ offline and is excluded from the repository.
 See [the detailed comparison](docs/wayfinder-comparison-2026-09-24.md) for the
 field mapping, discrepancies and provenance boundary.
 
-Refresh the v0.2 publication projection and its integrity manifest with:
+Regenerate the core 0.3 and metadata projections from the checked-in frozen
+16 July 2026 publication, then update its integrity manifest:
+
+CI checks the downloaded uv archive digest and exact runtime version, retaining
+both values in its log if the pinned bootstrap is rejected.
+The version check uses the Linux archive's exact output format, which differs
+from the macOS build; the full archive SHA-256 remains the integrity pin.
+Reader commands resolve the producer's bundle and journey paths before
+`pnpm --dir` selects the separate consumer checkout.
 
 ```sh
-uv sync --locked
+uv python install 3.12.11
+uv sync --locked --python 3.12.11
 uv run --locked python scripts/upgrade_publication.py
 uv run --locked python scripts/build_checksums.py
 ```
 
-`upgrade_publication.py` is the safe offline route for the checked-in frozen
-snapshot: it reads existing record/resource/publisher chunks and performs no
-network acquisition. A full source refresh through
+`upgrade_publication.py` is the supported offline build route: it reads the
+checked-in record/resource/publisher chunks and performs no network
+acquisition. A source refresh through
 `build_uk_government_api_okf.py` contacts upstream catalogues unless all
 source-adapter fixtures or skip flags are supplied; do not use it for an
 offline semantic-only migration.
@@ -104,7 +136,9 @@ uv run --locked python -m unittest discover -s tests -v
 uv run --locked python scripts/check_bundle.py
 uv run --locked python scripts/build_checksums.py --check
 uv run --locked python scripts/check_publication_contract.py
+uv run --locked python scripts/check_frozen_graph_identity.py
 uv run --project ../okf-explorer --locked python ../okf-explorer/scripts/reconcile_okf_repositories.py --repo . --strict
+uv run --project ../okf-explorer --locked python scripts/check_core_reader_parity.py --consumer-root ../okf-explorer
 ```
 
 ## Publication contract and CI
@@ -132,9 +166,14 @@ validation first. Networked source acquisition remains a separate,
 explicitly authorised refresh operation.
 
 After deployment, `scripts/verify_deployment.py` fetches the public
-`checksums.json`, landing page, Explorer descriptor and record-count manifest
-and compares them byte for byte with the validated checkout. This is a bounded
-HTTP identity gate, not a real-browser interaction or console test.
+`checksums.json`, landing page, both Explorer descriptors, both journey
+manifests and record-count manifest and compares them byte for byte with the
+validated checkout. The pre-deployment browser gate also fetches every local
+checksum-listed asset over HTTP and compares its exact byte count and SHA-256.
+It clicks each source-linked guide's visible Reader link, verifies the exact
+descriptor identity and route, checks accessibility, and records desktop and
+mobile screenshots. CI separately replays both descriptor-specific journey
+manifests against the pinned Reader and checks browser errors.
 
 ## OKF standards and bundle discovery
 

@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import argparse
 import fnmatch
+import hashlib
 import json
 import os
 import re
@@ -12,10 +13,12 @@ import subprocess
 from pathlib import Path
 from typing import Any
 
+from jsonschema import Draft202012Validator
+
 
 ROOT = Path(__file__).resolve().parents[1]
 CONTRACT = ROOT / "okf.publication.json"
-SEMANTIC_PROFILE = "https://chris-page-gov.github.io/okf-explorer/profile/bundle-wiki/v1/"
+SEMANTIC_PROFILE = "https://chris-page-gov.github.io/okf-explorer/profile/bundle-wiki/v2/"
 REQUIRED_TOP_LEVEL = {
     "schema",
     "modified",
@@ -116,6 +119,17 @@ def validate_contract(document: dict[str, Any]) -> list[str]:
     """Return local structural and cross-reference errors."""
 
     errors: list[str] = []
+    semantic_path = ROOT / "okf.semantic.json"
+    semantic_schema_path = ROOT / "profiles/bundle-wiki/v2/repository-contract.schema.json"
+    if semantic_path.is_file() and semantic_schema_path.is_file():
+        semantic_contract = json.loads(semantic_path.read_text(encoding="utf-8"))
+        semantic_schema = json.loads(semantic_schema_path.read_text(encoding="utf-8"))
+        for error in Draft202012Validator(semantic_schema).iter_errors(semantic_contract):
+            instance_path = "/".join(str(part) for part in error.absolute_path) or "<root>"
+            errors.append(f"OKF 0.3 semantic contract schema violation at {instance_path}: {error.message}")
+    else:
+        errors.append("OKF 0.3 semantic contract or pinned v2 schema is missing")
+    errors.extend(profile_lock_errors())
     missing = sorted(REQUIRED_TOP_LEVEL - set(document))
     extra = sorted(set(document) - REQUIRED_TOP_LEVEL)
     if missing:
@@ -138,7 +152,7 @@ def validate_contract(document: dict[str, Any]) -> list[str]:
         if not isinstance(value, str) or not (ROOT / value).is_file():
             errors.append(f"{label} must name an existing file")
     if semantic.get("profile") != SEMANTIC_PROFILE:
-        errors.append("semantic_contract.profile must name Bundle Wiki v1")
+        errors.append("semantic_contract.profile must name Bundle Wiki v2")
 
     source_ids = _ids(document.get("source_families"), "source_families", errors)
     plane_ids = _ids(document.get("planes"), "planes", errors)
@@ -196,6 +210,34 @@ def validate_contract(document: dict[str, Any]) -> list[str]:
             errors.append(f"lockstep documentation paths omit {required}")
 
     ci = document.get("ci") or {}
+    ordinary_browser = (ci.get("browser") or {}).get("ordinary") or {}
+    if ordinary_browser.get("policy") != "required":
+        errors.append("CI must require the canonical Reader browser acceptance")
+    if ordinary_browser.get("engines") != ["chromium"]:
+        errors.append("CI Reader browser acceptance must name the canonical Chromium engine")
+    verification = document.get("verification") or {}
+    if verification.get("required") is not True:
+        errors.append("publication verification must be required")
+    if verification.get("browser") != "required":
+        errors.append("publication verification must require browser journeys")
+    expected_journeys = {"core-guide-to-reader", "metadata-guide-to-reader"}
+    journeys = verification.get("journeys")
+    journey_ids = {
+        row.get("id") for row in journeys if isinstance(row, dict)
+    } if isinstance(journeys, list) else set()
+    if not expected_journeys.issubset(journey_ids):
+        errors.append("publication verification must include separate core and metadata guide journeys")
+    expected_reader_commands = {
+        "reader-core-acceptance",
+        "reader-metadata-acceptance",
+        "walkthrough-browser-acceptance",
+    }
+    verification_commands = set(verification.get("command_ids", []))
+    if not expected_reader_commands.issubset(verification_commands):
+        errors.append("publication verification must require both Reader manifests and the guide-to-Reader browser gate")
+    browser_commands = set(ordinary_browser.get("command_ids", []))
+    if not expected_reader_commands.issubset(browser_commands):
+        errors.append("ordinary browser CI must require the descriptor manifests and guide-to-Reader gate")
     for workflow in ci.get("workflow_paths", []):
         if not isinstance(workflow, str) or not (ROOT / workflow).is_file():
             errors.append(f"CI workflow path does not exist: {workflow}")
@@ -210,6 +252,37 @@ def validate_contract(document: dict[str, Any]) -> list[str]:
         if target.get("promote_without_rebuild") is not True:
             errors.append(f"publication target {target.get('id')} permits a rebuild")
     return sorted(set(errors))
+
+
+def profile_lock_errors() -> list[str]:
+    """Check frozen v1 and active v2 profile mirrors against their locks."""
+    errors: list[str] = []
+    for version in ("v1", "v2"):
+        profile_root = ROOT / "profiles" / "bundle-wiki" / version
+        lock_path = ROOT / "profiles" / "bundle-wiki" / f"{version}.vendor-lock.json"
+        try:
+            lock = json.loads(lock_path.read_text(encoding="utf-8"))
+            entries = lock["files"]
+            listed = {row["path"] for row in entries}
+            actual = {path.relative_to(profile_root).as_posix() for path in profile_root.rglob("*") if path.is_file() and not path.is_symlink()}
+            if actual != listed:
+                errors.append(f"{version} profile files differ from the vendor lock")
+            canonical = bytearray()
+            for row in sorted(entries, key=lambda item: item["path"]):
+                path = profile_root / row["path"]
+                content = path.read_bytes()
+                digest = hashlib.sha256(content).hexdigest()
+                if len(content) != row["bytes"] or digest != row["sha256"]:
+                    errors.append(f"{version} profile file differs from the vendor lock: {row['path']}")
+                canonical.extend(f"{row['path']}\t{row['bytes']}\t{row['sha256']}\n".encode("utf-8"))
+            digest = hashlib.sha256(canonical).hexdigest()
+            if lock.get("identity", {}).get("sha256") != digest:
+                errors.append(f"{version} profile vendor-lock aggregate identity is invalid")
+            if lock.get("profile") != f"https://chris-page-gov.github.io/okf-explorer/profile/bundle-wiki/{version}/":
+                errors.append(f"{version} profile vendor lock has the wrong canonical URI")
+        except (OSError, KeyError, TypeError, ValueError) as exc:
+            errors.append(f"{version} profile vendor lock cannot be verified: {exc}")
+    return errors
 
 
 def _matches(path: str, patterns: object) -> bool:

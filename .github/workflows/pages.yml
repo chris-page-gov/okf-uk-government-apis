@@ -38,19 +38,15 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: chris-page-gov/okf-explorer
-          ref: d6930bbcddaab616deec002d9e6efff6e3aae953
+          ref: cce6e68d95c2946bb425effbaab48fbf04281a09
           path: okf-explorer
           persist-credentials: false
-      - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
-        with:
-          python-version: "3.12"
-      - if: github.event_name == 'workflow_dispatch'
-        uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
-        with:
-          version: "0.12.2"
-          enable-cache: true
-      - if: github.event_name == 'workflow_dispatch'
-        run: uv sync --locked
+      - name: Install the attested uv 0.13.4 bootstrap
+        run: bash scripts/install_pinned_uv.sh
+      - name: Install governed CPython 3.12.11 with uv
+        run: uv python install 3.12.11
+      - name: Sync the locked Python environment
+        run: uv sync --locked --python 3.12.11
       - if: github.event_name == 'workflow_dispatch'
         run: uv run --locked python -m unittest discover -s tests -v
       - if: github.event_name == 'workflow_dispatch'
@@ -60,7 +56,42 @@ jobs:
       - if: github.event_name == 'workflow_dispatch'
         run: uv run --locked python scripts/check_publication_contract.py
       - if: github.event_name == 'workflow_dispatch'
+        run: uv run --locked python scripts/check_frozen_graph_identity.py
+      - if: github.event_name == 'workflow_dispatch'
+        run: uv run --project okf-explorer --locked python scripts/check_core_reader_parity.py --consumer-root okf-explorer
+      - if: github.event_name == 'workflow_dispatch'
         run: uv run --project okf-explorer --locked python okf-explorer/scripts/reconcile_okf_repositories.py --repo . --strict
+      - if: github.event_name == 'workflow_dispatch'
+        uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
+        with:
+          version: 10.34.7
+      - if: github.event_name == 'workflow_dispatch'
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: "24.22.3"
+          cache: pnpm
+          cache-dependency-path: okf-explorer/apps/okf-explorer/pnpm-lock.yaml
+      - if: github.event_name == 'workflow_dispatch'
+        name: Install pinned Explorer Reader dependencies
+        run: pnpm --dir okf-explorer/apps/okf-explorer install --frozen-lockfile
+      - if: github.event_name == 'workflow_dispatch'
+        name: Install canonical Chromium
+        run: timeout 5m pnpm --dir okf-explorer/apps/okf-explorer exec playwright install chromium
+      - if: github.event_name == 'workflow_dispatch'
+        name: Replay core descriptor journeys
+        run: >-
+          pnpm --dir okf-explorer/apps/okf-explorer acceptance:bundle --
+          --bundle-root "$PWD/bundle" --journeys "$PWD/bundle/core-reader-journeys.json"
+          --output "$RUNNER_TEMP/core-reader.json" --port 4282
+      - if: github.event_name == 'workflow_dispatch'
+        name: Replay metadata descriptor journeys
+        run: >-
+          pnpm --dir okf-explorer/apps/okf-explorer acceptance:bundle --
+          --bundle-root "$PWD/bundle" --journeys "$PWD/bundle/notification-reader-journeys.json"
+          --output "$RUNNER_TEMP/metadata-reader.json" --port 4283
+      - if: github.event_name == 'workflow_dispatch'
+        name: Click both walkthrough links at desktop and mobile sizes
+        run: timeout 15m node scripts/verify_walkthrough_browser.mjs "$RUNNER_TEMP/api-walkthrough-browser.json"
       - uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6.0.0
       - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
         with:
@@ -70,4 +101,4 @@ jobs:
       - name: Verify deployed routes and identity
         env:
           OKF_DEPLOYMENT_URL: ${{ steps.deployment.outputs.page_url }}
-        run: python3 scripts/verify_deployment.py
+        run: uv run --locked python scripts/verify_deployment.py
