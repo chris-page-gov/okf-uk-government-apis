@@ -184,8 +184,8 @@ manifests and record-count manifest and compares them byte for byte with the
 validated checkout. The pre-deployment browser gate also fetches every local
 checksum-listed asset over HTTP and compares its exact byte count and SHA-256.
 It clicks each source-linked guide's visible Reader link, verifies the exact
-descriptor identity and route, checks accessibility, and records desktop and
-mobile screenshots. CI separately replays both descriptor-specific journey
+descriptor identity and route, checks accessibility and guide reflow, and records
+desktop and mobile screenshots. CI separately replays both descriptor-specific journey
 manifests against the pinned Reader and checks browser errors.
 
 ## OKF standards and bundle discovery

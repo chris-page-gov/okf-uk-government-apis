@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased — notification walkthrough reflow
+
+- Wrap long source text inside the metadata walkthrough at phone widths. The
+  existing browser gate now checks guide reflow after the illustrations load.
+
 ## Unreleased — bounded Pages artifact recovery
 
 - Give the Pages artifact a unique run-and-attempt name and retry deployment
