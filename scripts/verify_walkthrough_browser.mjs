@@ -211,6 +211,9 @@ try {
         await route.abort('blockedbyclient');
       });
       await page.goto(guideUrl, { waitUntil: 'domcontentloaded' });
+      await page.locator('img').evaluateAll(images => Promise.all(images.map(image => image.decode())));
+      assert(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth + 1),
+        `${testCase.id}/${viewport.name}: the guide overflows its viewport`);
       const guideText = await page.locator('body').innerText();
       for (const negative of evidence.negative_controls) {
         assert(guideText.includes(negative), `${testCase.id}/${viewport.name}: guide omits a negative control`);
